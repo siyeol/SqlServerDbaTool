@@ -1,98 +1,96 @@
-﻿using System;
+﻿using Newtonsoft.Json;
+using Newtonsoft.Json.Serialization;
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Newtonsoft.Json;
-using Newtonsoft.Json.Serialization;
 
 namespace CsLib
 {
-    public class DicWrapper<K, V>
-    {
+   public class DicWrapper<K, V>
+   {
 
-        private object lockobj = new object();
+      private object lockobj = new object();
 
-        public Dictionary<K, V> Data { get; set; } = new Dictionary<K, V>();
+      public Dictionary<K, V> Data { get; set; } = new Dictionary<K, V>();
 
-        public DicWrapper() { }
+      public DicWrapper() { }
 
-        public void Insert(K key, V value)
-        {
-            lock (lockobj)
+      public void Insert(K key, V value)
+      {
+         lock (lockobj)
+         {
+            if (!Data.ContainsKey(key))
+               Data.Add(key, value);
+            else
+               Update(key, value);
+         }
+      }
+
+      public void Update(K key, V value)
+      {
+         lock (lockobj)
+         {
+            V oldValue;
+            if (Data.TryGetValue(key, out oldValue))
             {
-                if (!Data.ContainsKey(key))
-                    Data.Add(key, value);
-                else
-                    Update(key, value);
+               var oldProperties = oldValue.GetType().GetProperties();
+               var newProperies = value.GetType().GetProperties();
+               foreach (var o in oldProperties)
+               {
+                  foreach (var n in newProperies)
+                  {
+                     if (o.Name == n.Name)
+                     {
+                        string newPropertyValue = value.GetType().GetProperty(n.Name).GetValue(value, null).ToString();
+                        if (!newPropertyValue.Equals("NULL"))
+                           oldValue.GetType().GetProperty(o.Name).SetValue(oldValue, newPropertyValue, null);
+                     }
+                  }
+               }
             }
-        }
+            Data[key] = oldValue;
+         }
+      }
 
-        public void Update(K key, V value)
-        {
-            lock (lockobj)
+
+      public void Truncate()
+      {
+         Data.Clear();
+      }
+
+      public void Delete(K key)
+      {
+         lock (lockobj)
+         {
+            if (Data.ContainsKey(key))
             {
-                V oldValue;
-                if (Data.TryGetValue(key, out oldValue))
-                {
-                    var oldProperties = oldValue.GetType().GetProperties();
-                    var newProperies = value.GetType().GetProperties();
-                    foreach (var o in oldProperties)
-                    {
-                        foreach (var n in newProperies)
-                        {
-                            if (o.Name == n.Name)
-                            {
-                                string newPropertyValue = value.GetType().GetProperty(n.Name).GetValue(value, null).ToString();
-                                if (!newPropertyValue.Equals("NULL"))
-                                    oldValue.GetType().GetProperty(o.Name).SetValue(oldValue, newPropertyValue, null);
-                            }
-                        }
-                    }
-                }
-                Data[key] = oldValue;
+               Data.Remove(key);
             }
-        }
+         }
+      }
 
+      public string GetJson()
+      {
+         JsonSerializerSettings settings = new JsonSerializerSettings();
+         settings.Formatting = Formatting.Indented;
+         settings.ContractResolver = new DictionaryAsArrayResolver();
+         return JsonConvert.SerializeObject(Data, settings);
+      }
 
-        public void Truncate()
-        {
-            Data.Clear();
-        }
-
-        public void Delete(K key)
-        {
-            lock (lockobj)
+      class DictionaryAsArrayResolver : DefaultContractResolver
+      {
+         protected override JsonContract CreateContract(Type objectType)
+         {
+            if (objectType.GetInterfaces().Any(i => i == typeof(IDictionary) ||
+               (i.IsGenericType && i.GetGenericTypeDefinition() == typeof(IDictionary<,>))))
             {
-                if (Data.ContainsKey(key))
-                {
-                    Data.Remove(key);
-                }
+               return base.CreateArrayContract(objectType);
             }
-        }
-
-        public string GetJson()
-        {
-            JsonSerializerSettings settings = new JsonSerializerSettings();
-            settings.Formatting = Formatting.Indented;
-            settings.ContractResolver = new DictionaryAsArrayResolver();
-            return JsonConvert.SerializeObject(Data, settings);
-        }
-
-        class DictionaryAsArrayResolver : DefaultContractResolver
-        {
-            protected override JsonContract CreateContract(Type objectType)
-            {
-                if (objectType.GetInterfaces().Any(i => i == typeof(IDictionary) ||
-                   (i.IsGenericType && i.GetGenericTypeDefinition() == typeof(IDictionary<,>))))
-                {
-                    return base.CreateArrayContract(objectType);
-                }
-                return base.CreateContract(objectType);
-            }
-        }
-    }
+            return base.CreateContract(objectType);
+         }
+      }
+   }
 }
 
 

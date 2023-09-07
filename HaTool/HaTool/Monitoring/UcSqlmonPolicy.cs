@@ -243,7 +243,7 @@ namespace HaTool.Monitoring
         //    try
         //    {
         //        string endpoint = dataManager.GetValue(DataManager.Category.ApiGateway, DataManager.Key.Endpoint);
-        //        string action = @"/server/v2/getServerInstanceList";
+        //        string action = @"/vserver/v2/getServerInstanceList";
         //        List<KeyValuePair<string, string>> parameters = new List<KeyValuePair<string, string>>();
         //        parameters.Add(new KeyValuePair<string, string>("responseFormatType", "json"));
 

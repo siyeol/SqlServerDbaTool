@@ -187,7 +187,7 @@ namespace HaTool.Server
                     throw new Exception("select one server");
 
                 string endpoint = dataManager.GetValue(DataManager.Category.ApiGateway, DataManager.Key.Endpoint);
-                string action = @"/server/v2/getBlockStorageInstanceList";
+                string action = @"/vserver/v2/getBlockStorageInstanceList";
                 List<KeyValuePair<string, string>> parameters = new List<KeyValuePair<string, string>>();
                 parameters.Add(new KeyValuePair<string, string>("responseFormatType", "json"));
                 parameters.Add(new KeyValuePair<string, string>("serverInstanceNo", storageInstanceNo));
@@ -320,7 +320,7 @@ namespace HaTool.Server
             try
             {
                 string endpoint = dataManager.GetValue(DataManager.Category.ApiGateway, DataManager.Key.Endpoint);
-                string action = @"/server/v2/getServerInstanceList";
+                string action = @"/vserver/v2/getServerInstanceList";
                 List<KeyValuePair<string, string>> parameters = new List<KeyValuePair<string, string>>();
                 parameters.Add(new KeyValuePair<string, string>("responseFormatType", "json"));
 
@@ -568,7 +568,7 @@ namespace HaTool.Server
             try
             {
                 string endpoint = dataManager.GetValue(DataManager.Category.ApiGateway, DataManager.Key.Endpoint);
-                string action = @"/server/v2/deleteBlockStorageInstances";
+                string action = @"/vserver/v2/deleteBlockStorageInstances";
                 List<KeyValuePair<string, string>> parameters = new List<KeyValuePair<string, string>>();
                 parameters.Add(new KeyValuePair<string, string>("responseFormatType", "json"));
                 parameters.Add(new KeyValuePair<string, string>("blockStorageInstanceNoList.1", storageInstanceNo));
@@ -638,7 +638,7 @@ namespace HaTool.Server
                 await GetBlockStorageInfoLoad();
 
                 string endpoint = dataManager.GetValue(DataManager.Category.ApiGateway, DataManager.Key.Endpoint);
-                string action = @"/server/v2/createBlockStorageInstance";
+                string action = @"/vserver/v2/createBlockStorageInstance";
                 List<KeyValuePair<string, string>> parameters = new List<KeyValuePair<string, string>>();
                 parameters.Add(new KeyValuePair<string, string>("responseFormatType", "json"));
                 parameters.Add(new KeyValuePair<string, string>("blockStorageName", textBoxStorageName.Text));

@@ -66,7 +66,7 @@ namespace HaTool.Server
             try
             {
                 string endpoint = dataManager.GetValue(DataManager.Category.ApiGateway, DataManager.Key.Endpoint);
-                string action = @"/server/v2/getAccessControlGroupList";
+                string action = @"/vserver/v2/getAccessControlGroupList";
                 List<KeyValuePair<string, string>> parameters = new List<KeyValuePair<string, string>>();
                 parameters.Add(new KeyValuePair<string, string>("responseFormatType", "json"));
                 SoaCall soaCall = new SoaCall();
@@ -135,7 +135,7 @@ namespace HaTool.Server
             try
             {
                 string endpoint = dataManager.GetValue(DataManager.Category.ApiGateway, DataManager.Key.Endpoint);
-                string action = @"/server/v2/getServerProductList";
+                string action = @"/vserver/v2/getServerProductList";
                 List<KeyValuePair<string, string>> parameters = new List<KeyValuePair<string, string>>();
                 parameters.Add(new KeyValuePair<string, string>("responseFormatType", "json"));
                 parameters.Add(new KeyValuePair<string, string>("serverImageProductCode", serverImageProductCode));
@@ -220,7 +220,7 @@ namespace HaTool.Server
             try
             {
                 string endpoint = dataManager.GetValue(DataManager.Category.ApiGateway, DataManager.Key.Endpoint);
-                string action = @"/server/v2/getServerImageProductList";
+                string action = @"/vserver/v2/getServerImageProductList";
                 List<KeyValuePair<string, string>> parameters = new List<KeyValuePair<string, string>>();
                 parameters.Add(new KeyValuePair<string, string>("responseFormatType", "json"));
                 parameters.Add(new KeyValuePair<string, string>("blockStorageSize", "100"));
@@ -303,7 +303,7 @@ namespace HaTool.Server
             try
             {
                 string endpoint = dataManager.GetValue(DataManager.Category.ApiGateway, DataManager.Key.Endpoint);
-                string action = @"/server/v2/getZoneList";
+                string action = @"/vserver/v2/getZoneList";
                 List<KeyValuePair<string, string>> parameters = new List<KeyValuePair<string, string>>();
                 parameters.Add(new KeyValuePair<string, string>("responseFormatType", "json"));
                 parameters.Add(new KeyValuePair<string, string>("regionNo", regionNo));
@@ -363,7 +363,7 @@ namespace HaTool.Server
             try
             {
                 string endpoint = dataManager.GetValue(DataManager.Category.ApiGateway, DataManager.Key.Endpoint);
-                string action = @"/server/v2/getRegionList";
+                string action = @"/vserver/v2/getRegionList";
                 List<KeyValuePair<string, string>> parameters = new List<KeyValuePair<string, string>>();
                 parameters.Add(new KeyValuePair<string, string>("responseFormatType", "json"));
                 SoaCall soaCall = new SoaCall();
@@ -435,7 +435,7 @@ namespace HaTool.Server
                 MessageBox.Show("server create started please wait 10 min.");
                 
                 string command = GetCreateServerInstancesJsonCommand();
-                formNcpRestPreview.Action = @"/server/v2/createServerInstances";
+                formNcpRestPreview.Action = @"/vserver/v2/createServerInstances";
                 formNcpRestPreview.Command = command;
                 formNcpRestPreview.Callback = true;
                 await formNcpRestPreview.RestCall();
@@ -575,7 +575,7 @@ namespace HaTool.Server
                 InputCheck(false);
                 string command = GetCreateServerInstancesJsonCommand();
 
-                formNcpRestPreview.Action = @"/server/v2/createServerInstances";
+                formNcpRestPreview.Action = @"/vserver/v2/createServerInstances";
                 formNcpRestPreview.Command = command;
                 formNcpRestPreview.Callback = true;
                 formNcpRestPreview.StartPosition = FormStartPosition.CenterScreen;
@@ -629,7 +629,7 @@ namespace HaTool.Server
                 List<serverInstance> serverInstances = new List<serverInstance>();
 
                 string endpoint = dataManager.GetValue(DataManager.Category.ApiGateway, DataManager.Key.Endpoint);
-                string action = @"/server/v2/getServerInstanceList";
+                string action = @"/vserver/v2/getServerInstanceList";
                 List<KeyValuePair<string, string>> parameters = new List<KeyValuePair<string, string>>();
                 parameters.Add(new KeyValuePair<string, string>("responseFormatType", "json"));
                 parameters.Add(new KeyValuePair<string, string>("searchFilterName", "serverName"));

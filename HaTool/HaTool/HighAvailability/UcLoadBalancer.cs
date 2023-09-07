@@ -324,7 +324,7 @@ namespace HaTool.HighAvailability
             try
             {
                 string endpoint = dataManager.GetValue(DataManager.Category.ApiGateway, DataManager.Key.Endpoint);
-                string action = @"/server/v2/getZoneList";
+                string action = @"/vserver/v2/getZoneList";
                 List<KeyValuePair<string, string>> parameters = new List<KeyValuePair<string, string>>();
                 parameters.Add(new KeyValuePair<string, string>("responseFormatType", "json"));
                 parameters.Add(new KeyValuePair<string, string>("regionNo", regionNo));
@@ -628,7 +628,7 @@ namespace HaTool.HighAvailability
             try
             {
                 string endpoint = dataManager.GetValue(DataManager.Category.ApiGateway, DataManager.Key.Endpoint);
-                string action = @"/server/v2/getRegionList";
+                string action = @"/vserver/v2/getRegionList";
                 List<KeyValuePair<string, string>> parameters = new List<KeyValuePair<string, string>>();
                 parameters.Add(new KeyValuePair<string, string>("responseFormatType", "json"));
                 SoaCall soaCall = new SoaCall();

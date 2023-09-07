@@ -248,7 +248,7 @@ namespace HaTool.Server
                 ControlHelpers.ButtonStatusChange(buttonPublicIpListReload, "Requested");
 
                 string endpoint = dataManager.GetValue(DataManager.Category.ApiGateway, DataManager.Key.Endpoint);
-                string action = @"/server/v2/getPublicIpInstanceList";
+                string action = @"/vserver/v2/getPublicIpInstanceList";
                 List<KeyValuePair<string, string>> parameters = new List<KeyValuePair<string, string>>();
                 parameters.Add(new KeyValuePair<string, string>("responseFormatType", "json"));
                 parameters.Add(new KeyValuePair<string, string>("regionNo", regionNo));
@@ -310,7 +310,7 @@ namespace HaTool.Server
             try
             {
                 string endpoint = dataManager.GetValue(DataManager.Category.ApiGateway, DataManager.Key.Endpoint);
-                string action = @"/server/v2/deletePublicIpInstances";
+                string action = @"/vserver/v2/deletePublicIpInstances";
                 List<KeyValuePair<string, string>> parameters = new List<KeyValuePair<string, string>>();
                 parameters.Add(new KeyValuePair<string, string>("responseFormatType", "json"));
 
@@ -359,7 +359,7 @@ namespace HaTool.Server
             try
             {
                 string endpoint = dataManager.GetValue(DataManager.Category.ApiGateway, DataManager.Key.Endpoint);
-                string action = @"/server/v2/disassociatePublicIpFromServerInstance";
+                string action = @"/vserver/v2/disassociatePublicIpFromServerInstance";
                 List<KeyValuePair<string, string>> parameters = new List<KeyValuePair<string, string>>();
                 parameters.Add(new KeyValuePair<string, string>("responseFormatType", "json"));
                 parameters.Add(new KeyValuePair<string, string>("publicIpInstanceNo", instanceNo));
@@ -400,7 +400,7 @@ namespace HaTool.Server
             try
             {
                 string endpoint = dataManager.GetValue(DataManager.Category.ApiGateway, DataManager.Key.Endpoint);
-                string action = @"/server/v2/stopServerInstances";
+                string action = @"/vserver/v2/stopServerInstances";
                 List<KeyValuePair<string, string>> parameters = new List<KeyValuePair<string, string>>();
                 parameters.Add(new KeyValuePair<string, string>("responseFormatType", "json"));
 
@@ -463,7 +463,7 @@ namespace HaTool.Server
             try
             {
                 string endpoint = dataManager.GetValue(DataManager.Category.ApiGateway, DataManager.Key.Endpoint);
-                string action = @"/server/v2/terminateServerInstances";
+                string action = @"/vserver/v2/terminateServerInstances";
                 List<KeyValuePair<string, string>> parameters = new List<KeyValuePair<string, string>>();
                 parameters.Add(new KeyValuePair<string, string>("responseFormatType", "json"));
 
@@ -526,7 +526,7 @@ namespace HaTool.Server
             try
             {
                 string endpoint = dataManager.GetValue(DataManager.Category.ApiGateway, DataManager.Key.Endpoint);
-                string action = @"/server/v2/startServerInstances";
+                string action = @"/vserver/v2/startServerInstances";
                 List<KeyValuePair<string, string>> parameters = new List<KeyValuePair<string, string>>();
                 parameters.Add(new KeyValuePair<string, string>("responseFormatType", "json"));
 
@@ -611,7 +611,7 @@ namespace HaTool.Server
             try
             {
                 string endpoint = dataManager.GetValue(DataManager.Category.ApiGateway, DataManager.Key.Endpoint);
-                string action = @"/server/v2/getRegionList";
+                string action = @"/vserver/v2/getRegionList";
                 List<KeyValuePair<string, string>> parameters = new List<KeyValuePair<string, string>>();
                 parameters.Add(new KeyValuePair<string, string>("responseFormatType", "json"));
                 SoaCall soaCall = new SoaCall();
@@ -661,7 +661,7 @@ namespace HaTool.Server
             try
             {
                 string endpoint = dataManager.GetValue(DataManager.Category.ApiGateway, DataManager.Key.Endpoint);
-                string action = @"/server/v2/getZoneList";
+                string action = @"/vserver/v2/getZoneList";
                 List<KeyValuePair<string, string>> parameters = new List<KeyValuePair<string, string>>();
                 parameters.Add(new KeyValuePair<string, string>("responseFormatType", "json"));
                 parameters.Add(new KeyValuePair<string, string>("regionNo", regionNo));
@@ -814,7 +814,7 @@ namespace HaTool.Server
             try
             {
                 string endpoint = dataManager.GetValue(DataManager.Category.ApiGateway, DataManager.Key.Endpoint);
-                string action = @"server/v2/createPublicIpInstance";
+                string action = @"vserver/v2/createPublicIpInstance";
                 List<KeyValuePair<string, string>> parameters = new List<KeyValuePair<string, string>>();
                 parameters.Add(new KeyValuePair<string, string>("responseFormatType", "json"));
                 parameters.Add(new KeyValuePair<string, string>("serverInstanceNo", serverInstanceNo));
@@ -1149,7 +1149,7 @@ namespace HaTool.Server
 
                 FormNcpRestPreview formNcpRestPreview = FormNcpRestPreview.Instance;
                 formNcpRestPreview.TitleText = "Get Password";
-                formNcpRestPreview.Action = @"/server/v2/getRootPassword";
+                formNcpRestPreview.Action = @"/vserver/v2/getRootPassword";
                 formNcpRestPreview.Command = command;
                 formNcpRestPreview.Callback = false;
                 formNcpRestPreview.Result = "";
@@ -1189,7 +1189,7 @@ namespace HaTool.Server
                 string command = jt.ToString(Newtonsoft.Json.Formatting.Indented);
 
                 FormNcpRestPreview formNcpRestPreview = FormNcpRestPreview.Instance;
-                formNcpRestPreview.Action = @"/server/v2/getServerInstanceList";
+                formNcpRestPreview.Action = @"/vserver/v2/getServerInstanceList";
                 formNcpRestPreview.Command = command.Replace("_1", ".1");
                 formNcpRestPreview.Callback = false;
                 formNcpRestPreview.Result = "";
@@ -1251,7 +1251,7 @@ namespace HaTool.Server
                 string command = jt.ToString(Newtonsoft.Json.Formatting.Indented);
 
                 FormNcpRestPreview formNcpRestPreview = FormNcpRestPreview.Instance;
-                formNcpRestPreview.Action = @"/server/v2/associatePublicIpWithServerInstance";
+                formNcpRestPreview.Action = @"/vserver/v2/associatePublicIpWithServerInstance";
                 formNcpRestPreview.Callback = false;
                 formNcpRestPreview.Command = command;
                 formNcpRestPreview.Result = "";

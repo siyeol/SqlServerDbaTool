@@ -125,7 +125,7 @@ namespace HaTool.Config
                     throw new Exception("The minimum length of the login key is three characters.");
 
                 string endpoint = dataManager.GetValue(DataManager.Category.ApiGateway, DataManager.Key.Endpoint);
-                string action = @"/server/v2/createLoginKey";
+                string action = @"/vserver/v2/createLoginKey";
                 List<KeyValuePair<string, string>> parameters = new List<KeyValuePair<string, string>>();
                 parameters.Add(new KeyValuePair<string, string>("responseFormatType", "json"));
                 parameters.Add(new KeyValuePair<string, string>("keyName", loginKeyName));
@@ -169,7 +169,7 @@ namespace HaTool.Config
             try
             {
                 string endpoint = dataManager.GetValue(DataManager.Category.ApiGateway, DataManager.Key.Endpoint);
-                string action = @"/server/v2/getLoginKeyList";
+                string action = @"/vserver/v2/getLoginKeyList";
                 List<KeyValuePair<string, string>> parameters = new List<KeyValuePair<string, string>>();
                 parameters.Add(new KeyValuePair<string, string>("responseFormatType", "json"));
                 SoaCall soaCall = new SoaCall();

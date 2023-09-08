@@ -100,7 +100,7 @@ namespace HaTool.Server
             ColumnIpCheckBox.Name = "CheckBox";
             ColumnIpInstanceNo.Name = "IpInstanceNo";
             ColumnIpPublicIp.Name = "IpPublicIp";
-            ColumnIpServerInstanceNo.Name = "ServerInstnaceNao";
+            ColumnIpServerInstanceNo.Name = "ServerInstanceNo";
             ColumnIpServerName.Name = "ServerName";
             ColumnIpStatus.Name = "IpStatus";
             ColumnIpOperation.Name = "IpOperation";
@@ -282,8 +282,8 @@ namespace HaTool.Server
                             s.Rows[n].Cells["CheckBox"].Value = false;
                             s.Rows[n].Cells["IpInstanceNo"].Value = a.publicIpInstanceNo;
                             s.Rows[n].Cells["IpPublicIp"].Value = a.publicIp;
-                            s.Rows[n].Cells["ServerInstnaceNao"].Value = a.serverInstanceAssociatedWithPublicIp.serverInstanceNo;
-                            s.Rows[n].Cells["ServerName"].Value = a.serverInstanceAssociatedWithPublicIp.serverName;
+                            s.Rows[n].Cells["ServerInstanceNo"].Value = a.serverInstanceNo;
+                            s.Rows[n].Cells["ServerName"].Value = a.serverName;
                             s.Rows[n].Cells["IpStatus"].Value = a.publicIpInstanceStatus.code;
                             s.Rows[n].Cells["IpOperation"].Value = a.publicIpInstanceOperation.code;
                         }
@@ -1281,7 +1281,7 @@ namespace HaTool.Server
                     foreach (var a in associatePublicIpWithServerInstance.associatePublicIpWithServerInstanceResponse.publicIpInstanceList)
                     {
                         publicIp = a.publicIp;
-                        serverName = a.serverInstanceAssociatedWithPublicIp.serverName;
+                        serverName = a.serverName;
                     }
 
                     if (associatePublicIpWithServerInstance.associatePublicIpWithServerInstanceResponse.totalRows == 0)

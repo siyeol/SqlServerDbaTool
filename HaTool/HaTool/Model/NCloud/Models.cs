@@ -359,7 +359,9 @@ namespace HaTool.Model.NCloud
         public codeCodeName publicIpInstanceStatus { get; set; }
         public codeCodeName publicIpInstanceOperation { get; set; }
         public codeCodeName publicIpKindType { get; set; }
-        public serverInstance serverInstanceAssociatedWithPublicIp { get; set; }
+        public serverInstance serverInstanceAssociatedWithPublicIp { get; set; } // deprecated
+        public string serverInstanceNo { get; set; }
+        public string serverName { get; set; }
         public zone zone { get; set; }
     }
 

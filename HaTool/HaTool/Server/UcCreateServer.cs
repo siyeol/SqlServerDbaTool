@@ -50,8 +50,8 @@ namespace HaTool.Server
                 tasks.Add(GetZoneList("1"));
                 //tasks.Add(GetServerImageProductList("SPSW0WINNTEN0043A", "1"));
                 //tasks.Add(GetServerProductList("SPSW0WINNTEN0043A", "1", "2"));
-                tasks.Add(GetServerImageProductList("SPSW0WINNTEN0050A", "1"));
-                tasks.Add(GetServerProductList("SPSW0WINNTEN0050A", "1", "2"));
+                tasks.Add(GetServerImageProductList("SW.VSVR.OS.WND64.WND.SVR2019EN.B100", "2")); //Windows Server 2019 (64-bit) English Edition
+                tasks.Add(GetServerProductList("SW.VSVR.OS.WND64.WND.SVR2019EN.B100", "2", "2"));
                 tasks.Add(GetAccessControlGroupList());
                 await Task.WhenAll(tasks);
             }
@@ -225,7 +225,7 @@ namespace HaTool.Server
                 parameters.Add(new KeyValuePair<string, string>("responseFormatType", "json"));
                 parameters.Add(new KeyValuePair<string, string>("blockStorageSize", "100"));
                 //parameters.Add(new KeyValuePair<string, string>("productCode", "SPSW0WINNTEN0043A")); // SPSW0WINNTEN0050A
-                parameters.Add(new KeyValuePair<string, string>("productCode", "SPSW0WINNTEN0050A")); // 
+                parameters.Add(new KeyValuePair<string, string>("productCode", "SW.VSVR.OS.WND64.WND.SVR2019EN.B100")); // 이거로 변경 SW.VSVR.OS.WND64.WND.SVR2019EN.B100
                 parameters.Add(new KeyValuePair<string, string>("regionNo", regionNo));
                 SoaCall soaCall = new SoaCall();
                 var task = soaCall.WebApiCall(endpoint, RequestType.POST, action, parameters, LogClient.Config.Instance.GetValue(Category.Api, Key.AccessKey), LogClient.Config.Instance.GetValue(Category.Api, Key.SecretKey));

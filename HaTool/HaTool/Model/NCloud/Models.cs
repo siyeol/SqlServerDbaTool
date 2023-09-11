@@ -387,8 +387,10 @@ namespace HaTool.Model.NCloud
         public string privateIp { get; set; }
         public codeCodeName serverInstanceStatus { get; set; }
         public codeCodeName serverInstanceOperation { get; set; }
-        public region region { get; set; }
-        public zone zone { get; set; }
+        public region region { get; set; } //deprecated
+        public zone zone { get; set; } //deprecated
+        public string zoneCode { get; set; }
+        public string regionCode { get; set; }
         public string serverImageProductCode { get; set; }
         public string serverProductCode { get; set; }
         public string feeSystemTypeCode { get; set; }
@@ -570,6 +572,62 @@ namespace HaTool.Model.NCloud
         public string privateKey { get; set; }
     }
 
+
+    public class vpcInstance
+    {
+        public string vpcNo { get; set; }
+    }
+
+    public class getVpcList
+    {
+        public getVpcListResponse getVpcListResponse { get; set; }
+    }
+
+    public class getVpcListResponse
+    {
+        public string requestId { get; set; }
+        public string returnCode { get; set; }
+        public string returnMessage { get; set; }
+        public List<vpcInstance> vpcList { get; set; }
+    }
+
+
+    public class subnetInstance
+    {
+        public string subnetNo { get; set; }
+    }
+
+    public class getSubnetList
+    {
+        public getSubnetListResponse getSubnetListResponse { get; set; }
+    }
+
+    public class getSubnetListResponse
+    {
+        public string requestId { get; set; }
+        public string returnCode { get; set; }
+        public string returnMessage { get; set; }
+        public List<subnetInstance> subnetList { get; set; }
+    }
+
+
+    public class raidInstance
+    {
+        public string raidTypeName { get; set; }
+    }
+
+    public class getRaidList
+    {
+        public getRaidListResponse getRaidListResponse { get; set; }
+    }
+
+    public class getRaidListResponse
+    {
+        public string requestId { get; set; }
+        public string returnCode { get; set; }
+        public string returnMessage { get; set; }
+        public List<raidInstance> raidList { get; set; }
+    }
 
     public class hasError
     {

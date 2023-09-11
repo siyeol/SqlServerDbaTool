@@ -53,6 +53,9 @@ namespace HaTool.Server
                 tasks.Add(GetServerImageProductList("SW.VSVR.OS.WND64.WND.SVR2019EN.B100", "2")); //Windows Server 2019 (64-bit) English Edition
                 tasks.Add(GetServerProductList("SW.VSVR.OS.WND64.WND.SVR2019EN.B100", "2", "2"));
                 tasks.Add(GetAccessControlGroupList());
+                tasks.Add(GetVpcList());
+                tasks.Add(GetSubnetList("45994")); // Hardcoded - Due to Concurrency Issue
+                tasks.Add(GetRaidList("WINNT"));
                 await Task.WhenAll(tasks);
             }
             catch (Exception ex)
@@ -411,6 +414,146 @@ namespace HaTool.Server
         }
 
 
+        private async Task GetVpcList()
+        {
+            try
+            {
+                string endpoint = dataManager.GetValue(DataManager.Category.ApiGateway, DataManager.Key.Endpoint);
+                string action = @"/vpc/v2/getVpcList";
+                List<KeyValuePair<string, string>> parameters = new List<KeyValuePair<string, string>>();
+                parameters.Add(new KeyValuePair<string, string>("responseFormatType", "json"));
+                SoaCall soaCall = new SoaCall();
+                var task = soaCall.WebApiCall(endpoint, RequestType.POST, action, parameters, LogClient.Config.Instance.GetValue(Category.Api, Key.AccessKey), LogClient.Config.Instance.GetValue(Category.Api, Key.SecretKey));
+                string response = await task;
+
+                JsonSerializerSettings options = new JsonSerializerSettings
+                {
+                    NullValueHandling = NullValueHandling.Ignore,
+                    MissingMemberHandling = MissingMemberHandling.Ignore
+                };
+
+                if (response.Contains("responseError"))
+                {
+                    hasError errorResponse = JsonConvert.DeserializeObject<hasError>(response, options);
+                    throw new Exception(errorResponse.responseError.returnMessage);
+                }
+                else
+                {
+                    getVpcList getVpcList = JsonConvert.DeserializeObject<getVpcList>(response, options);
+                    if (getVpcList.getVpcListResponse.returnCode.Equals("0"))
+                    {
+                        string _vpcNo = getVpcList.getVpcListResponse.vpcList[0].vpcNo.ToString(); // FRAGILE: Replace with TODO
+                        dataManager.SetValue(DataManager.Category.VpcInfo, DataManager.Key.vpcNo, _vpcNo);
+
+                        /* TODO: Add FE dropdown element and add components with for loop */
+                        //foreach (var vpcs in getVpcList.getVpcListResponse.vpcList)
+                        //{
+                        //    <DROPDOWNBAR>.Items.Add(vpcs)
+                        //}
+                    }
+                }
+            }
+            catch (Exception)
+            {
+                throw;
+            }
+        }
+
+        private async Task GetSubnetList(string vpcNo)
+        {
+            try
+            {
+                string endpoint = dataManager.GetValue(DataManager.Category.ApiGateway, DataManager.Key.Endpoint);
+                string action = @"/vpc/v2/getSubnetList";
+                List<KeyValuePair<string, string>> parameters = new List<KeyValuePair<string, string>>();
+                parameters.Add(new KeyValuePair<string, string>("responseFormatType", "json"));
+                parameters.Add(new KeyValuePair<string, string>("vpcNo", vpcNo));
+                SoaCall soaCall = new SoaCall();
+                var task = soaCall.WebApiCall(endpoint, RequestType.POST, action, parameters, LogClient.Config.Instance.GetValue(Category.Api, Key.AccessKey), LogClient.Config.Instance.GetValue(Category.Api, Key.SecretKey));
+                string response = await task;
+
+                JsonSerializerSettings options = new JsonSerializerSettings
+                {
+                    NullValueHandling = NullValueHandling.Ignore,
+                    MissingMemberHandling = MissingMemberHandling.Ignore
+                };
+
+                if (response.Contains("responseError"))
+                {
+                    hasError errorResponse = JsonConvert.DeserializeObject<hasError>(response, options);
+                    throw new Exception(errorResponse.responseError.returnMessage);
+                }
+                else
+                {
+                    getSubnetList getSubnetList = JsonConvert.DeserializeObject<getSubnetList>(response, options);
+                    if (getSubnetList.getSubnetListResponse.returnCode.Equals("0"))
+                    {
+                        string _subnetNo = getSubnetList.getSubnetListResponse.subnetList[0].subnetNo.ToString(); // FRAGILE: Replace with TODO
+                        dataManager.SetValue(DataManager.Category.VpcInfo, DataManager.Key.subnetNo, _subnetNo);
+
+                        /* TODO: Add FE dropdown element and add components with for loop */
+                        //foreach (var subnets in getSubnetList.getSubnetListResponse.subnetList)
+                        //{
+                        //    <DROPDOWNBAR>.Items.Add(subnets)
+                        //}
+                    }
+                }
+            }
+            catch (Exception)
+            {
+                throw;
+            }
+        }
+
+        private async Task GetRaidList(string productTypeCode)
+        {
+            try
+            {
+                string endpoint = dataManager.GetValue(DataManager.Category.ApiGateway, DataManager.Key.Endpoint);
+                string action = @"/vserver/v2/getRaidList";
+                List<KeyValuePair<string, string>> parameters = new List<KeyValuePair<string, string>>();
+                parameters.Add(new KeyValuePair<string, string>("responseFormatType", "json"));
+                parameters.Add(new KeyValuePair<string, string>("productTypeCode", productTypeCode));
+                SoaCall soaCall = new SoaCall();
+                var task = soaCall.WebApiCall(endpoint, RequestType.POST, action, parameters, LogClient.Config.Instance.GetValue(Category.Api, Key.AccessKey), LogClient.Config.Instance.GetValue(Category.Api, Key.SecretKey));
+                string response = await task;
+
+                JsonSerializerSettings options = new JsonSerializerSettings
+                {
+                    NullValueHandling = NullValueHandling.Ignore,
+                    MissingMemberHandling = MissingMemberHandling.Ignore
+                };
+
+                if (response.Contains("responseError"))
+                {
+                    hasError errorResponse = JsonConvert.DeserializeObject<hasError>(response, options);
+                    throw new Exception(errorResponse.responseError.returnMessage);
+                }
+                else
+                {
+                    getRaidList getRaidList = JsonConvert.DeserializeObject<getRaidList>(response, options);
+                    if (getRaidList.getRaidListResponse.returnCode.Equals("0"))
+                    {
+                        string _raidName = getRaidList.getRaidListResponse.raidList[0].raidTypeName.ToString(); // FRAGILE: Replace with TODO
+                        dataManager.SetValue(DataManager.Category.VpcInfo, DataManager.Key.raidTypeName, _raidName);
+
+                        /* TODO: Add FE dropdown element and add components with for loop */
+                        //foreach (var subnets in getSubnetList.getSubnetListResponse.subnetList)
+                        //{
+                        //    <DROPDOWNBAR>.Items.Add(subnets)
+                        //}
+                    }
+                }
+            }
+            catch (Exception)
+            {
+                throw;
+            }
+        }
+
+
+
+
         private bool PreconditionCheck()
         {
             string userDataFinal = dataManager.GetValue(DataManager.Category.InitScript, DataManager.Key.userDataFinal);
@@ -482,6 +625,9 @@ namespace HaTool.Server
                                 serverInstanceNo = a.serverInstanceNo,
                                 publicIp = a.publicIp,
                                 privateIp = a.privateIp,
+                                regionCode = a.regionCode,
+                                zoneCode = a.zoneCode,
+                                /*
                                 region = new region
                                 {
                                     regionNo = a.region.regionNo,
@@ -496,6 +642,7 @@ namespace HaTool.Server
                                     zoneDescription = a.zone.zoneDescription,
                                     regionNo = a.zone.regionNo
                                 },
+                                */
                                 serverImageProductCode = a.serverImageProductCode,
                                 serverProductCode = a.serverProductCode,
                                 feeSystemTypeCode = "FXSUM",
@@ -519,8 +666,8 @@ namespace HaTool.Server
                                 p.Add(new KeyValuePair<string, string>("serverInstanceNo", a.serverInstanceNo));
                                 p.Add(new KeyValuePair<string, string>("serverPublicIp", a.publicIp));
                                 p.Add(new KeyValuePair<string, string>("serverPrivateIp", a.privateIp));
-                                p.Add(new KeyValuePair<string, string>("regionNo", a.region.regionNo));
-                                p.Add(new KeyValuePair<string, string>("zoneNo", a.zone.zoneNo));
+                                p.Add(new KeyValuePair<string, string>("regionCode", a.regionCode));
+                                p.Add(new KeyValuePair<string, string>("zoneCode", a.zoneCode));
                                 p.Add(new KeyValuePair<string, string>("serverImageProductCode", a.serverImageProductCode));
                                 p.Add(new KeyValuePair<string, string>("serverProductCode", a.serverProductCode));
                                 p.Add(new KeyValuePair<string, string>("feeSystemTypeCode", a.feeSystemTypeCode));
@@ -714,7 +861,13 @@ namespace HaTool.Server
             {
                 List<KeyValuePair<string, string>> listKeyValueParameters = GetParameters();
                 listKeyValueParameters.Add(new KeyValuePair<string, string>("responseFormatType", "json"));
-                listKeyValueParameters.Add(new KeyValuePair<string, string>("userData", TranString.EncodeBase64(dataManager.GetValue(DataManager.Category.InitScript, DataManager.Key.userDataFinal))));
+                //listKeyValueParameters.Add(new KeyValuePair<string, string>("userData", TranString.EncodeBase64(dataManager.GetValue(DataManager.Category.InitScript, DataManager.Key.userDataFinal)))); //deprecated in VPC
+                listKeyValueParameters.Add(new KeyValuePair<string, string>("vpcNo", dataManager.GetValue(DataManager.Category.VpcInfo, DataManager.Key.vpcNo))); /* vpc/v2/getVpcList */
+                listKeyValueParameters.Add(new KeyValuePair<string, string>("subnetNo", dataManager.GetValue(DataManager.Category.VpcInfo, DataManager.Key.subnetNo))); /* vpc/v2/getSubnetList */
+                listKeyValueParameters.Add(new KeyValuePair<string, string>("networkInterfaceList.1.networkInterfaceOrder", "0")); //hardcoded - vserver/v2/getNetworkInterfaceList
+                listKeyValueParameters.Add(new KeyValuePair<string, string>("networkInterfaceList.1.accessControlGroupNoList.1", "128077")); //hardcoded - vserver/v2/getNetworkInterfaceList
+                listKeyValueParameters.Add(new KeyValuePair<string, string>("raidTypeName", dataManager.GetValue(DataManager.Category.VpcInfo, DataManager.Key.raidTypeName))); /* vserver/v2/getRaidList */
+
                 Dictionary<string, string> dicParameters = new Dictionary<string, string>();
 
                 foreach (var a in listKeyValueParameters)

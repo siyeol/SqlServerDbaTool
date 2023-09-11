@@ -43,7 +43,7 @@ namespace HaTool.Config
             LoadBalancer,
             HighAvailability,
 
-
+            VpcInfo,
             Server, GeneralInfo, ServerInfo,
             ServerSetting,
             createServerInstances,
@@ -80,7 +80,7 @@ namespace HaTool.Config
             AccessKey, SecretKey,
             zoneNo, regionNo, serverProductCode, serverImageProductCode, serverName, loginKeyName, feeSystemTypeCode,
             accessControlGroupConfigurationNoList_1, accessControlGroupConfigurationNoList_2, accessControlGroupConfigurationNoList_3, accessControlGroupConfigurationNoList_4, accessControlGroupConfigurationNoList_5,
-
+            vpcNo, subnetNo, raidTypeName, //for vpc + networkInterfaceOrder, networkInterfaceACGNoList
 
             AclGroupNo, LoginKeyName, RegionNo, ServerProductCode, ServerImageProductCode,
             FeeSystemTypeCode,

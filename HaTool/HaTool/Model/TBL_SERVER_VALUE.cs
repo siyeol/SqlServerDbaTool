@@ -16,8 +16,8 @@ namespace HaTool.Model
         public string serverUserId { get; set; } = "NULL";
         public string serverPassword { get; set; } = "NULL";
         public string serverAliasName { get; set; } = "NULL";
-        public string regionNo { get; set; } = "NULL";
-        public string zoneNo { get; set; } = "NULL";
+        public string regionCode { get; set; } = "NULL";
+        public string zoneCode { get; set; } = "NULL";
         public string serverImageProductCode { get; set; } = "NULL";
         public string serverProductCode { get; set; } = "NULL";
         public string feeSystemTypeCode { get; set; } = "NULL";

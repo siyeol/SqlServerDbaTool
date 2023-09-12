@@ -627,22 +627,6 @@ namespace HaTool.Server
                                 privateIp = a.privateIp,
                                 regionCode = a.regionCode,
                                 zoneCode = a.zoneCode,
-                                /*
-                                region = new region
-                                {
-                                    regionNo = a.region.regionNo,
-                                    regionCode = a.region.regionCode,
-                                    regionName = a.region.regionName
-                                },
-                                zone = new zone
-                                {
-                                    zoneNo = a.zone.zoneNo,
-                                    zoneName = a.zone.zoneName,
-                                    zoneCode = a.zone.zoneCode,
-                                    zoneDescription = a.zone.zoneDescription,
-                                    regionNo = a.zone.regionNo
-                                },
-                                */
                                 serverImageProductCode = a.serverImageProductCode,
                                 serverProductCode = a.serverProductCode,
                                 feeSystemTypeCode = "FXSUM",
@@ -926,8 +910,8 @@ namespace HaTool.Server
             p.Add(new KeyValuePair<string, string>("serverInstanceNo", CheckedServer.serverInstanceNo));
             p.Add(new KeyValuePair<string, string>("serverPublicIp", CheckedServer.publicIp));
             p.Add(new KeyValuePair<string, string>("serverPrivateIp", CheckedServer.privateIp));
-            p.Add(new KeyValuePair<string, string>("regionNo", (comboBoxRegion.SelectedItem as region).regionNo));
-            p.Add(new KeyValuePair<string, string>("zoneNo", (comboBoxZone.SelectedItem as zone).zoneNo));
+            p.Add(new KeyValuePair<string, string>("regionCode", (comboBoxRegion.SelectedItem as region).regionCode)); // CHANGE HERE
+            p.Add(new KeyValuePair<string, string>("zoneCode", (comboBoxZone.SelectedItem as zone).zoneCode)); // CHANGE HERE
             p.Add(new KeyValuePair<string, string>("serverImageProductCode", (comboBoxServerImage.SelectedItem as imgProduct).productCode));
             p.Add(new KeyValuePair<string, string>("serverProductCode", (comboBoxServer.SelectedItem as srvProduct).productCode));
             p.Add(new KeyValuePair<string, string>("feeSystemTypeCode", "FXSUM"));

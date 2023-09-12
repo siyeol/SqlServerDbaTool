@@ -219,7 +219,7 @@ namespace HaTool.HighAvailability
                                 int n = s.Rows.Add();
                                 s.Rows[n].Cells["CheckBox"].Value = false;
                                 s.Rows[n].Cells["Name"].Value = a.Key.serverName;
-                                s.Rows[n].Cells["ZoneNo"].Value = a.Value.zoneNo + "(" + serverInstance.zone.zoneCode + ")";
+                                s.Rows[n].Cells["ZoneNo"].Value = a.Value.zoneCode;
                                 s.Rows[n].Cells["InstanceNo"].Value = a.Value.serverInstanceNo;
                                 s.Rows[n].Cells["PublicIp"].Value = a.Value.serverPublicIp;
                                 s.Rows[n].Cells["PrivateIp"].Value = a.Value.serverPrivateIp;

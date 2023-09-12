@@ -536,8 +536,9 @@ namespace HaTool.HighAvailability
                 parameters.Add(new KeyValuePair<string, string>("loadBalancerRuleList.1.protocolTypeCode", comboBoxProtocol.Text.Trim()));
                 parameters.Add(new KeyValuePair<string, string>("loadBalancerRuleList.1.loadBalancerPort", textBoxLoadBalancerPort.Text.Trim()));
                 parameters.Add(new KeyValuePair<string, string>("loadBalancerRuleList.1.serverPort", textBoxServerPort.Text.Trim()));
-                parameters.Add(new KeyValuePair<string, string>("regionNo", (comboBoxRegion.SelectedItem as region).regionNo));
-                parameters.Add(new KeyValuePair<string, string>("zoneNoList.1", (comboBoxZone.SelectedItem as zone).zoneNo));
+                parameters.Add(new KeyValuePair<string, string>("regionCode", (comboBoxRegion.SelectedItem as region).regionCode));
+                parameters.Add(new KeyValuePair<string, string>("vpcNo", dataManager.GetValue(DataManager.Category.VpcInfo, DataManager.Key.vpcNo))); /* vpc/v2/getVpcList */
+
                 //parameters.Add(new KeyValuePair<string, string>("zoneNoList.1", "3"));
                 SoaCall soaCall = new SoaCall();
                 var task = soaCall.WebApiCall(endpoint, RequestType.POST, action, parameters, LogClient.Config.Instance.GetValue(Category.Api, Key.AccessKey), LogClient.Config.Instance.GetValue(Category.Api, Key.SecretKey));

@@ -223,8 +223,8 @@ namespace HaTool.Server
                                 s.Rows[n].Cells["ServerName"].Value = a.serverName;
                                 s.Rows[n].Cells["Name"].Value = a.blockStorageName;
                                 s.Rows[n].Cells["Size"].Value = a.blockStorageSize;
-                                s.Rows[n].Cells["Type"].Value = a.diskDetailType.code;
-                                s.Rows[n].Cells["Desc"].Value = a.blockStorageInstanceDescription;
+                                s.Rows[n].Cells["Type"].Value = a.blockStorageDiskDetailType.code;
+                                s.Rows[n].Cells["Desc"].Value = a.blockStorageDescription;
                                 s.Rows[n].Cells["Status"].Value = a.blockStorageInstanceStatus.code;
                                 s.Rows[n].Cells["Operation"].Value = a.blockStorageInstanceOperation.code;
                             }

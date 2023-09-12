@@ -165,8 +165,8 @@ namespace HaTool.Model.NCloud
         public codeCodeName blockStorageInstanceOperation { get; set; }
         public string blockStorageInstanceStatusName { get; set; }
         public string createDate { get; set; }
-        public string blockStorageInstanceDescription { get; set; }
-        public codeCodeName diskDetailType { get; set; }
+        public string blockStorageDescription { get; set; }
+        public codeCodeName blockStorageDiskDetailType { get; set; }
         public int maxIopsThroughput { get; set; }
         public zone zone { get; set; }
     }

@@ -222,7 +222,7 @@ namespace HaTool.HighAvailability
                     return;
 
                 string endpoint = dataManager.GetValue(DataManager.Category.ApiGateway, DataManager.Key.Endpoint);
-                string action = @"/loadbalancer/v2/getLoadBalancerInstanceList";
+                string action = @"/vloadbalancer/v2/getLoadBalancerInstanceList";
                 List<KeyValuePair<string, string>> parameters = new List<KeyValuePair<string, string>>();
                 parameters.Add(new KeyValuePair<string, string>("responseFormatType", "json"));
 
@@ -529,16 +529,20 @@ namespace HaTool.HighAvailability
             {
                 ControlHelpers.ButtonStatusChange(buttonCreateLoadBalancer, "Requested");
                 string endpoint = dataManager.GetValue(DataManager.Category.ApiGateway, DataManager.Key.Endpoint);
-                string action = @"/loadbalancer/v2/createLoadBalancerInstance";
+                string action = @"/vloadbalancer/v2/createLoadBalancerInstance";
                 List<KeyValuePair<string, string>> parameters = new List<KeyValuePair<string, string>>();
                 parameters.Add(new KeyValuePair<string, string>("responseFormatType", "json"));
+                parameters.Add(new KeyValuePair<string, string>("loadBalancerTypeCode", "APPLICATION")); // APPLICATION/NETWORK/NETWORK_PROXY
                 parameters.Add(new KeyValuePair<string, string>("loadBalancerName", textBoxLoadBalancerName.Text.Trim()));
-                parameters.Add(new KeyValuePair<string, string>("loadBalancerRuleList.1.protocolTypeCode", comboBoxProtocol.Text.Trim()));
-                parameters.Add(new KeyValuePair<string, string>("loadBalancerRuleList.1.loadBalancerPort", textBoxLoadBalancerPort.Text.Trim()));
-                parameters.Add(new KeyValuePair<string, string>("loadBalancerRuleList.1.serverPort", textBoxServerPort.Text.Trim()));
+                // Deprecated as of VPC
+                //parameters.Add(new KeyValuePair<string, string>("loadBalancerRuleList.1.protocolTypeCode", comboBoxProtocol.Text.Trim()));
+                //parameters.Add(new KeyValuePair<string, string>("loadBalancerRuleList.1.loadBalancerPort", textBoxLoadBalancerPort.Text.Trim()));
+                //parameters.Add(new KeyValuePair<string, string>("loadBalancerRuleList.1.serverPort", textBoxServerPort.Text.Trim()));
                 parameters.Add(new KeyValuePair<string, string>("regionCode", (comboBoxRegion.SelectedItem as region).regionCode));
-                parameters.Add(new KeyValuePair<string, string>("vpcNo", dataManager.GetValue(DataManager.Category.VpcInfo, DataManager.Key.vpcNo))); /* vpc/v2/getVpcList */
+                parameters.Add(new KeyValuePair<string, string>("vpcNo", dataManager.GetValue(DataManager.Category.VpcInfo, DataManager.Key.vpcNo)));
+                parameters.Add(new KeyValuePair<string, string>("loadBalancerSubnetList.1.subnetNo", dataManager.GetValue(DataManager.Category.VpcInfo, DataManager.Key.subnetNo)));
 
+                // TODO : loadBalancerListenerList.N.targetGroupNo	
                 //parameters.Add(new KeyValuePair<string, string>("zoneNoList.1", "3"));
                 SoaCall soaCall = new SoaCall();
                 var task = soaCall.WebApiCall(endpoint, RequestType.POST, action, parameters, LogClient.Config.Instance.GetValue(Category.Api, Key.AccessKey), LogClient.Config.Instance.GetValue(Category.Api, Key.SecretKey));
@@ -684,7 +688,7 @@ namespace HaTool.HighAvailability
                 buttonLoadBalancerNameCheck.Enabled = false;
 
                 string endpoint = dataManager.GetValue(DataManager.Category.ApiGateway, DataManager.Key.Endpoint);
-                string action = @"/loadbalancer/v2/getLoadBalancerInstanceList";
+                string action = @"/vloadbalancer/v2/getLoadBalancerInstanceList";
                 List<KeyValuePair<string, string>> parameters = new List<KeyValuePair<string, string>>();
                 parameters.Add(new KeyValuePair<string, string>("responseFormatType", "json"));
                 parameters.Add(new KeyValuePair<string, string>("regionNo", regionNo));
@@ -753,7 +757,7 @@ namespace HaTool.HighAvailability
             try
             {
                 string endpoint = dataManager.GetValue(DataManager.Category.ApiGateway, DataManager.Key.Endpoint);
-                string action = @"/loadbalancer/v2/getLoadBalancerInstanceList";
+                string action = @"/vloadbalancer/v2/getLoadBalancerInstanceList";
                 List<KeyValuePair<string, string>> parameters = new List<KeyValuePair<string, string>>();
                 parameters.Add(new KeyValuePair<string, string>("responseFormatType", "json"));
                 parameters.Add(new KeyValuePair<string, string>("loadBalancerInstanceNoList.1", instanceNo));
@@ -793,6 +797,46 @@ namespace HaTool.HighAvailability
             }
             return loadBalancerInstanceInfo;
         }
+
+        private async void CreateTargetGroup()
+        {
+            try
+            {
+                string endpoint = dataManager.GetValue(DataManager.Category.ApiGateway, DataManager.Key.Endpoint);
+                string action = @"/vloadbalancer/v2/createTargetGroup";
+                List<KeyValuePair<string, string>> parameters = new List<KeyValuePair<string, string>>();
+                parameters.Add(new KeyValuePair<string, string>("responseFormatType", "json"));
+                parameters.Add(new KeyValuePair<string, string>("targetGroupProtocolTypeCode", "TCP"));
+                parameters.Add(new KeyValuePair<string, string>("healthCheckProtocolTypeCode", "TCP"));
+                parameters.Add(new KeyValuePair<string, string>("vpcNo", dataManager.GetValue(DataManager.Category.VpcInfo, DataManager.Key.vpcNo)));
+
+                SoaCall soaCall = new SoaCall();
+                var task = soaCall.WebApiCall(endpoint, RequestType.POST, action, parameters, LogClient.Config.Instance.GetValue(Category.Api, Key.AccessKey), LogClient.Config.Instance.GetValue(Category.Api, Key.SecretKey));
+                string response = await task;
+
+                JsonSerializerSettings options = new JsonSerializerSettings
+                {
+                    NullValueHandling = NullValueHandling.Ignore,
+                    MissingMemberHandling = MissingMemberHandling.Ignore
+                };
+
+                if (response.Contains("responseError"))
+                {
+                    hasError hasError = JsonConvert.DeserializeObject<hasError>(response, options);
+                    throw new Exception(hasError.responseError.returnMessage);
+                }
+                else
+                {
+                    // TODO : Implement Parsing
+                }
+            }
+            catch (Exception)
+            {
+                throw;
+            }
+        }
+
+
 
         private async void buttonShowLBDetail_Click(object sender, EventArgs e)
         {
@@ -940,7 +984,7 @@ namespace HaTool.HighAvailability
             {
 
                 string endpoint = dataManager.GetValue(DataManager.Category.ApiGateway, DataManager.Key.Endpoint);
-                string action = @"/loadbalancer/v2/changeLoadBalancedServerInstances";
+                string action = @"/vloadbalancer/v2/changeLoadBalancedServerInstances";
                 List<KeyValuePair<string, string>> parameters = new List<KeyValuePair<string, string>>();
                 parameters.Add(new KeyValuePair<string, string>("responseFormatType", "json"));
                 parameters.Add(new KeyValuePair<string, string>("loadBalancerInstanceNo", loadBalancerInstanceNo));
@@ -1208,7 +1252,7 @@ namespace HaTool.HighAvailability
 
 
                 string endpoint = dataManager.GetValue(DataManager.Category.ApiGateway, DataManager.Key.Endpoint);
-                string action = @"/loadbalancer/v2/deleteLoadBalancerInstances";
+                string action = @"/vloadbalancer/v2/deleteLoadBalancerInstances";
                 List<KeyValuePair<string, string>> parameters = new List<KeyValuePair<string, string>>();
                 parameters.Add(new KeyValuePair<string, string>("responseFormatType", "json"));
                 parameters.Add(new KeyValuePair<string, string>("loadBalancerInstanceNoList.1", checkedLoadBalancerInstanceNo));

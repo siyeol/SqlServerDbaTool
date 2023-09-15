@@ -54,8 +54,7 @@ namespace HaTool.Server
                 tasks.Add(GetInitScriptNo());
                 tasks.Add(GetRaidList("WINNT"));
                 tasks.Add(GetVpcList());
-                await GetVpcList();
-                tasks.Add(GetSubnetList(dataManager.GetValue(DataManager.Category.VpcInfo, DataManager.Key.vpcNo)));
+                tasks.Add(GetSubnetList());
                 await Task.WhenAll(tasks);
             }
             catch (Exception ex)
@@ -484,14 +483,13 @@ namespace HaTool.Server
                     getVpcList getVpcList = JsonConvert.DeserializeObject<getVpcList>(response, options);
                     if (getVpcList.getVpcListResponse.returnCode.Equals("0"))
                     {
-                        string _vpcNo = getVpcList.getVpcListResponse.vpcList[0].vpcNo.ToString(); // FRAGILE: Replace with TODO
-                        dataManager.SetValue(DataManager.Category.VpcInfo, DataManager.Key.vpcNo, _vpcNo);
+                        foreach (var vpc in getVpcList.getVpcListResponse.vpcList)
+                        {
+                            comboBoxVPC.Items.Add(vpc.vpcNo.ToString());
+                        }
 
-                        /* TODO: Add FE dropdown element and add components with for loop */
-                        //foreach (var vpcs in getVpcList.getVpcListResponse.vpcList)
-                        //{
-                        //    <DROPDOWNBAR>.Items.Add(vpcs)
-                        //}
+                        //string _vpcNo = getVpcList.getVpcListResponse.vpcList[0].vpcNo.ToString(); // FRAGILE: Replace with TODO
+                        //dataManager.SetValue(DataManager.Category.VpcInfo, DataManager.Key.vpcNo, _vpcNo);
                     }
                 }
             }
@@ -499,9 +497,10 @@ namespace HaTool.Server
             {
                 throw;
             }
+            comboBoxVPC.SelectedIndex = 0;
         }
 
-        private async Task GetSubnetList(string vpcNo)
+        private async Task GetSubnetList()
         {
             try
             {
@@ -509,7 +508,7 @@ namespace HaTool.Server
                 string action = @"/vpc/v2/getSubnetList";
                 List<KeyValuePair<string, string>> parameters = new List<KeyValuePair<string, string>>();
                 parameters.Add(new KeyValuePair<string, string>("responseFormatType", "json"));
-                parameters.Add(new KeyValuePair<string, string>("vpcNo", vpcNo));
+                //parameters.Add(new KeyValuePair<string, string>("vpcNo", vpcNo));
                 SoaCall soaCall = new SoaCall();
                 var task = soaCall.WebApiCall(endpoint, RequestType.POST, action, parameters, LogClient.Config.Instance.GetValue(Category.Api, Key.AccessKey), LogClient.Config.Instance.GetValue(Category.Api, Key.SecretKey));
                 string response = await task;
@@ -530,14 +529,14 @@ namespace HaTool.Server
                     getSubnetList getSubnetList = JsonConvert.DeserializeObject<getSubnetList>(response, options);
                     if (getSubnetList.getSubnetListResponse.returnCode.Equals("0"))
                     {
-                        string _subnetNo = getSubnetList.getSubnetListResponse.subnetList[0].subnetNo.ToString(); // FRAGILE: Replace with TODO
-                        dataManager.SetValue(DataManager.Category.VpcInfo, DataManager.Key.subnetNo, _subnetNo);
+                        //string _subnetNo = getSubnetList.getSubnetListResponse.subnetList[0].subnetNo.ToString(); // FRAGILE: Replace with TODO
+                        //dataManager.SetValue(DataManager.Category.VpcInfo, DataManager.Key.subnetNo, _subnetNo);
 
-                        /* TODO: Add FE dropdown element and add components with for loop */
-                        //foreach (var subnets in getSubnetList.getSubnetListResponse.subnetList)
-                        //{
-                        //    <DROPDOWNBAR>.Items.Add(subnets)
-                        //}
+                        comboBoxSubnet.Items.Clear();
+                        foreach (var subnet in getSubnetList.getSubnetListResponse.subnetList)
+                        {
+                            comboBoxSubnet.Items.Add(subnet.subnetNo.ToString());
+                        }
                     }
                 }
             }
@@ -545,6 +544,7 @@ namespace HaTool.Server
             {
                 throw;
             }
+            comboBoxSubnet.SelectedIndex = 0;
         }
 
         private async Task GetRaidList(string productTypeCode)
@@ -671,6 +671,8 @@ namespace HaTool.Server
                                 serverProductCode = a.serverProductCode,
                                 feeSystemTypeCode = "FXSUM",
                                 loginKeyName = a.loginKeyName,
+                                vpcNo = a.vpcNo,
+                                subnetNo = a.subnetNo
                                 // where is acg list ?
 
                             };
@@ -696,6 +698,8 @@ namespace HaTool.Server
                                 p.Add(new KeyValuePair<string, string>("serverProductCode", a.serverProductCode));
                                 p.Add(new KeyValuePair<string, string>("feeSystemTypeCode", a.feeSystemTypeCode));
                                 p.Add(new KeyValuePair<string, string>("loginKeyName", a.loginKeyName));
+                                p.Add(new KeyValuePair<string, string>("vpcNo", a.vpcNo));
+                                p.Add(new KeyValuePair<string, string>("subnetNo", a.subnetNo));
 
                                 if (comboBoxACG1.Text.Equals(""))
                                     p.Add(new KeyValuePair<string, string>("accessControlGroupConfigurationNoList_1", "NULL"));
@@ -885,12 +889,9 @@ namespace HaTool.Server
             {
                 List<KeyValuePair<string, string>> listKeyValueParameters = GetParameters();
                 listKeyValueParameters.Add(new KeyValuePair<string, string>("responseFormatType", "json"));
-                //listKeyValueParameters.Add(new KeyValuePair<string, string>("userData", TranString.EncodeBase64(dataManager.GetValue(DataManager.Category.InitScript, DataManager.Key.userDataFinal)))); // initScriptNo 로 변경해야됨
-                listKeyValueParameters.Add(new KeyValuePair<string, string>("vpcNo", dataManager.GetValue(DataManager.Category.VpcInfo, DataManager.Key.vpcNo))); /* vpc/v2/getVpcList */
-                listKeyValueParameters.Add(new KeyValuePair<string, string>("subnetNo", dataManager.GetValue(DataManager.Category.VpcInfo, DataManager.Key.subnetNo))); /* vpc/v2/getSubnetList */
                 listKeyValueParameters.Add(new KeyValuePair<string, string>("networkInterfaceList.1.networkInterfaceOrder", "0")); //hardcoded - vserver/v2/getNetworkInterfaceList
                 listKeyValueParameters.Add(new KeyValuePair<string, string>("networkInterfaceList.1.accessControlGroupNoList.1", "128077")); //hardcoded - vserver/v2/getNetworkInterfaceList
-                listKeyValueParameters.Add(new KeyValuePair<string, string>("raidTypeName", dataManager.GetValue(DataManager.Category.VpcInfo, DataManager.Key.raidTypeName))); /* vserver/v2/getRaidList */
+                //listKeyValueParameters.Add(new KeyValuePair<string, string>("raidTypeName", dataManager.GetValue(DataManager.Category.VpcInfo, DataManager.Key.raidTypeName))); /* vserver/v2/getRaidList */
                 listKeyValueParameters.Add(new KeyValuePair<string, string>("initScriptNo", dataManager.GetValue(DataManager.Category.InitScript, DataManager.Key.initScriptNo)));
 
                 Dictionary<string, string> dicParameters = new Dictionary<string, string>();
@@ -957,6 +958,8 @@ namespace HaTool.Server
             p.Add(new KeyValuePair<string, string>("serverProductCode", (comboBoxServer.SelectedItem as srvProduct).productCode));
             p.Add(new KeyValuePair<string, string>("feeSystemTypeCode", "FXSUM"));
             p.Add(new KeyValuePair<string, string>("loginKeyName", dataManager.GetValue(DataManager.Category.LoginKey, DataManager.Key.Name)));
+            p.Add(new KeyValuePair<string, string>("vpcNo", comboBoxVPC.SelectedItem.ToString()));
+            p.Add(new KeyValuePair<string, string>("subnetNo", comboBoxSubnet.SelectedItem.ToString()));
 
             if (comboBoxACG1.Text.Equals(""))
                 p.Add(new KeyValuePair<string, string>("accessControlGroupConfigurationNoList_1", "NULL"));

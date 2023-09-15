@@ -80,7 +80,7 @@ namespace HaTool.Config
             AccessKey, SecretKey,
             zoneNo, regionNo, serverProductCode, serverImageProductCode, serverName, loginKeyName, feeSystemTypeCode,
             accessControlGroupConfigurationNoList_1, accessControlGroupConfigurationNoList_2, accessControlGroupConfigurationNoList_3, accessControlGroupConfigurationNoList_4, accessControlGroupConfigurationNoList_5,
-            vpcNo, subnetNo, raidTypeName, //for vpc + networkInterfaceOrder, networkInterfaceACGNoList
+            vpcNo, subnetNo, raidTypeName, // TODO: erase this and do only with TBL_SERVER
 
             AclGroupNo, LoginKeyName, RegionNo, ServerProductCode, ServerImageProductCode,
             FeeSystemTypeCode,

@@ -539,8 +539,8 @@ namespace HaTool.HighAvailability
                 //parameters.Add(new KeyValuePair<string, string>("loadBalancerRuleList.1.loadBalancerPort", textBoxLoadBalancerPort.Text.Trim()));
                 //parameters.Add(new KeyValuePair<string, string>("loadBalancerRuleList.1.serverPort", textBoxServerPort.Text.Trim()));
                 parameters.Add(new KeyValuePair<string, string>("regionCode", (comboBoxRegion.SelectedItem as region).regionCode));
-                parameters.Add(new KeyValuePair<string, string>("vpcNo", dataManager.GetValue(DataManager.Category.VpcInfo, DataManager.Key.vpcNo)));
-                parameters.Add(new KeyValuePair<string, string>("loadBalancerSubnetList.1.subnetNo", dataManager.GetValue(DataManager.Category.VpcInfo, DataManager.Key.subnetNo)));
+                //parameters.Add(new KeyValuePair<string, string>("vpcNo", dataManager.GetValue(DataManager.Category.VpcInfo, DataManager.Key.vpcNo)));
+                //parameters.Add(new KeyValuePair<string, string>("loadBalancerSubnetList.1.subnetNo", dataManager.GetValue(DataManager.Category.VpcInfo, DataManager.Key.subnetNo)));
 
                 // TODO : loadBalancerListenerList.N.targetGroupNo	
                 //parameters.Add(new KeyValuePair<string, string>("zoneNoList.1", "3"));
@@ -808,7 +808,7 @@ namespace HaTool.HighAvailability
                 parameters.Add(new KeyValuePair<string, string>("responseFormatType", "json"));
                 parameters.Add(new KeyValuePair<string, string>("targetGroupProtocolTypeCode", "TCP"));
                 parameters.Add(new KeyValuePair<string, string>("healthCheckProtocolTypeCode", "TCP"));
-                parameters.Add(new KeyValuePair<string, string>("vpcNo", dataManager.GetValue(DataManager.Category.VpcInfo, DataManager.Key.vpcNo)));
+                //parameters.Add(new KeyValuePair<string, string>("vpcNo", dataManager.GetValue(DataManager.Category.VpcInfo, DataManager.Key.vpcNo)));
 
                 SoaCall soaCall = new SoaCall();
                 var task = soaCall.WebApiCall(endpoint, RequestType.POST, action, parameters, LogClient.Config.Instance.GetValue(Category.Api, Key.AccessKey), LogClient.Config.Instance.GetValue(Category.Api, Key.SecretKey));

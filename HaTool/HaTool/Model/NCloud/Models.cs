@@ -387,8 +387,10 @@ namespace HaTool.Model.NCloud
         public string privateIp { get; set; }
         public codeCodeName serverInstanceStatus { get; set; }
         public codeCodeName serverInstanceOperation { get; set; }
-        public region region { get; set; } //deprecated
-        public zone zone { get; set; } //deprecated
+        public region region { get; set; }
+        public zone zone { get; set; }
+        public string vpcNo { get; set; }
+        public string subnetNo { get; set; }
         public string zoneCode { get; set; }
         public string regionCode { get; set; }
         public string serverImageProductCode { get; set; }

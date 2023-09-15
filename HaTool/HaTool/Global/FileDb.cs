@@ -78,7 +78,9 @@ namespace HaTool.Global
                                 accessControlGroupConfigurationNoList_2 = a.Value.accessControlGroupConfigurationNoList_2,
                                 accessControlGroupConfigurationNoList_3 = a.Value.accessControlGroupConfigurationNoList_3,
                                 accessControlGroupConfigurationNoList_4 = a.Value.accessControlGroupConfigurationNoList_4,
-                                accessControlGroupConfigurationNoList_5 = a.Value.accessControlGroupConfigurationNoList_5
+                                accessControlGroupConfigurationNoList_5 = a.Value.accessControlGroupConfigurationNoList_5,
+                                vpcNo = a.Value.vpcNo,
+                                subnetNo = a.Value.subnetNo
                             });
                     }
                     break;
@@ -178,6 +180,8 @@ namespace HaTool.Global
             string accessControlGroupConfigurationNoList_4 = "NULL";
             string accessControlGroupConfigurationNoList_5 = "NULL";
             string serverRole = "NULL";
+            string vpcNo = "NULL";
+            string subnetNo = "NULL";
 
             string json = string.Empty;
 
@@ -244,6 +248,11 @@ namespace HaTool.Global
                             accessControlGroupConfigurationNoList_4 = a.Value;
                         if (a.Key.Equals("accessControlGroupConfigurationNoList_5", StringComparison.OrdinalIgnoreCase))
                             accessControlGroupConfigurationNoList_5 = a.Value;
+                        if (a.Key.Equals("vpcNo", StringComparison.OrdinalIgnoreCase))
+                            vpcNo = a.Value;
+                        if (a.Key.Equals("subnetNo", StringComparison.OrdinalIgnoreCase))
+                            subnetNo = a.Value;
+
                     }
 
 
@@ -268,7 +277,9 @@ namespace HaTool.Global
                             accessControlGroupConfigurationNoList_2 = accessControlGroupConfigurationNoList_2,
                             accessControlGroupConfigurationNoList_3 = accessControlGroupConfigurationNoList_3,
                             accessControlGroupConfigurationNoList_4 = accessControlGroupConfigurationNoList_4,
-                            accessControlGroupConfigurationNoList_5 = accessControlGroupConfigurationNoList_5
+                            accessControlGroupConfigurationNoList_5 = accessControlGroupConfigurationNoList_5,
+                            vpcNo = vpcNo,
+                            subnetNo = subnetNo
                         });
 
                     json = TBL_SERVER.GetJson();

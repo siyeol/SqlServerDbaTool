@@ -27,5 +27,7 @@ namespace HaTool.Model
         public string accessControlGroupConfigurationNoList_3 { get; set; } = "NULL";
         public string accessControlGroupConfigurationNoList_4 { get; set; } = "NULL";
         public string accessControlGroupConfigurationNoList_5 { get; set; } = "NULL";
+        public string vpcNo { get; set; } = "NULL";
+        public string subnetNo { get; set; } = "NULL";
     }
 }

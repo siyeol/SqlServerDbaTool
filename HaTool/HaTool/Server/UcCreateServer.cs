@@ -48,15 +48,57 @@ namespace HaTool.Server
                 List<Task> tasks = new List<Task>();
                 tasks.Add(GetRegionList());
                 tasks.Add(GetZoneList("1"));
-                //tasks.Add(GetServerImageProductList("SPSW0WINNTEN0043A", "1"));
-                //tasks.Add(GetServerProductList("SPSW0WINNTEN0043A", "1", "2"));
                 tasks.Add(GetServerImageProductList("SW.VSVR.DBMS.WND64.WND.SVR2016STDEN.MSSQL.2019.B100", "2")); //Windows Server 2019 (64-bit) English Edition
                 tasks.Add(GetServerProductList("SW.VSVR.DBMS.WND64.WND.SVR2016STDEN.MSSQL.2019.B100", "2", "2"));
                 tasks.Add(GetAccessControlGroupList());
-                tasks.Add(GetVpcList());
-                tasks.Add(GetSubnetList("45994")); // Hardcoded - Due to Concurrency Issue
+                tasks.Add(GetInitScriptNo());
                 tasks.Add(GetRaidList("WINNT"));
+                tasks.Add(GetVpcList());
+                await GetVpcList();
+                tasks.Add(GetSubnetList(dataManager.GetValue(DataManager.Category.VpcInfo, DataManager.Key.vpcNo)));
                 await Task.WhenAll(tasks);
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.Message);
+            }
+        }
+
+        private async Task GetInitScriptNo()
+        {
+            try
+            {
+                string endpoint = dataManager.GetValue(DataManager.Category.ApiGateway, DataManager.Key.Endpoint);
+                string action = @"/vserver/v2/getInitScriptList";
+                List<KeyValuePair<string, string>> parameters = new List<KeyValuePair<string, string>>();
+                parameters.Add(new KeyValuePair<string, string>("responseFormatType", "json"));
+                parameters.Add(new KeyValuePair<string, string>("osTypeCode", "WND"));
+
+                SoaCall soaCall = new SoaCall();
+                var task = soaCall.WebApiCall(endpoint, RequestType.POST, action, parameters, LogClient.Config.Instance.GetValue(Category.Api, Key.AccessKey), LogClient.Config.Instance.GetValue(Category.Api, Key.SecretKey));
+                string response = await task;
+
+                JsonSerializerSettings options = new JsonSerializerSettings
+                {
+                    NullValueHandling = NullValueHandling.Ignore,
+                    MissingMemberHandling = MissingMemberHandling.Ignore
+                };
+
+                if (response.Contains("responseError"))
+                {
+                    hasError hasError = JsonConvert.DeserializeObject<hasError>(response, options);
+                    throw new Exception(hasError.responseError.returnMessage);
+                }
+                else
+                {
+                    getInitScriptList getInitScriptList = JsonConvert.DeserializeObject<getInitScriptList>(response, options);
+                    if (getInitScriptList.getInitScriptListResponse.returnCode.Equals("0"))
+                    {
+                        string _initScriptNo = getInitScriptList.getInitScriptListResponse.initScriptList[0].initScriptNo;
+                        dataManager.SetValue(DataManager.Category.InitScript, DataManager.Key.initScriptNo, _initScriptNo);
+                        //MessageBox.Show("initScriptNo fetched: " + dataManager.GetValue(DataManager.Category.InitScript, DataManager.Key.initScriptNo));
+                    }
+                }
             }
             catch (Exception ex)
             {
@@ -849,6 +891,7 @@ namespace HaTool.Server
                 listKeyValueParameters.Add(new KeyValuePair<string, string>("networkInterfaceList.1.networkInterfaceOrder", "0")); //hardcoded - vserver/v2/getNetworkInterfaceList
                 listKeyValueParameters.Add(new KeyValuePair<string, string>("networkInterfaceList.1.accessControlGroupNoList.1", "128077")); //hardcoded - vserver/v2/getNetworkInterfaceList
                 listKeyValueParameters.Add(new KeyValuePair<string, string>("raidTypeName", dataManager.GetValue(DataManager.Category.VpcInfo, DataManager.Key.raidTypeName))); /* vserver/v2/getRaidList */
+                listKeyValueParameters.Add(new KeyValuePair<string, string>("initScriptNo", dataManager.GetValue(DataManager.Category.InitScript, DataManager.Key.initScriptNo)));
 
                 Dictionary<string, string> dicParameters = new Dictionary<string, string>();
 

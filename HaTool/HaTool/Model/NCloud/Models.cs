@@ -572,6 +572,39 @@ namespace HaTool.Model.NCloud
         public string privateKey { get; set; }
     }
 
+    public class initScript
+    {
+        public string initScriptNo { get; set; }
+        public string createDate { get; set; }
+    }
+    public class createInitScript
+    {
+        public createInitScriptResponse createInitScriptResponse { get; set; }
+    }
+
+    public class createInitScriptResponse
+    {
+        public string requestId { get; set; }
+        public string returnCode { get; set; }
+        public string returnMessage { get; set; }
+        public int totalRows { get; set; }
+        public List<initScript> initScriptList { get; set; }
+    }
+    public class getInitScriptList
+    {
+        public getInitScriptListResponse getInitScriptListResponse { get; set; }
+    }
+
+    public class getInitScriptListResponse
+    {
+        public string requestId { get; set; }
+        public string returnCode { get; set; }
+        public string returnMessage { get; set; }
+        public int totalRows { get; set; }
+        public List<initScript> initScriptList { get; set; }
+    }
+
+
 
     public class vpcInstance
     {

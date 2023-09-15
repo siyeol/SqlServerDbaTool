@@ -72,7 +72,7 @@ namespace HaTool.Config
             Endpoint, Bucket,
             Name,
             AgentFolder, PsFileName,
-            userData, PsContents, userDataFinal,
+            userData, PsContents, userDataFinal, initScriptNo,
             Id, Password, Port, Collation, TraceFlags, Sp_configure, PsTemplate,
             Size, Type, PsPartitionFormat, /*PsGetDisk,*/
             Protocol, LoadBalancerPort,

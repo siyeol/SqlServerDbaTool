@@ -75,7 +75,7 @@ namespace HaTool.Config
             userData, PsContents, userDataFinal, initScriptNo,
             Id, Password, Port, Collation, TraceFlags, Sp_configure, PsTemplate,
             Size, Type, PsPartitionFormat, /*PsGetDisk,*/
-            Protocol, LoadBalancerPort,
+            Protocol, LoadBalancerPort, targetGroupNo,
             BackupRestorePath,
             AccessKey, SecretKey,
             zoneNo, regionNo, serverProductCode, serverImageProductCode, serverName, loginKeyName, feeSystemTypeCode,

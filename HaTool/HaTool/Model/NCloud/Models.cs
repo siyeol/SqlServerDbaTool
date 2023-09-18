@@ -7,9 +7,9 @@ using System.Threading.Tasks;
 namespace HaTool.Model.NCloud
 {
 
-    public class changeLoadBalancedServerInstances
+    public class changeLoadBalancedServerInstanceConfiguration
     {
-        public changeLoadBalancedServerInstancesResponse changeLoadBalancedServerInstancesResponse { get; set; }
+        public changeLoadBalancedServerInstanceConfigurationResponse changeLoadBalancedServerInstanceConfigurationResponse { get; set; }
     }
 
 
@@ -39,7 +39,7 @@ namespace HaTool.Model.NCloud
 
 
 
-    public class changeLoadBalancedServerInstancesResponse
+    public class changeLoadBalancedServerInstanceConfigurationResponse
     {
         public string requestId { get; set; }
         public string returnCode { get; set; }
@@ -111,11 +111,11 @@ namespace HaTool.Model.NCloud
         public string virtualIp { get; set; }
         public string loadBalancerName { get; set; }
         public List<zone> zoneList { get; set; }
-        public region region { get; set; }
+        public string regionCode { get; set; }
         public codeCodeName loadBalancerAlgorithmType { get; set; }
         public string loadBalancerDescription { get; set; }
         public string createDate { get; set; }
-        public string domainName { get; set; }
+        public string loadBalancerDomain { get; set; }
         public codeCodeName internetLineType { get; set; }
         public string loadBalancerInstanceStatusName { get; set; }
         public codeCodeName loadBalancerInstanceStatus { get; set; }
@@ -387,8 +387,8 @@ namespace HaTool.Model.NCloud
         public string privateIp { get; set; }
         public codeCodeName serverInstanceStatus { get; set; }
         public codeCodeName serverInstanceOperation { get; set; }
-        public region region { get; set; }
-        public zone zone { get; set; }
+        //public region region { get; set; }
+        //public zone zone { get; set; }
         public string vpcNo { get; set; }
         public string subnetNo { get; set; }
         public string zoneCode { get; set; }
@@ -663,6 +663,26 @@ namespace HaTool.Model.NCloud
         public string returnMessage { get; set; }
         public List<raidInstance> raidList { get; set; }
     }
+
+
+    public class targetGroupInstance
+    {
+        public string targetGroupNo { get; set; }
+    }
+
+    public class getTargetGroupList
+    {
+        public getTargetGroupListResponse getTargetGroupListResponse { get; set; }
+    }
+
+    public class getTargetGroupListResponse
+    {
+        public string requestId { get; set; }
+        public string returnCode { get; set; }
+        public string returnMessage { get; set; }
+        public List<targetGroupInstance> targetGroupList { get; set; }
+    }
+
 
     public class hasError
     {

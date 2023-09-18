@@ -151,7 +151,8 @@ namespace HaTool.HighAvailability
                             if (lbInstance != null)
                             {
                                 string zones = string.Empty;
-                                string comma = string.Empty; 
+                                string comma = string.Empty;
+                                /*
                                 foreach (var z in lbInstance.zoneList)
                                 {
                                     if (zones.Length == 0)
@@ -173,14 +174,15 @@ namespace HaTool.HighAvailability
 
                                     protocols = protocols + comma + p.protocolType.code;
                                 }
+                                */
                                 
                                 int n = s.Rows.Add();
                                 s.Rows[n].Cells["CheckBox"].Value = false;
                                 s.Rows[n].Cells["Name"].Value = a.Key.clusterName;
-                                s.Rows[n].Cells["ZoneNo"].Value = zones;
+                                s.Rows[n].Cells["ZoneNo"].Value = lbInstance.regionCode;
                                 s.Rows[n].Cells["InstanceNo"].Value = lbInstance.loadBalancerInstanceNo;
-                                s.Rows[n].Cells["Protocol"].Value = protocols;
-                                s.Rows[n].Cells["DomainName"].Value = lbInstance.domainName;
+                                s.Rows[n].Cells["Protocol"].Value = "";
+                                s.Rows[n].Cells["DomainName"].Value = lbInstance.loadBalancerDomain;
                                 s.Rows[n].Cells["Status"].Value = lbInstance.loadBalancerInstanceStatus.code;
                                 s.Rows[n].Cells["Operation"].Value = lbInstance.loadBalancerInstanceOperation.code;
                             }
@@ -218,8 +220,8 @@ namespace HaTool.HighAvailability
         {
             try
             {
-                if (instanceNoList.Count == 0)
-                    return;
+                //if (instanceNoList.Count == 0)
+                //    return;
 
                 string endpoint = dataManager.GetValue(DataManager.Category.ApiGateway, DataManager.Key.Endpoint);
                 string action = @"/vloadbalancer/v2/getLoadBalancerInstanceList";
@@ -227,6 +229,7 @@ namespace HaTool.HighAvailability
                 parameters.Add(new KeyValuePair<string, string>("responseFormatType", "json"));
 
                 int i = 0; 
+                /*
                 foreach (var instanceNo in instanceNoList)
                 {
                     i++;
@@ -234,6 +237,7 @@ namespace HaTool.HighAvailability
                     string loadBalancerInstanceNoListValue = instanceNo;
                     parameters.Add(new KeyValuePair<string, string>(loadBalancerInstanceNoListKey, loadBalancerInstanceNoListValue));
                 }
+                */
                 
                 SoaCall soaCall = new SoaCall();
                 var task = soaCall.WebApiCall(endpoint, RequestType.POST, action, parameters, LogClient.Config.Instance.GetValue(Category.Api, Key.AccessKey), LogClient.Config.Instance.GetValue(Category.Api, Key.SecretKey));
@@ -261,10 +265,10 @@ namespace HaTool.HighAvailability
                             var item = new loadBalancerInstance
                             {
                                 loadBalancerName = a.loadBalancerName,
-                                zoneList = a.zoneList,
+                                regionCode = a.regionCode,
                                 loadBalancerInstanceNo = a.loadBalancerInstanceNo,
-                                loadBalancerRuleList = a.loadBalancerRuleList,
-                                domainName = a.domainName,
+                                //loadBalancerRuleList = a.loadBalancerRuleList,
+                                loadBalancerDomain = a.loadBalancerDomain,
                                 loadBalancerInstanceStatus = a.loadBalancerInstanceStatus,
                                 loadBalancerInstanceOperation = a.loadBalancerInstanceOperation
                             };
@@ -285,16 +289,7 @@ namespace HaTool.HighAvailability
 
         private async void ComboBoxRegionChanged(object sender, EventArgs e)
         {
-            try
-            {
-                ComboBox c = (ComboBox)sender;
-                string regionNo = (c.SelectedItem as region).regionNo;
-                await GetZoneList(regionNo);
-            }
-            catch (Exception ex)
-            {
-                MessageBox.Show(ex.Message);
-            }
+            //deprecated
         }
 
 
@@ -306,8 +301,10 @@ namespace HaTool.HighAvailability
                 LoadTextData();
                 List<Task> tasks = new List<Task>();
                 tasks.Add(GetRegionList());
-                tasks.Add(GetZoneList("1"));
+                tasks.Add(GetSubnetList());
                 tasks.Add(loadBalancerListLoad());
+                tasks.Add(GetVpcList());
+                tasks.Add(GetTargetGroup()); //test
                 await Task.WhenAll(tasks);
                 //comboBoxZone.Text = "KR-1";
                 //comboBoxZone.Enabled = false;
@@ -318,16 +315,14 @@ namespace HaTool.HighAvailability
             }
         }
 
-
-        private async Task GetZoneList(string regionNo)
+        private async Task GetVpcList()
         {
             try
             {
                 string endpoint = dataManager.GetValue(DataManager.Category.ApiGateway, DataManager.Key.Endpoint);
-                string action = @"/vserver/v2/getZoneList";
+                string action = @"/vpc/v2/getVpcList";
                 List<KeyValuePair<string, string>> parameters = new List<KeyValuePair<string, string>>();
                 parameters.Add(new KeyValuePair<string, string>("responseFormatType", "json"));
-                parameters.Add(new KeyValuePair<string, string>("regionNo", regionNo));
                 SoaCall soaCall = new SoaCall();
                 var task = soaCall.WebApiCall(endpoint, RequestType.POST, action, parameters, LogClient.Config.Instance.GetValue(Category.Api, Key.AccessKey), LogClient.Config.Instance.GetValue(Category.Api, Key.SecretKey));
                 string response = await task;
@@ -340,26 +335,17 @@ namespace HaTool.HighAvailability
 
                 if (response.Contains("responseError"))
                 {
-                    hasError hasError = JsonConvert.DeserializeObject<hasError>(response, options);
-                    throw new Exception(hasError.responseError.returnMessage);
+                    hasError errorResponse = JsonConvert.DeserializeObject<hasError>(response, options);
+                    throw new Exception(errorResponse.responseError.returnMessage);
                 }
                 else
                 {
-                    getZoneList getZoneList = JsonConvert.DeserializeObject<getZoneList>(response, options);
-                    if (getZoneList.getZoneListResponse.returnCode.Equals("0"))
+                    getVpcList getVpcList = JsonConvert.DeserializeObject<getVpcList>(response, options);
+                    if (getVpcList.getVpcListResponse.returnCode.Equals("0"))
                     {
-                        comboBoxZone.Items.Clear();
-                        foreach (var a in getZoneList.getZoneListResponse.zoneList)
+                        foreach (var vpc in getVpcList.getVpcListResponse.vpcList)
                         {
-                            var item = new zone
-                            {
-                                zoneNo = a.zoneNo,
-                                zoneName = a.zoneName,
-                                zoneCode = a.zoneCode,
-                                zoneDescription = a.zoneDescription,
-                                regionNo = a.regionNo
-                            };
-                            comboBoxZone.Items.Add(item);
+                            comboBoxVPC.Items.Add(vpc.vpcNo.ToString());
                         }
                     }
                 }
@@ -368,10 +354,51 @@ namespace HaTool.HighAvailability
             {
                 throw;
             }
-            comboBoxZone.SelectedIndex = 0;
-            //if (regionNo == "1")
-            //    comboBoxZone.Text = "KR-1";
-            //MessageBox.Show((comboBoxRegion.SelectedItem as region).regionCode);
+            comboBoxVPC.SelectedIndex = 0;
+        }
+
+        private async Task GetSubnetList()
+        {
+            try
+            {
+                string endpoint = dataManager.GetValue(DataManager.Category.ApiGateway, DataManager.Key.Endpoint);
+                string action = @"/vpc/v2/getSubnetList";
+                List<KeyValuePair<string, string>> parameters = new List<KeyValuePair<string, string>>();
+                parameters.Add(new KeyValuePair<string, string>("responseFormatType", "json"));
+                //parameters.Add(new KeyValuePair<string, string>("vpcNo", vpcNo));
+                SoaCall soaCall = new SoaCall();
+                var task = soaCall.WebApiCall(endpoint, RequestType.POST, action, parameters, LogClient.Config.Instance.GetValue(Category.Api, Key.AccessKey), LogClient.Config.Instance.GetValue(Category.Api, Key.SecretKey));
+                string response = await task;
+
+                JsonSerializerSettings options = new JsonSerializerSettings
+                {
+                    NullValueHandling = NullValueHandling.Ignore,
+                    MissingMemberHandling = MissingMemberHandling.Ignore
+                };
+
+                if (response.Contains("responseError"))
+                {
+                    hasError errorResponse = JsonConvert.DeserializeObject<hasError>(response, options);
+                    throw new Exception(errorResponse.responseError.returnMessage);
+                }
+                else
+                {
+                    getSubnetList getSubnetList = JsonConvert.DeserializeObject<getSubnetList>(response, options);
+                    if (getSubnetList.getSubnetListResponse.returnCode.Equals("0"))
+                    {
+                        comboBoxSubnet.Items.Clear();
+                        foreach (var subnet in getSubnetList.getSubnetListResponse.subnetList)
+                        {
+                            comboBoxSubnet.Items.Add(subnet.subnetNo.ToString());
+                        }
+                    }
+                }
+            }
+            catch (Exception)
+            {
+                throw;
+            }
+            comboBoxSubnet.SelectedIndex = 0;
         }
 
         private void LoadTextData()
@@ -532,18 +559,15 @@ namespace HaTool.HighAvailability
                 string action = @"/vloadbalancer/v2/createLoadBalancerInstance";
                 List<KeyValuePair<string, string>> parameters = new List<KeyValuePair<string, string>>();
                 parameters.Add(new KeyValuePair<string, string>("responseFormatType", "json"));
-                parameters.Add(new KeyValuePair<string, string>("loadBalancerTypeCode", "APPLICATION")); // APPLICATION/NETWORK/NETWORK_PROXY
+                parameters.Add(new KeyValuePair<string, string>("loadBalancerTypeCode", "NETWORK")); // APPLICATION/NETWORK/NETWORK_PROXY
                 parameters.Add(new KeyValuePair<string, string>("loadBalancerName", textBoxLoadBalancerName.Text.Trim()));
-                // Deprecated as of VPC
-                //parameters.Add(new KeyValuePair<string, string>("loadBalancerRuleList.1.protocolTypeCode", comboBoxProtocol.Text.Trim()));
-                //parameters.Add(new KeyValuePair<string, string>("loadBalancerRuleList.1.loadBalancerPort", textBoxLoadBalancerPort.Text.Trim()));
+                parameters.Add(new KeyValuePair<string, string>("loadBalancerRuleList.1.protocolTypeCode", comboBoxProtocol.Text.Trim()));
+                parameters.Add(new KeyValuePair<string, string>("loadBalancerRuleList.1.loadBalancerPort", textBoxLoadBalancerPort.Text.Trim()));
+                parameters.Add(new KeyValuePair<string, string>("loadBalancerSubnetList.1.subnetNo", comboBoxSubnet.SelectedItem.ToString()));
                 //parameters.Add(new KeyValuePair<string, string>("loadBalancerRuleList.1.serverPort", textBoxServerPort.Text.Trim()));
                 parameters.Add(new KeyValuePair<string, string>("regionCode", (comboBoxRegion.SelectedItem as region).regionCode));
-                //parameters.Add(new KeyValuePair<string, string>("vpcNo", dataManager.GetValue(DataManager.Category.VpcInfo, DataManager.Key.vpcNo)));
-                //parameters.Add(new KeyValuePair<string, string>("loadBalancerSubnetList.1.subnetNo", dataManager.GetValue(DataManager.Category.VpcInfo, DataManager.Key.subnetNo)));
-
-                // TODO : loadBalancerListenerList.N.targetGroupNo	
-                //parameters.Add(new KeyValuePair<string, string>("zoneNoList.1", "3"));
+                parameters.Add(new KeyValuePair<string, string>("vpcNo", comboBoxVPC.SelectedItem.ToString()));
+                parameters.Add(new KeyValuePair<string, string>("loadBalancerListenerList.1.targetGroupNo", dataManager.GetValue(DataManager.Category.LoadBalancer, DataManager.Key.targetGroupNo)));
                 SoaCall soaCall = new SoaCall();
                 var task = soaCall.WebApiCall(endpoint, RequestType.POST, action, parameters, LogClient.Config.Instance.GetValue(Category.Api, Key.AccessKey), LogClient.Config.Instance.GetValue(Category.Api, Key.SecretKey));
                 string response = await task;
@@ -691,7 +715,6 @@ namespace HaTool.HighAvailability
                 string action = @"/vloadbalancer/v2/getLoadBalancerInstanceList";
                 List<KeyValuePair<string, string>> parameters = new List<KeyValuePair<string, string>>();
                 parameters.Add(new KeyValuePair<string, string>("responseFormatType", "json"));
-                parameters.Add(new KeyValuePair<string, string>("regionNo", regionNo));
 
                 SoaCall soaCall = new SoaCall();
                 var task = soaCall.WebApiCall(endpoint, RequestType.POST, action, parameters, LogClient.Config.Instance.GetValue(Category.Api, Key.AccessKey), LogClient.Config.Instance.GetValue(Category.Api, Key.SecretKey));
@@ -719,7 +742,7 @@ namespace HaTool.HighAvailability
                             if (textBoxLoadBalancerName.Text.Equals(a.loadBalancerName, StringComparison.OrdinalIgnoreCase))
                             {
                                 existsMatchedLoadBalancer = true;
-                                checkedDomainName = a.domainName;
+                                checkedDomainName = a.loadBalancerDomain;
                                 checkedLoadBalancerInstance = a;
                                 checkedLoadBalancerInstanceNo = a.loadBalancerInstanceNo;
                                 buttonShowLBDetail.Enabled = true;
@@ -757,10 +780,10 @@ namespace HaTool.HighAvailability
             try
             {
                 string endpoint = dataManager.GetValue(DataManager.Category.ApiGateway, DataManager.Key.Endpoint);
-                string action = @"/vloadbalancer/v2/getLoadBalancerInstanceList";
+                string action = @"/vloadbalancer/v2/getLoadBalancerInstanceDetail";
                 List<KeyValuePair<string, string>> parameters = new List<KeyValuePair<string, string>>();
                 parameters.Add(new KeyValuePair<string, string>("responseFormatType", "json"));
-                parameters.Add(new KeyValuePair<string, string>("loadBalancerInstanceNoList.1", instanceNo));
+                parameters.Add(new KeyValuePair<string, string>("loadBalancerInstanceNo", instanceNo));
 
                 SoaCall soaCall = new SoaCall();
                 var task = soaCall.WebApiCall(endpoint, RequestType.POST, action, parameters, LogClient.Config.Instance.GetValue(Category.Api, Key.AccessKey), LogClient.Config.Instance.GetValue(Category.Api, Key.SecretKey));
@@ -782,12 +805,10 @@ namespace HaTool.HighAvailability
                     getLoadBalancerInstanceList getLoadBalancerInstanceList = JsonConvert.DeserializeObject<getLoadBalancerInstanceList>(response, options);
                     if (getLoadBalancerInstanceList.getLoadBalancerInstanceListResponse.returnCode.Equals("0"))
                     {
-                        //foreach (var a in getLoadBalancerInstanceList.getLoadBalancerInstanceListResponse.loadBalancerInstanceList)
-                        //{
-                        //    loadBalancerInstanceInfo = JsonConvert.SerializeObject(a);
-                        //}
-
-                        loadBalancerInstanceInfo = response;
+                        foreach (var lbi in getLoadBalancerInstanceList.getLoadBalancerInstanceListResponse.loadBalancerInstanceList)
+                        {
+                            loadBalancerInstanceInfo = JsonConvert.SerializeObject(lbi);
+                        }
                     }
                 }
             }
@@ -808,7 +829,7 @@ namespace HaTool.HighAvailability
                 parameters.Add(new KeyValuePair<string, string>("responseFormatType", "json"));
                 parameters.Add(new KeyValuePair<string, string>("targetGroupProtocolTypeCode", "TCP"));
                 parameters.Add(new KeyValuePair<string, string>("healthCheckProtocolTypeCode", "TCP"));
-                //parameters.Add(new KeyValuePair<string, string>("vpcNo", dataManager.GetValue(DataManager.Category.VpcInfo, DataManager.Key.vpcNo)));
+                parameters.Add(new KeyValuePair<string, string>("vpcNo", comboBoxVPC.SelectedItem.ToString()));
 
                 SoaCall soaCall = new SoaCall();
                 var task = soaCall.WebApiCall(endpoint, RequestType.POST, action, parameters, LogClient.Config.Instance.GetValue(Category.Api, Key.AccessKey), LogClient.Config.Instance.GetValue(Category.Api, Key.SecretKey));
@@ -835,6 +856,56 @@ namespace HaTool.HighAvailability
                 throw;
             }
         }
+
+        private async Task GetTargetGroup()
+        {
+            try
+            {
+                string endpoint = dataManager.GetValue(DataManager.Category.ApiGateway, DataManager.Key.Endpoint);
+                string action = @"/vloadbalancer/v2/getTargetGroupList";
+                List<KeyValuePair<string, string>> parameters = new List<KeyValuePair<string, string>>();
+                parameters.Add(new KeyValuePair<string, string>("responseFormatType", "json"));
+                //parameters.Add(new KeyValuePair<string, string>("vpcNo", comboBoxVPC.SelectedItem.ToString()));
+
+                SoaCall soaCall = new SoaCall();
+                var task = soaCall.WebApiCall(endpoint, RequestType.POST, action, parameters, LogClient.Config.Instance.GetValue(Category.Api, Key.AccessKey), LogClient.Config.Instance.GetValue(Category.Api, Key.SecretKey));
+                string response = await task;
+
+                JsonSerializerSettings options = new JsonSerializerSettings
+                {
+                    NullValueHandling = NullValueHandling.Ignore,
+                    MissingMemberHandling = MissingMemberHandling.Ignore
+                };
+
+                if (response.Contains("responseError"))
+                {
+                    hasError hasError = JsonConvert.DeserializeObject<hasError>(response, options);
+                    throw new Exception(hasError.responseError.returnMessage);
+                }
+                else
+                {
+                    getTargetGroupList getTargetGroupList = JsonConvert.DeserializeObject<getTargetGroupList>(response, options);
+                    if (getTargetGroupList.getTargetGroupListResponse.returnCode.Equals("0"))
+                    {
+                        //string _subnetNo = getSubnetList.getSubnetListResponse.subnetList[0].subnetNo.ToString(); // FRAGILE: Replace with TODO
+                        //dataManager.SetValue(DataManager.Category.VpcInfo, DataManager.Key.subnetNo, _subnetNo);
+
+                        //comboBoxSubnet.Items.Clear();
+                        foreach (var _targetGroup in getTargetGroupList.getTargetGroupListResponse.targetGroupList)
+                        {
+                            dataManager.SetValue(DataManager.Category.LoadBalancer, DataManager.Key.targetGroupNo, _targetGroup.targetGroupNo.ToString());
+                            break;
+                        }
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.Message);
+                throw;
+            }
+        }
+
 
 
 
@@ -984,12 +1055,12 @@ namespace HaTool.HighAvailability
             {
 
                 string endpoint = dataManager.GetValue(DataManager.Category.ApiGateway, DataManager.Key.Endpoint);
-                string action = @"/vloadbalancer/v2/changeLoadBalancedServerInstances";
+                string action = @"/vloadbalancer/v2/changeLoadBalancedServerInstanceConfiguration";
                 List<KeyValuePair<string, string>> parameters = new List<KeyValuePair<string, string>>();
                 parameters.Add(new KeyValuePair<string, string>("responseFormatType", "json"));
                 parameters.Add(new KeyValuePair<string, string>("loadBalancerInstanceNo", loadBalancerInstanceNo));
                 if (masterServerInstanceNo.Length != 0)
-                    parameters.Add(new KeyValuePair<string, string>("serverInstanceNoList.1", masterServerInstanceNo));
+                    parameters.Add(new KeyValuePair<string, string>("serverInstanceNo", masterServerInstanceNo));
                     
                 SoaCall soaCall = new SoaCall();
                 var task = soaCall.WebApiCall(endpoint, RequestType.POST, action, parameters, LogClient.Config.Instance.GetValue(Category.Api, Key.AccessKey), LogClient.Config.Instance.GetValue(Category.Api, Key.SecretKey));
@@ -1007,8 +1078,8 @@ namespace HaTool.HighAvailability
                     throw new Exception(hasError.responseError.returnMessage);
                 }
 
-                changeLoadBalancedServerInstances changeLoadBalancedServerInstances = JsonConvert.DeserializeObject<changeLoadBalancedServerInstances>(response, options);
-                if (changeLoadBalancedServerInstances.changeLoadBalancedServerInstancesResponse.returnCode.Equals("0"))
+                changeLoadBalancedServerInstanceConfiguration changeLoadBalancedServerInstanceConfiguration = JsonConvert.DeserializeObject<changeLoadBalancedServerInstanceConfiguration>(response, options);
+                if (changeLoadBalancedServerInstanceConfiguration.changeLoadBalancedServerInstanceConfigurationResponse.returnCode.Equals("0"))
                 {
                     MessageBox.Show("change load balancer requested");
                 }

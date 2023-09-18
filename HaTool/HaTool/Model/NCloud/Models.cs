@@ -664,6 +664,20 @@ namespace HaTool.Model.NCloud
         public List<raidInstance> raidList { get; set; }
     }
 
+    public class createTargetGroup
+    {
+        public createTargetGroupResponse createTargetGroupResponse { get; set; }
+    }
+
+    public class createTargetGroupResponse
+    {
+        public string requestId { get; set; }
+        public string returnCode { get; set; }
+        public string returnMessage { get; set; }
+        public int totalRows { get; set; }
+        public List<targetGroupInstance> targetGroupInstanceList { get; set; }
+    }
+
 
     public class targetGroupInstance
     {

@@ -304,7 +304,7 @@ namespace HaTool.HighAvailability
                 tasks.Add(GetSubnetList());
                 tasks.Add(loadBalancerListLoad());
                 tasks.Add(GetVpcList());
-                tasks.Add(GetTargetGroup()); //test
+                tasks.Add(GetTargetGroup());
                 await Task.WhenAll(tasks);
                 //comboBoxZone.Text = "KR-1";
                 //comboBoxZone.Enabled = false;
@@ -819,43 +819,6 @@ namespace HaTool.HighAvailability
             return loadBalancerInstanceInfo;
         }
 
-        private async void CreateTargetGroup()
-        {
-            try
-            {
-                string endpoint = dataManager.GetValue(DataManager.Category.ApiGateway, DataManager.Key.Endpoint);
-                string action = @"/vloadbalancer/v2/createTargetGroup";
-                List<KeyValuePair<string, string>> parameters = new List<KeyValuePair<string, string>>();
-                parameters.Add(new KeyValuePair<string, string>("responseFormatType", "json"));
-                parameters.Add(new KeyValuePair<string, string>("targetGroupProtocolTypeCode", "TCP"));
-                parameters.Add(new KeyValuePair<string, string>("healthCheckProtocolTypeCode", "TCP"));
-                parameters.Add(new KeyValuePair<string, string>("vpcNo", comboBoxVPC.SelectedItem.ToString()));
-
-                SoaCall soaCall = new SoaCall();
-                var task = soaCall.WebApiCall(endpoint, RequestType.POST, action, parameters, LogClient.Config.Instance.GetValue(Category.Api, Key.AccessKey), LogClient.Config.Instance.GetValue(Category.Api, Key.SecretKey));
-                string response = await task;
-
-                JsonSerializerSettings options = new JsonSerializerSettings
-                {
-                    NullValueHandling = NullValueHandling.Ignore,
-                    MissingMemberHandling = MissingMemberHandling.Ignore
-                };
-
-                if (response.Contains("responseError"))
-                {
-                    hasError hasError = JsonConvert.DeserializeObject<hasError>(response, options);
-                    throw new Exception(hasError.responseError.returnMessage);
-                }
-                else
-                {
-                    // TODO : Implement Parsing
-                }
-            }
-            catch (Exception)
-            {
-                throw;
-            }
-        }
 
         private async Task GetTargetGroup()
         {

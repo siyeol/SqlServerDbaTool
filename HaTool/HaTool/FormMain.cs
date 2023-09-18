@@ -95,6 +95,8 @@ namespace HaTool
                 panelMain.Controls.Remove(UcFailoverPolicy.Instance);
             if (panelMain.Controls.Contains(UcBackupPolicy.Instance))
                 panelMain.Controls.Remove(UcBackupPolicy.Instance);
+            if (panelMain.Controls.Contains(UcTargetGroup.Instance))
+                panelMain.Controls.Remove(UcTargetGroup.Instance);
             if (panelMain.Controls.Contains(UcPerfmonPolicy.Instance))
                 panelMain.Controls.Remove(UcPerfmonPolicy.Instance);
             if (panelMain.Controls.Contains(UcSqlmonPolicy.Instance))
@@ -278,6 +280,20 @@ namespace HaTool
             }
             else
                 UcFailoverPolicy.Instance.BringToFront();
+        }
+
+        private void targetGroupToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            RemoveAllUc();
+
+            if (!panelMain.Controls.Contains(UcTargetGroup.Instance))
+            {
+                panelMain.Controls.Add(UcTargetGroup.Instance);
+                UcTargetGroup.Instance.Dock = DockStyle.Fill;
+                UcTargetGroup.Instance.BringToFront();
+            }
+            else
+                UcTargetGroup.Instance.BringToFront();
         }
 
         private void databaseBackupToolStripMenuItem_Click(object sender, EventArgs e)

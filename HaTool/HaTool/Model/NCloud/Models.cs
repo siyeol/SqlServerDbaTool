@@ -682,7 +682,21 @@ namespace HaTool.Model.NCloud
     public class targetGroupInstance
     {
         public string targetGroupNo { get; set; }
+        public string targetGroupName { get; set; }
+        public CommonCode targetType { get; set; }
+        public string vpcNo { get; set; }
+        public CommonCode targetGroupProtocolType { get; set; }
+        public int targetGroupPort { get; set; }
+        public string targetGroupDescription { get; set; }
+        public string loadBalancerInstanceNo { get; set; }
     }
+
+    public class CommonCode
+    {
+        public string code { get; set; }
+        public string codeName { get; set; }
+    }
+
 
     public class getTargetGroupList
     {

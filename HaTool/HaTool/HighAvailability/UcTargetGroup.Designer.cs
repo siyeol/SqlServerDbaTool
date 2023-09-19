@@ -31,7 +31,29 @@
             this.buttonServerListReload = new System.Windows.Forms.Button();
             this.dgvServerList = new System.Windows.Forms.DataGridView();
             this.groupBoxMirroring = new System.Windows.Forms.GroupBox();
+            this.groupBoxSqlServerConfigurationTemplate = new System.Windows.Forms.GroupBox();
+            this.label3 = new System.Windows.Forms.Label();
+            this.comboBox1 = new System.Windows.Forms.ComboBox();
+            this.buttonShowCheckedLBDetailInfo = new System.Windows.Forms.Button();
+            this.buttonLoadBalancerNameCheck = new System.Windows.Forms.Button();
+            this.buttonDbDelete = new System.Windows.Forms.Button();
+            this.labelZone = new System.Windows.Forms.Label();
+            this.comboBoxRegion = new System.Windows.Forms.ComboBox();
+            this.comboBoxSubnet = new System.Windows.Forms.ComboBox();
+            this.labelRegion = new System.Windows.Forms.Label();
+            this.buttonDbSave = new System.Windows.Forms.Button();
+            this.comboBoxProtocol = new System.Windows.Forms.ComboBox();
+            this.buttonLoadTemplate = new System.Windows.Forms.Button();
+            this.textBoxServerPort = new System.Windows.Forms.TextBox();
+            this.buttonSaveTemplate = new System.Windows.Forms.Button();
+            this.labelServerPort = new System.Windows.Forms.Label();
+            this.label4 = new System.Windows.Forms.Label();
+            this.textBoxLoadBalancerName = new System.Windows.Forms.TextBox();
+            this.textBoxLoadBalancerPort = new System.Windows.Forms.TextBox();
+            this.label5 = new System.Windows.Forms.Label();
+            this.labelLoadBalancerPort = new System.Windows.Forms.Label();
             this.groupBoxTargetGroup = new System.Windows.Forms.GroupBox();
+            this.buttonDelete = new System.Windows.Forms.Button();
             this.buttonReloadTargetGroup = new System.Windows.Forms.Button();
             this.dgvTargetGroup = new System.Windows.Forms.DataGridView();
             this.groupBoxCreateTG = new System.Windows.Forms.GroupBox();
@@ -45,9 +67,10 @@
             this.comboBoxVPC = new System.Windows.Forms.ComboBox();
             this.label1 = new System.Windows.Forms.Label();
             this.groupBoxSelectHaGroup = new System.Windows.Forms.GroupBox();
-            this.buttonDelete = new System.Windows.Forms.Button();
+            this.buttonCreateLoadBalancer = new System.Windows.Forms.Button();
             ((System.ComponentModel.ISupportInitialize)(this.dgvServerList)).BeginInit();
             this.groupBoxMirroring.SuspendLayout();
+            this.groupBoxSqlServerConfigurationTemplate.SuspendLayout();
             this.groupBoxTargetGroup.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.dgvTargetGroup)).BeginInit();
             this.groupBoxCreateTG.SuspendLayout();
@@ -79,29 +102,251 @@
             this.groupBoxMirroring.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
             | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
+            this.groupBoxMirroring.Controls.Add(this.groupBoxSqlServerConfigurationTemplate);
             this.groupBoxMirroring.Controls.Add(this.groupBoxTargetGroup);
             this.groupBoxMirroring.Controls.Add(this.groupBoxCreateTG);
             this.groupBoxMirroring.Controls.Add(this.groupBoxSelectHaGroup);
             this.groupBoxMirroring.Location = new System.Drawing.Point(1, 3);
             this.groupBoxMirroring.Name = "groupBoxMirroring";
-            this.groupBoxMirroring.Size = new System.Drawing.Size(770, 694);
+            this.groupBoxMirroring.Size = new System.Drawing.Size(770, 764);
             this.groupBoxMirroring.TabIndex = 2;
             this.groupBoxMirroring.TabStop = false;
             this.groupBoxMirroring.Text = "High Availability > Target Group";
+            // 
+            // groupBoxSqlServerConfigurationTemplate
+            // 
+            this.groupBoxSqlServerConfigurationTemplate.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.groupBoxSqlServerConfigurationTemplate.Controls.Add(this.label3);
+            this.groupBoxSqlServerConfigurationTemplate.Controls.Add(this.comboBox1);
+            this.groupBoxSqlServerConfigurationTemplate.Controls.Add(this.buttonShowCheckedLBDetailInfo);
+            this.groupBoxSqlServerConfigurationTemplate.Controls.Add(this.buttonLoadBalancerNameCheck);
+            this.groupBoxSqlServerConfigurationTemplate.Controls.Add(this.buttonDbDelete);
+            this.groupBoxSqlServerConfigurationTemplate.Controls.Add(this.labelZone);
+            this.groupBoxSqlServerConfigurationTemplate.Controls.Add(this.comboBoxRegion);
+            this.groupBoxSqlServerConfigurationTemplate.Controls.Add(this.comboBoxSubnet);
+            this.groupBoxSqlServerConfigurationTemplate.Controls.Add(this.labelRegion);
+            this.groupBoxSqlServerConfigurationTemplate.Controls.Add(this.buttonDbSave);
+            this.groupBoxSqlServerConfigurationTemplate.Controls.Add(this.comboBoxProtocol);
+            this.groupBoxSqlServerConfigurationTemplate.Controls.Add(this.buttonLoadTemplate);
+            this.groupBoxSqlServerConfigurationTemplate.Controls.Add(this.textBoxServerPort);
+            this.groupBoxSqlServerConfigurationTemplate.Controls.Add(this.buttonSaveTemplate);
+            this.groupBoxSqlServerConfigurationTemplate.Controls.Add(this.labelServerPort);
+            this.groupBoxSqlServerConfigurationTemplate.Controls.Add(this.label4);
+            this.groupBoxSqlServerConfigurationTemplate.Controls.Add(this.textBoxLoadBalancerName);
+            this.groupBoxSqlServerConfigurationTemplate.Controls.Add(this.textBoxLoadBalancerPort);
+            this.groupBoxSqlServerConfigurationTemplate.Controls.Add(this.label5);
+            this.groupBoxSqlServerConfigurationTemplate.Controls.Add(this.labelLoadBalancerPort);
+            this.groupBoxSqlServerConfigurationTemplate.Location = new System.Drawing.Point(22, 627);
+            this.groupBoxSqlServerConfigurationTemplate.Name = "groupBoxSqlServerConfigurationTemplate";
+            this.groupBoxSqlServerConfigurationTemplate.Size = new System.Drawing.Size(742, 109);
+            this.groupBoxSqlServerConfigurationTemplate.TabIndex = 163;
+            this.groupBoxSqlServerConfigurationTemplate.TabStop = false;
+            this.groupBoxSqlServerConfigurationTemplate.Text = "Load Balancer Configuration Template";
+            // 
+            // label3
+            // 
+            this.label3.AutoSize = true;
+            this.label3.Location = new System.Drawing.Point(804, 27);
+            this.label3.Name = "label3";
+            this.label3.Size = new System.Drawing.Size(43, 23);
+            this.label3.TabIndex = 70;
+            this.label3.Text = "VPC";
+            // 
+            // comboBox1
+            // 
+            this.comboBox1.FormattingEnabled = true;
+            this.comboBox1.Location = new System.Drawing.Point(803, 44);
+            this.comboBox1.Name = "comboBox1";
+            this.comboBox1.Size = new System.Drawing.Size(123, 31);
+            this.comboBox1.TabIndex = 69;
+            // 
+            // buttonShowCheckedLBDetailInfo
+            // 
+            this.buttonShowCheckedLBDetailInfo.ForeColor = System.Drawing.SystemColors.AppWorkspace;
+            this.buttonShowCheckedLBDetailInfo.Location = new System.Drawing.Point(384, 74);
+            this.buttonShowCheckedLBDetailInfo.Name = "buttonShowCheckedLBDetailInfo";
+            this.buttonShowCheckedLBDetailInfo.Size = new System.Drawing.Size(118, 23);
+            this.buttonShowCheckedLBDetailInfo.TabIndex = 68;
+            this.buttonShowCheckedLBDetailInfo.Text = "Show Detail";
+            this.buttonShowCheckedLBDetailInfo.UseVisualStyleBackColor = true;
+            // 
+            // buttonLoadBalancerNameCheck
+            // 
+            this.buttonLoadBalancerNameCheck.ForeColor = System.Drawing.SystemColors.AppWorkspace;
+            this.buttonLoadBalancerNameCheck.Location = new System.Drawing.Point(262, 74);
+            this.buttonLoadBalancerNameCheck.Name = "buttonLoadBalancerNameCheck";
+            this.buttonLoadBalancerNameCheck.Size = new System.Drawing.Size(118, 23);
+            this.buttonLoadBalancerNameCheck.TabIndex = 67;
+            this.buttonLoadBalancerNameCheck.Text = "Exists Check";
+            this.buttonLoadBalancerNameCheck.UseVisualStyleBackColor = true;
+            // 
+            // buttonDbDelete
+            // 
+            this.buttonDbDelete.ForeColor = System.Drawing.SystemColors.AppWorkspace;
+            this.buttonDbDelete.Location = new System.Drawing.Point(593, 74);
+            this.buttonDbDelete.Name = "buttonDbDelete";
+            this.buttonDbDelete.Size = new System.Drawing.Size(84, 23);
+            this.buttonDbDelete.TabIndex = 58;
+            this.buttonDbDelete.Text = "db delete";
+            this.buttonDbDelete.UseVisualStyleBackColor = true;
+            // 
+            // labelZone
+            // 
+            this.labelZone.AutoSize = true;
+            this.labelZone.Location = new System.Drawing.Point(287, 27);
+            this.labelZone.Name = "labelZone";
+            this.labelZone.Size = new System.Drawing.Size(76, 23);
+            this.labelZone.TabIndex = 56;
+            this.labelZone.Text = "Subnet";
+            // 
+            // comboBoxRegion
+            // 
+            this.comboBoxRegion.FormattingEnabled = true;
+            this.comboBoxRegion.Location = new System.Drawing.Point(152, 45);
+            this.comboBoxRegion.Name = "comboBoxRegion";
+            this.comboBoxRegion.Size = new System.Drawing.Size(123, 31);
+            this.comboBoxRegion.TabIndex = 66;
+            // 
+            // comboBoxSubnet
+            // 
+            this.comboBoxSubnet.FormattingEnabled = true;
+            this.comboBoxSubnet.Location = new System.Drawing.Point(283, 45);
+            this.comboBoxSubnet.Name = "comboBoxSubnet";
+            this.comboBoxSubnet.Size = new System.Drawing.Size(123, 31);
+            this.comboBoxSubnet.TabIndex = 55;
+            // 
+            // labelRegion
+            // 
+            this.labelRegion.AutoSize = true;
+            this.labelRegion.Location = new System.Drawing.Point(157, 27);
+            this.labelRegion.Name = "labelRegion";
+            this.labelRegion.Size = new System.Drawing.Size(76, 23);
+            this.labelRegion.TabIndex = 65;
+            this.labelRegion.Text = "Region";
+            // 
+            // buttonDbSave
+            // 
+            this.buttonDbSave.ForeColor = System.Drawing.SystemColors.AppWorkspace;
+            this.buttonDbSave.Location = new System.Drawing.Point(507, 74);
+            this.buttonDbSave.Name = "buttonDbSave";
+            this.buttonDbSave.Size = new System.Drawing.Size(84, 23);
+            this.buttonDbSave.TabIndex = 57;
+            this.buttonDbSave.Text = "db save";
+            this.buttonDbSave.UseVisualStyleBackColor = true;
+            // 
+            // comboBoxProtocol
+            // 
+            this.comboBoxProtocol.FormattingEnabled = true;
+            this.comboBoxProtocol.Items.AddRange(new object[] {
+            "TCP",
+            "UDP"});
+            this.comboBoxProtocol.Location = new System.Drawing.Point(413, 45);
+            this.comboBoxProtocol.Name = "comboBoxProtocol";
+            this.comboBoxProtocol.Size = new System.Drawing.Size(123, 31);
+            this.comboBoxProtocol.TabIndex = 60;
+            // 
+            // buttonLoadTemplate
+            // 
+            this.buttonLoadTemplate.Location = new System.Drawing.Point(141, 74);
+            this.buttonLoadTemplate.Name = "buttonLoadTemplate";
+            this.buttonLoadTemplate.Size = new System.Drawing.Size(118, 23);
+            this.buttonLoadTemplate.TabIndex = 54;
+            this.buttonLoadTemplate.Text = "Load Template";
+            this.buttonLoadTemplate.UseVisualStyleBackColor = true;
+            // 
+            // textBoxServerPort
+            // 
+            this.textBoxServerPort.ForeColor = System.Drawing.SystemColors.WindowText;
+            this.textBoxServerPort.Location = new System.Drawing.Point(674, 45);
+            this.textBoxServerPort.Name = "textBoxServerPort";
+            this.textBoxServerPort.Size = new System.Drawing.Size(123, 30);
+            this.textBoxServerPort.TabIndex = 58;
+            // 
+            // buttonSaveTemplate
+            // 
+            this.buttonSaveTemplate.Location = new System.Drawing.Point(22, 74);
+            this.buttonSaveTemplate.Name = "buttonSaveTemplate";
+            this.buttonSaveTemplate.Size = new System.Drawing.Size(118, 23);
+            this.buttonSaveTemplate.TabIndex = 53;
+            this.buttonSaveTemplate.Text = "Save Template";
+            this.buttonSaveTemplate.UseVisualStyleBackColor = true;
+            // 
+            // labelServerPort
+            // 
+            this.labelServerPort.AutoSize = true;
+            this.labelServerPort.Location = new System.Drawing.Point(677, 27);
+            this.labelServerPort.Name = "labelServerPort";
+            this.labelServerPort.Size = new System.Drawing.Size(131, 23);
+            this.labelServerPort.TabIndex = 59;
+            this.labelServerPort.Text = "Server Port";
+            // 
+            // label4
+            // 
+            this.label4.AutoSize = true;
+            this.label4.Location = new System.Drawing.Point(416, 27);
+            this.label4.Name = "label4";
+            this.label4.Size = new System.Drawing.Size(98, 23);
+            this.label4.TabIndex = 54;
+            this.label4.Text = "Protocol";
+            // 
+            // textBoxLoadBalancerName
+            // 
+            this.textBoxLoadBalancerName.ForeColor = System.Drawing.SystemColors.WindowText;
+            this.textBoxLoadBalancerName.Location = new System.Drawing.Point(23, 45);
+            this.textBoxLoadBalancerName.Name = "textBoxLoadBalancerName";
+            this.textBoxLoadBalancerName.Size = new System.Drawing.Size(123, 30);
+            this.textBoxLoadBalancerName.TabIndex = 40;
+            // 
+            // textBoxLoadBalancerPort
+            // 
+            this.textBoxLoadBalancerPort.ForeColor = System.Drawing.SystemColors.WindowText;
+            this.textBoxLoadBalancerPort.Location = new System.Drawing.Point(544, 45);
+            this.textBoxLoadBalancerPort.Name = "textBoxLoadBalancerPort";
+            this.textBoxLoadBalancerPort.Size = new System.Drawing.Size(123, 30);
+            this.textBoxLoadBalancerPort.TabIndex = 41;
+            // 
+            // label5
+            // 
+            this.label5.AutoSize = true;
+            this.label5.Location = new System.Drawing.Point(26, 25);
+            this.label5.Name = "label5";
+            this.label5.Size = new System.Drawing.Size(54, 23);
+            this.label5.TabIndex = 42;
+            this.label5.Text = "Name";
+            // 
+            // labelLoadBalancerPort
+            // 
+            this.labelLoadBalancerPort.AutoSize = true;
+            this.labelLoadBalancerPort.Location = new System.Drawing.Point(544, 27);
+            this.labelLoadBalancerPort.Name = "labelLoadBalancerPort";
+            this.labelLoadBalancerPort.Size = new System.Drawing.Size(208, 23);
+            this.labelLoadBalancerPort.TabIndex = 43;
+            this.labelLoadBalancerPort.Text = "Load Balancer Port";
             // 
             // groupBoxTargetGroup
             // 
             this.groupBoxTargetGroup.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
+            this.groupBoxTargetGroup.Controls.Add(this.buttonCreateLoadBalancer);
             this.groupBoxTargetGroup.Controls.Add(this.buttonDelete);
             this.groupBoxTargetGroup.Controls.Add(this.buttonReloadTargetGroup);
             this.groupBoxTargetGroup.Controls.Add(this.dgvTargetGroup);
-            this.groupBoxTargetGroup.Location = new System.Drawing.Point(22, 399);
+            this.groupBoxTargetGroup.Location = new System.Drawing.Point(22, 375);
             this.groupBoxTargetGroup.Name = "groupBoxTargetGroup";
-            this.groupBoxTargetGroup.Size = new System.Drawing.Size(742, 254);
+            this.groupBoxTargetGroup.Size = new System.Drawing.Size(742, 236);
             this.groupBoxTargetGroup.TabIndex = 160;
             this.groupBoxTargetGroup.TabStop = false;
             this.groupBoxTargetGroup.Text = "Target Group List";
+            // 
+            // buttonDelete
+            // 
+            this.buttonDelete.Location = new System.Drawing.Point(133, 223);
+            this.buttonDelete.Name = "buttonDelete";
+            this.buttonDelete.Size = new System.Drawing.Size(107, 23);
+            this.buttonDelete.TabIndex = 41;
+            this.buttonDelete.Text = "Delete";
+            this.buttonDelete.UseVisualStyleBackColor = true;
             // 
             // buttonReloadTargetGroup
             // 
@@ -137,7 +382,7 @@
             this.groupBoxCreateTG.Controls.Add(this.buttonCreateTargetGroup);
             this.groupBoxCreateTG.Controls.Add(this.comboBoxVPC);
             this.groupBoxCreateTG.Controls.Add(this.label1);
-            this.groupBoxCreateTG.Location = new System.Drawing.Point(22, 286);
+            this.groupBoxCreateTG.Location = new System.Drawing.Point(22, 262);
             this.groupBoxCreateTG.Name = "groupBoxCreateTG";
             this.groupBoxCreateTG.Size = new System.Drawing.Size(742, 104);
             this.groupBoxCreateTG.TabIndex = 162;
@@ -237,19 +482,21 @@
             this.groupBoxSelectHaGroup.Controls.Add(this.dgvServerList);
             this.groupBoxSelectHaGroup.Location = new System.Drawing.Point(22, 22);
             this.groupBoxSelectHaGroup.Name = "groupBoxSelectHaGroup";
-            this.groupBoxSelectHaGroup.Size = new System.Drawing.Size(742, 254);
+            this.groupBoxSelectHaGroup.Size = new System.Drawing.Size(742, 234);
             this.groupBoxSelectHaGroup.TabIndex = 159;
             this.groupBoxSelectHaGroup.TabStop = false;
             this.groupBoxSelectHaGroup.Text = "Select Server";
             // 
-            // buttonDelete
+            // buttonCreateLoadBalancer
             // 
-            this.buttonDelete.Location = new System.Drawing.Point(133, 223);
-            this.buttonDelete.Name = "buttonDelete";
-            this.buttonDelete.Size = new System.Drawing.Size(107, 23);
-            this.buttonDelete.TabIndex = 41;
-            this.buttonDelete.Text = "Delete";
-            this.buttonDelete.UseVisualStyleBackColor = true;
+            this.buttonCreateLoadBalancer.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
+            this.buttonCreateLoadBalancer.Location = new System.Drawing.Point(246, 223);
+            this.buttonCreateLoadBalancer.Name = "buttonCreateLoadBalancer";
+            this.buttonCreateLoadBalancer.Size = new System.Drawing.Size(118, 23);
+            this.buttonCreateLoadBalancer.TabIndex = 69;
+            this.buttonCreateLoadBalancer.Text = "Create";
+            this.buttonCreateLoadBalancer.UseVisualStyleBackColor = true;
+            this.buttonCreateLoadBalancer.Click += new System.EventHandler(this.buttonCreateLoadBalancer_Click);
             // 
             // UcTargetGroup
             // 
@@ -258,10 +505,12 @@
             this.Controls.Add(this.groupBoxMirroring);
             this.Font = new System.Drawing.Font("Consolas", 9.75F);
             this.Name = "UcTargetGroup";
-            this.Size = new System.Drawing.Size(776, 700);
+            this.Size = new System.Drawing.Size(776, 770);
             this.Load += new System.EventHandler(this.LoadData);
             ((System.ComponentModel.ISupportInitialize)(this.dgvServerList)).EndInit();
             this.groupBoxMirroring.ResumeLayout(false);
+            this.groupBoxSqlServerConfigurationTemplate.ResumeLayout(false);
+            this.groupBoxSqlServerConfigurationTemplate.PerformLayout();
             this.groupBoxTargetGroup.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)(this.dgvTargetGroup)).EndInit();
             this.groupBoxCreateTG.ResumeLayout(false);
@@ -290,5 +539,27 @@
         private System.Windows.Forms.Button buttonReloadTargetGroup;
         private System.Windows.Forms.DataGridView dgvTargetGroup;
         private System.Windows.Forms.Button buttonDelete;
+        private System.Windows.Forms.GroupBox groupBoxSqlServerConfigurationTemplate;
+        private System.Windows.Forms.Label label3;
+        private System.Windows.Forms.ComboBox comboBox1;
+        private System.Windows.Forms.Button buttonShowCheckedLBDetailInfo;
+        private System.Windows.Forms.Button buttonLoadBalancerNameCheck;
+        private System.Windows.Forms.Button buttonDbDelete;
+        private System.Windows.Forms.Label labelZone;
+        private System.Windows.Forms.ComboBox comboBoxRegion;
+        private System.Windows.Forms.ComboBox comboBoxSubnet;
+        private System.Windows.Forms.Label labelRegion;
+        private System.Windows.Forms.Button buttonDbSave;
+        private System.Windows.Forms.ComboBox comboBoxProtocol;
+        private System.Windows.Forms.Button buttonLoadTemplate;
+        private System.Windows.Forms.TextBox textBoxServerPort;
+        private System.Windows.Forms.Button buttonSaveTemplate;
+        private System.Windows.Forms.Label labelServerPort;
+        private System.Windows.Forms.Label label4;
+        private System.Windows.Forms.TextBox textBoxLoadBalancerName;
+        private System.Windows.Forms.TextBox textBoxLoadBalancerPort;
+        private System.Windows.Forms.Label label5;
+        private System.Windows.Forms.Label labelLoadBalancerPort;
+        private System.Windows.Forms.Button buttonCreateLoadBalancer;
     }
 }

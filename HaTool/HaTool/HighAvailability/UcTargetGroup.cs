@@ -36,7 +36,8 @@ namespace HaTool.HighAvailability
             InitDgv();
         }
 
-        DataGridViewCheckBoxColumn ColumnServerCheckBox;
+        DataGridViewCheckBoxColumn ColumnMasterCheckBox;
+        DataGridViewCheckBoxColumn ColumnSlaveCheckBox;
         DataGridViewTextBoxColumn ColumnServerName;
         DataGridViewTextBoxColumn ColumnServerZoneNo;
         DataGridViewTextBoxColumn ColumnServerInstanceNo;
@@ -47,6 +48,7 @@ namespace HaTool.HighAvailability
 
         DataGridViewCheckBoxColumn colTargetGroupCheckBox;
         DataGridViewTextBoxColumn colTargetGroupName;
+        DataGridViewTextBoxColumn colTargetGroupNo;
         DataGridViewTextBoxColumn colProtocol;
         DataGridViewTextBoxColumn colPort;
         DataGridViewTextBoxColumn colTargetType;
@@ -55,7 +57,8 @@ namespace HaTool.HighAvailability
 
         private void InitDgv()
         {
-            ColumnServerCheckBox = new DataGridViewCheckBoxColumn();
+            ColumnMasterCheckBox = new DataGridViewCheckBoxColumn();
+            ColumnSlaveCheckBox = new DataGridViewCheckBoxColumn();
             ColumnServerName = new DataGridViewTextBoxColumn();
             ColumnServerZoneNo = new DataGridViewTextBoxColumn();
             ColumnServerInstanceNo = new DataGridViewTextBoxColumn();
@@ -66,13 +69,15 @@ namespace HaTool.HighAvailability
 
             colTargetGroupCheckBox = new DataGridViewCheckBoxColumn();
             colTargetGroupName = new DataGridViewTextBoxColumn();
+            colTargetGroupNo = new DataGridViewTextBoxColumn();
             colProtocol = new DataGridViewTextBoxColumn();
             colPort = new DataGridViewTextBoxColumn();
             colTargetType = new DataGridViewTextBoxColumn();
             colLoadBalancer = new DataGridViewTextBoxColumn();
             colVpc = new DataGridViewTextBoxColumn();
 
-            ColumnServerCheckBox.HeaderText = "CheckBox";
+            ColumnMasterCheckBox.HeaderText = "Master";
+            ColumnSlaveCheckBox.HeaderText = "Slave";
             ColumnServerName.HeaderText = "Name";
             ColumnServerZoneNo.HeaderText = "ZoneNo";
             ColumnServerInstanceNo.HeaderText = "InstanceNo";
@@ -83,13 +88,15 @@ namespace HaTool.HighAvailability
 
             colTargetGroupCheckBox.HeaderText = "CheckBox";
             colTargetGroupName.HeaderText = "Target Group Name";
+            colTargetGroupNo.HeaderText = "Target Group Number";
             colProtocol.HeaderText = "Protocol";
             colPort.HeaderText = "Port";
             colTargetType.HeaderText = "Target Type";
             colLoadBalancer.HeaderText = "Connected Load Balancer";
             colVpc.HeaderText = "VPC";
 
-            ColumnServerCheckBox.Name = "CheckBox";
+            ColumnMasterCheckBox.Name = "Master";
+            ColumnSlaveCheckBox.Name = "Slave";
             ColumnServerName.Name = "Name";
             ColumnServerZoneNo.Name = "ZoneNo";
             ColumnServerInstanceNo.Name = "InstanceNo";
@@ -100,6 +107,7 @@ namespace HaTool.HighAvailability
 
             colTargetGroupCheckBox.Name = "CheckBox";
             colTargetGroupName.Name = "TargetGroupName";
+            colTargetGroupNo.Name = "TargetGroupNo";
             colProtocol.Name = "Protocol";
             colPort.Name = "Port";
             colTargetType.Name = "TargetType";
@@ -108,7 +116,8 @@ namespace HaTool.HighAvailability
 
             dgvServerList.Columns.AddRange(new DataGridViewColumn[]
             {
-                ColumnServerCheckBox   ,
+                ColumnMasterCheckBox, // Add this
+                ColumnSlaveCheckBox,  // Add this
                 ColumnServerName       ,
                 ColumnServerZoneNo     ,
                 ColumnServerInstanceNo ,
@@ -128,6 +137,7 @@ namespace HaTool.HighAvailability
             dgvServerList.AllowUserToResizeRows = false;
 
             ControlHelpers.dgvDesign(dgvServerList);
+            dgvServerList.CellContentClick += new DataGridViewCellEventHandler(ControlHelpers.dgvSingleCheckBox);
             dgvServerList.CellContentClick += new DataGridViewCellEventHandler(ControlHelpers.dgvLineColorChange);
 
 
@@ -135,6 +145,7 @@ namespace HaTool.HighAvailability
             {
                 colTargetGroupCheckBox,
                 colTargetGroupName,
+                colTargetGroupNo,
                 colProtocol,
                 colPort,
                 colTargetType,
@@ -162,8 +173,11 @@ namespace HaTool.HighAvailability
             try
             {
                 dataManager.LoadUserData();
+                LoadTextData();
                 List<Task> tasks = new List<Task>();
                 tasks.Add(ServerListLoad());
+                tasks.Add(GetRegionList());
+                tasks.Add(GetSubnetList());
                 tasks.Add(GetVpcList());
                 tasks.Add(GetTargetGroup());
                 await Task.WhenAll(tasks);
@@ -171,6 +185,22 @@ namespace HaTool.HighAvailability
             catch (Exception ex)
             {
                 MessageBox.Show(ex.Message);
+            }
+
+        }
+
+        private void LoadTextData()
+        {
+            try
+            {
+                comboBoxProtocol.Text = dataManager.GetValue(DataManager.Category.LoadBalancer, DataManager.Key.Protocol).Trim();
+                textBoxLoadBalancerName.Text = dataManager.GetValue(DataManager.Category.LoadBalancer, DataManager.Key.Name).Trim();
+                textBoxLoadBalancerPort.Text = dataManager.GetValue(DataManager.Category.LoadBalancer, DataManager.Key.LoadBalancerPort).Trim();
+                textBoxServerPort.Text = dataManager.GetValue(DataManager.Category.SetSql, DataManager.Key.Port).Trim();
+            }
+            catch (Exception)
+            {
+                throw;
             }
 
         }
@@ -216,6 +246,101 @@ namespace HaTool.HighAvailability
         private void comboBoxTargetGroupProtocol_SelectedIndexChanged(object sender, EventArgs e)
         {
             SetDefaultOptionsForHealthCheckProtocol(comboBoxTargetGroupProtocol.SelectedItem.ToString());
+        }
+
+        private async Task GetRegionList()
+        {
+            try
+            {
+                string endpoint = dataManager.GetValue(DataManager.Category.ApiGateway, DataManager.Key.Endpoint);
+                string action = @"/vserver/v2/getRegionList";
+                List<KeyValuePair<string, string>> parameters = new List<KeyValuePair<string, string>>();
+                parameters.Add(new KeyValuePair<string, string>("responseFormatType", "json"));
+                SoaCall soaCall = new SoaCall();
+                var task = soaCall.WebApiCall(endpoint, RequestType.POST, action, parameters, LogClient.Config.Instance.GetValue(Category.Api, Key.AccessKey), LogClient.Config.Instance.GetValue(Category.Api, Key.SecretKey));
+                string response = await task;
+
+                JsonSerializerSettings options = new JsonSerializerSettings
+                {
+                    NullValueHandling = NullValueHandling.Ignore,
+                    MissingMemberHandling = MissingMemberHandling.Ignore
+                };
+
+                if (response.Contains("responseError"))
+                {
+                    hasError hasError = JsonConvert.DeserializeObject<hasError>(response, options);
+                    throw new Exception(hasError.responseError.returnMessage);
+                }
+                else
+                {
+                    getRegionList getRegionList = JsonConvert.DeserializeObject<getRegionList>(response, options);
+                    if (getRegionList.getRegionListResponse.returnCode.Equals("0"))
+                    {
+                        comboBoxRegion.Items.Clear();
+                        foreach (var a in getRegionList.getRegionListResponse.regionList)
+                        {
+                            var item = new region
+                            {
+                                regionNo = a.regionNo,
+                                regionCode = a.regionCode,
+                                regionName = a.regionName
+                            };
+                            // regionNo 1 Korea
+                            comboBoxRegion.Items.Add(item);
+                        }
+                    }
+                }
+            }
+            catch (Exception)
+            {
+                throw;
+            }
+
+            comboBoxRegion.SelectedIndex = 0;
+        }
+
+        private async Task GetSubnetList()
+        {
+            try
+            {
+                string endpoint = dataManager.GetValue(DataManager.Category.ApiGateway, DataManager.Key.Endpoint);
+                string action = @"/vpc/v2/getSubnetList";
+                List<KeyValuePair<string, string>> parameters = new List<KeyValuePair<string, string>>();
+                parameters.Add(new KeyValuePair<string, string>("responseFormatType", "json"));
+                //parameters.Add(new KeyValuePair<string, string>("vpcNo", vpcNo));
+                SoaCall soaCall = new SoaCall();
+                var task = soaCall.WebApiCall(endpoint, RequestType.POST, action, parameters, LogClient.Config.Instance.GetValue(Category.Api, Key.AccessKey), LogClient.Config.Instance.GetValue(Category.Api, Key.SecretKey));
+                string response = await task;
+
+                JsonSerializerSettings options = new JsonSerializerSettings
+                {
+                    NullValueHandling = NullValueHandling.Ignore,
+                    MissingMemberHandling = MissingMemberHandling.Ignore
+                };
+
+                if (response.Contains("responseError"))
+                {
+                    hasError errorResponse = JsonConvert.DeserializeObject<hasError>(response, options);
+                    throw new Exception(errorResponse.responseError.returnMessage);
+                }
+                else
+                {
+                    getSubnetList getSubnetList = JsonConvert.DeserializeObject<getSubnetList>(response, options);
+                    if (getSubnetList.getSubnetListResponse.returnCode.Equals("0"))
+                    {
+                        comboBoxSubnet.Items.Clear();
+                        foreach (var subnet in getSubnetList.getSubnetListResponse.subnetList)
+                        {
+                            comboBoxSubnet.Items.Add(subnet.subnetNo.ToString());
+                        }
+                    }
+                }
+            }
+            catch (Exception)
+            {
+                throw;
+            }
+            comboBoxSubnet.SelectedIndex = 0;
         }
 
 
@@ -265,7 +390,8 @@ namespace HaTool.HighAvailability
                             if (serverInstance != null)
                             {
                                 int n = s.Rows.Add();
-                                s.Rows[n].Cells["CheckBox"].Value = false;
+                                s.Rows[n].Cells["Master"].Value = false;
+                                s.Rows[n].Cells["Slave"].Value = false;
                                 s.Rows[n].Cells["Name"].Value = a.Key.serverName;
                                 s.Rows[n].Cells["ZoneNo"].Value = a.Value.zoneCode;
                                 s.Rows[n].Cells["InstanceNo"].Value = a.Value.serverInstanceNo;
@@ -351,8 +477,10 @@ namespace HaTool.HighAvailability
 
             foreach (DataGridViewRow row in dgvServerList.Rows)
             {
-                bool isChecked = Convert.ToBoolean(row.Cells["CheckBox"].Value);
-                if (isChecked)
+                bool isMasterChecked = Convert.ToBoolean(row.Cells["Master"].Value);
+                bool isSlaveChecked = Convert.ToBoolean(row.Cells["Slave"].Value);
+
+                if (isMasterChecked || isSlaveChecked)
                 {
                     string instanceNo = row.Cells["InstanceNo"].Value.ToString();
                     selectedServerInstanceNos.Add(instanceNo);
@@ -454,6 +582,7 @@ namespace HaTool.HighAvailability
                                 int n = s.Rows.Add();
                                 s.Rows[n].Cells["CheckBox"].Value = false;
                                 s.Rows[n].Cells["TargetGroupName"].Value = item.targetGroupName;
+                                s.Rows[n].Cells["TargetGroupNo"].Value = item.targetGroupNo;
                                 s.Rows[n].Cells["Protocol"].Value = item.targetGroupProtocolType.code;
                                 s.Rows[n].Cells["Port"].Value = item.targetGroupPort;
                                 s.Rows[n].Cells["TargetType"].Value = item.targetType.code;
@@ -514,6 +643,75 @@ namespace HaTool.HighAvailability
             {
                 MessageBox.Show(ex.Message);
             }
+        }
+
+        private string GetSelectedTargetGroupNo()
+        {
+            foreach (DataGridViewRow row in dgvTargetGroup.Rows)
+            {
+                bool isChecked = Convert.ToBoolean(row.Cells["CheckBox"].Value);  // Replace with the actual checkbox column name
+                if (isChecked)
+                {
+                    return row.Cells["TargetGroupNo"].Value.ToString();
+                }
+            }
+            return null;
+        }
+
+
+        private async void buttonCreateLoadBalancer_Click(object sender, EventArgs e)
+        {
+            try
+            {
+                ControlHelpers.ButtonStatusChange(buttonCreateLoadBalancer, "Requested");
+                string endpoint = dataManager.GetValue(DataManager.Category.ApiGateway, DataManager.Key.Endpoint);
+                string action = @"/vloadbalancer/v2/createLoadBalancerInstance";
+                List<KeyValuePair<string, string>> parameters = new List<KeyValuePair<string, string>>();
+                parameters.Add(new KeyValuePair<string, string>("responseFormatType", "json"));
+                parameters.Add(new KeyValuePair<string, string>("loadBalancerTypeCode", "NETWORK")); // APPLICATION/NETWORK/NETWORK_PROXY
+                parameters.Add(new KeyValuePair<string, string>("loadBalancerName", textBoxLoadBalancerName.Text.Trim()));
+                parameters.Add(new KeyValuePair<string, string>("loadBalancerListenerList.1.protocolTypeCode", comboBoxProtocol.Text.Trim()));
+                //parameters.Add(new KeyValuePair<string, string>("loadBalancerListenerList.1.Port", "8080")); //integer enable somehow
+                parameters.Add(new KeyValuePair<string, string>("subnetNoList.1", comboBoxSubnet.SelectedItem.ToString()));
+                //parameters.Add(new KeyValuePair<string, string>("loadBalancerRuleList.1.serverPort", textBoxServerPort.Text.Trim()));
+                parameters.Add(new KeyValuePair<string, string>("regionCode", (comboBoxRegion.SelectedItem as region).regionCode));
+                parameters.Add(new KeyValuePair<string, string>("vpcNo", comboBoxVPC.SelectedItem.ToString()));
+                parameters.Add(new KeyValuePair<string, string>("loadBalancerListenerList.1.targetGroupNo", GetSelectedTargetGroupNo()));
+                SoaCall soaCall = new SoaCall();
+                var task = soaCall.WebApiCall(endpoint, RequestType.POST, action, parameters, LogClient.Config.Instance.GetValue(Category.Api, Key.AccessKey), LogClient.Config.Instance.GetValue(Category.Api, Key.SecretKey));
+                string response = await task;
+
+                JsonSerializerSettings options = new JsonSerializerSettings
+                {
+                    NullValueHandling = NullValueHandling.Ignore,
+                    MissingMemberHandling = MissingMemberHandling.Ignore
+                };
+
+                if (response.Contains("responseError"))
+                {
+                    hasError hasError = JsonConvert.DeserializeObject<hasError>(response, options);
+                    throw new Exception(hasError.responseError.returnMessage);
+                }
+
+                createLoadBalancerInstance createLoadBalancerInstance = JsonConvert.DeserializeObject<createLoadBalancerInstance>(response, options);
+                if (createLoadBalancerInstance.createLoadBalancerInstanceResponse.returnCode.Equals("0"))
+                {
+                    MessageBox.Show("create requested");
+                }
+
+                //await LoadBalancerNameCheck((comboBoxRegion.SelectedItem as region).regionNo);
+                //await DbSave();
+
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.Message);
+            }
+            finally
+            {
+                ControlHelpers.ButtonStatusChange(buttonCreateLoadBalancer, "Create");
+            }
+
         }
     }
 }

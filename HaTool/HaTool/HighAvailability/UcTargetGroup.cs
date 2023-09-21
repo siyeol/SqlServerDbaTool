@@ -512,8 +512,11 @@ namespace HaTool.HighAvailability
 
                 for (int i = 0; i < selectedServers.Count; i++)
                 {
-                    string paramName = $"targetNoList.{i + 1}";
-                    parameters.Add(new KeyValuePair<string, string>(paramName, selectedServers[i].Item1));
+                    if (selectedServers[i].Item2 == "MASTER")
+                    {
+                        string paramName = $"targetNoList.{i + 1}";
+                        parameters.Add(new KeyValuePair<string, string>(paramName, selectedServers[i].Item1));
+                    }
                 }
 
                 SoaCall soaCall = new SoaCall();

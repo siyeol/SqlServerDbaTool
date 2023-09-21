@@ -110,7 +110,7 @@
             this.groupBoxMirroring.Controls.Add(this.groupBoxSelectHaGroup);
             this.groupBoxMirroring.Location = new System.Drawing.Point(1, 3);
             this.groupBoxMirroring.Name = "groupBoxMirroring";
-            this.groupBoxMirroring.Size = new System.Drawing.Size(770, 764);
+            this.groupBoxMirroring.Size = new System.Drawing.Size(770, 681);
             this.groupBoxMirroring.TabIndex = 2;
             this.groupBoxMirroring.TabStop = false;
             this.groupBoxMirroring.Text = "High Availability > Target Group";
@@ -119,6 +119,7 @@
             // 
             this.groupBoxSqlServerConfigurationTemplate.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
+            this.groupBoxSqlServerConfigurationTemplate.Controls.Add(this.buttonCreateLoadBalancer);
             this.groupBoxSqlServerConfigurationTemplate.Controls.Add(this.label3);
             this.groupBoxSqlServerConfigurationTemplate.Controls.Add(this.comboBox1);
             this.groupBoxSqlServerConfigurationTemplate.Controls.Add(this.buttonShowCheckedLBDetailInfo);
@@ -139,7 +140,7 @@
             this.groupBoxSqlServerConfigurationTemplate.Controls.Add(this.textBoxLoadBalancerPort);
             this.groupBoxSqlServerConfigurationTemplate.Controls.Add(this.label5);
             this.groupBoxSqlServerConfigurationTemplate.Controls.Add(this.labelLoadBalancerPort);
-            this.groupBoxSqlServerConfigurationTemplate.Location = new System.Drawing.Point(22, 596);
+            this.groupBoxSqlServerConfigurationTemplate.Location = new System.Drawing.Point(22, 543);
             this.groupBoxSqlServerConfigurationTemplate.Name = "groupBoxSqlServerConfigurationTemplate";
             this.groupBoxSqlServerConfigurationTemplate.Size = new System.Drawing.Size(742, 109);
             this.groupBoxSqlServerConfigurationTemplate.TabIndex = 163;
@@ -330,13 +331,12 @@
             // 
             this.groupBoxTargetGroup.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-            this.groupBoxTargetGroup.Controls.Add(this.buttonCreateLoadBalancer);
             this.groupBoxTargetGroup.Controls.Add(this.buttonDelete);
             this.groupBoxTargetGroup.Controls.Add(this.buttonReloadTargetGroup);
             this.groupBoxTargetGroup.Controls.Add(this.dgvTargetGroup);
             this.groupBoxTargetGroup.Location = new System.Drawing.Point(22, 354);
             this.groupBoxTargetGroup.Name = "groupBoxTargetGroup";
-            this.groupBoxTargetGroup.Size = new System.Drawing.Size(742, 236);
+            this.groupBoxTargetGroup.Size = new System.Drawing.Size(742, 183);
             this.groupBoxTargetGroup.TabIndex = 160;
             this.groupBoxTargetGroup.TabStop = false;
             this.groupBoxTargetGroup.Text = "Target Group List";
@@ -344,7 +344,7 @@
             // buttonCreateLoadBalancer
             // 
             this.buttonCreateLoadBalancer.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
-            this.buttonCreateLoadBalancer.Location = new System.Drawing.Point(245, 207);
+            this.buttonCreateLoadBalancer.Location = new System.Drawing.Point(683, 74);
             this.buttonCreateLoadBalancer.Name = "buttonCreateLoadBalancer";
             this.buttonCreateLoadBalancer.Size = new System.Drawing.Size(118, 23);
             this.buttonCreateLoadBalancer.TabIndex = 69;
@@ -355,7 +355,7 @@
             // buttonDelete
             // 
             this.buttonDelete.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
-            this.buttonDelete.Location = new System.Drawing.Point(132, 207);
+            this.buttonDelete.Location = new System.Drawing.Point(132, 154);
             this.buttonDelete.Name = "buttonDelete";
             this.buttonDelete.Size = new System.Drawing.Size(107, 23);
             this.buttonDelete.TabIndex = 41;
@@ -365,7 +365,7 @@
             // buttonReloadTargetGroup
             // 
             this.buttonReloadTargetGroup.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
-            this.buttonReloadTargetGroup.Location = new System.Drawing.Point(19, 207);
+            this.buttonReloadTargetGroup.Location = new System.Drawing.Point(19, 154);
             this.buttonReloadTargetGroup.Name = "buttonReloadTargetGroup";
             this.buttonReloadTargetGroup.Size = new System.Drawing.Size(107, 23);
             this.buttonReloadTargetGroup.TabIndex = 40;
@@ -381,7 +381,7 @@
             this.dgvTargetGroup.Location = new System.Drawing.Point(20, 22);
             this.dgvTargetGroup.Name = "dgvTargetGroup";
             this.dgvTargetGroup.RowHeadersWidth = 62;
-            this.dgvTargetGroup.Size = new System.Drawing.Size(705, 180);
+            this.dgvTargetGroup.Size = new System.Drawing.Size(705, 126);
             this.dgvTargetGroup.TabIndex = 2;
             // 
             // groupBoxCreateTG
@@ -399,7 +399,7 @@
             this.groupBoxCreateTG.Controls.Add(this.label1);
             this.groupBoxCreateTG.Location = new System.Drawing.Point(22, 241);
             this.groupBoxCreateTG.Name = "groupBoxCreateTG";
-            this.groupBoxCreateTG.Size = new System.Drawing.Size(742, 104);
+            this.groupBoxCreateTG.Size = new System.Drawing.Size(742, 94);
             this.groupBoxCreateTG.TabIndex = 162;
             this.groupBoxCreateTG.TabStop = false;
             this.groupBoxCreateTG.Text = "Create Target Group";
@@ -464,7 +464,7 @@
             // buttonCreateTargetGroup
             // 
             this.buttonCreateTargetGroup.Anchor = System.Windows.Forms.AnchorStyles.Left;
-            this.buttonCreateTargetGroup.Location = new System.Drawing.Point(6, 84);
+            this.buttonCreateTargetGroup.Location = new System.Drawing.Point(6, 70);
             this.buttonCreateTargetGroup.Name = "buttonCreateTargetGroup";
             this.buttonCreateTargetGroup.Size = new System.Drawing.Size(118, 23);
             this.buttonCreateTargetGroup.TabIndex = 162;
@@ -509,7 +509,7 @@
             this.Controls.Add(this.groupBoxMirroring);
             this.Font = new System.Drawing.Font("Consolas", 9.75F);
             this.Name = "UcTargetGroup";
-            this.Size = new System.Drawing.Size(776, 770);
+            this.Size = new System.Drawing.Size(776, 688);
             this.Load += new System.EventHandler(this.LoadData);
             ((System.ComponentModel.ISupportInitialize)(this.dgvServerList)).EndInit();
             this.groupBoxMirroring.ResumeLayout(false);

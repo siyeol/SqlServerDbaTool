@@ -37,6 +37,8 @@
             this.labelMasterServer = new System.Windows.Forms.Label();
             this.comboBoxSlaveServer = new System.Windows.Forms.ComboBox();
             this.groupBoxSqlServerConfigurationTemplate = new System.Windows.Forms.GroupBox();
+            this.label1 = new System.Windows.Forms.Label();
+            this.comboBoxVPC = new System.Windows.Forms.ComboBox();
             this.buttonShowCheckedLBDetailInfo = new System.Windows.Forms.Button();
             this.buttonLoadBalancerNameCheck = new System.Windows.Forms.Button();
             this.buttonDbDelete = new System.Windows.Forms.Button();
@@ -62,13 +64,17 @@
             this.dgvloadBalancerList = new System.Windows.Forms.DataGridView();
             this.buttonLoadBalancerListReload = new System.Windows.Forms.Button();
             this.buttonDeleteLoadBalancer = new System.Windows.Forms.Button();
-            this.label1 = new System.Windows.Forms.Label();
-            this.comboBoxVPC = new System.Windows.Forms.ComboBox();
+            this.groupBoxTargetGroup = new System.Windows.Forms.GroupBox();
+            this.buttonDelete = new System.Windows.Forms.Button();
+            this.buttonReloadTargetGroup = new System.Windows.Forms.Button();
+            this.dgvTargetGroup = new System.Windows.Forms.DataGridView();
             this.groupBoxLoadBalancer.SuspendLayout();
             this.groupBoxServer.SuspendLayout();
             this.groupBoxSqlServerConfigurationTemplate.SuspendLayout();
             this.groupBox1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.dgvloadBalancerList)).BeginInit();
+            this.groupBoxTargetGroup.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.dgvTargetGroup)).BeginInit();
             this.SuspendLayout();
             // 
             // groupBoxLoadBalancer
@@ -76,6 +82,7 @@
             this.groupBoxLoadBalancer.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
             | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
+            this.groupBoxLoadBalancer.Controls.Add(this.groupBoxTargetGroup);
             this.groupBoxLoadBalancer.Controls.Add(this.groupBoxServer);
             this.groupBoxLoadBalancer.Controls.Add(this.groupBoxSqlServerConfigurationTemplate);
             this.groupBoxLoadBalancer.Controls.Add(this.groupBox1);
@@ -187,6 +194,23 @@
             this.groupBoxSqlServerConfigurationTemplate.TabIndex = 54;
             this.groupBoxSqlServerConfigurationTemplate.TabStop = false;
             this.groupBoxSqlServerConfigurationTemplate.Text = "Load Balancer Configuration Template";
+            // 
+            // label1
+            // 
+            this.label1.AutoSize = true;
+            this.label1.Location = new System.Drawing.Point(804, 27);
+            this.label1.Name = "label1";
+            this.label1.Size = new System.Drawing.Size(43, 23);
+            this.label1.TabIndex = 70;
+            this.label1.Text = "VPC";
+            // 
+            // comboBoxVPC
+            // 
+            this.comboBoxVPC.FormattingEnabled = true;
+            this.comboBoxVPC.Location = new System.Drawing.Point(803, 44);
+            this.comboBoxVPC.Name = "comboBoxVPC";
+            this.comboBoxVPC.Size = new System.Drawing.Size(123, 31);
+            this.comboBoxVPC.TabIndex = 69;
             // 
             // buttonShowCheckedLBDetailInfo
             // 
@@ -371,7 +395,7 @@
             this.groupBox1.Controls.Add(this.buttonDeleteLoadBalancer);
             this.groupBox1.Location = new System.Drawing.Point(22, 22);
             this.groupBox1.Name = "groupBox1";
-            this.groupBox1.Size = new System.Drawing.Size(853, 430);
+            this.groupBox1.Size = new System.Drawing.Size(853, 242);
             this.groupBox1.TabIndex = 53;
             this.groupBox1.TabStop = false;
             this.groupBox1.Text = "Load Balancer List";
@@ -379,7 +403,7 @@
             // buttonCreateLoadBalancer
             // 
             this.buttonCreateLoadBalancer.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
-            this.buttonCreateLoadBalancer.Location = new System.Drawing.Point(130, 396);
+            this.buttonCreateLoadBalancer.Location = new System.Drawing.Point(130, 208);
             this.buttonCreateLoadBalancer.Name = "buttonCreateLoadBalancer";
             this.buttonCreateLoadBalancer.Size = new System.Drawing.Size(118, 23);
             this.buttonCreateLoadBalancer.TabIndex = 68;
@@ -390,7 +414,7 @@
             // buttonServerListReload
             // 
             this.buttonServerListReload.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
-            this.buttonServerListReload.Location = new System.Drawing.Point(380, 396);
+            this.buttonServerListReload.Location = new System.Drawing.Point(380, 208);
             this.buttonServerListReload.Name = "buttonServerListReload";
             this.buttonServerListReload.Size = new System.Drawing.Size(118, 23);
             this.buttonServerListReload.TabIndex = 67;
@@ -401,7 +425,7 @@
             // buttonShowLBDetail
             // 
             this.buttonShowLBDetail.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
-            this.buttonShowLBDetail.Location = new System.Drawing.Point(253, 396);
+            this.buttonShowLBDetail.Location = new System.Drawing.Point(253, 208);
             this.buttonShowLBDetail.Name = "buttonShowLBDetail";
             this.buttonShowLBDetail.Size = new System.Drawing.Size(123, 23);
             this.buttonShowLBDetail.TabIndex = 67;
@@ -418,13 +442,13 @@
             this.dgvloadBalancerList.Location = new System.Drawing.Point(19, 22);
             this.dgvloadBalancerList.Name = "dgvloadBalancerList";
             this.dgvloadBalancerList.RowHeadersWidth = 62;
-            this.dgvloadBalancerList.Size = new System.Drawing.Size(821, 368);
+            this.dgvloadBalancerList.Size = new System.Drawing.Size(821, 180);
             this.dgvloadBalancerList.TabIndex = 1;
             // 
             // buttonLoadBalancerListReload
             // 
             this.buttonLoadBalancerListReload.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
-            this.buttonLoadBalancerListReload.Location = new System.Drawing.Point(19, 396);
+            this.buttonLoadBalancerListReload.Location = new System.Drawing.Point(19, 208);
             this.buttonLoadBalancerListReload.Name = "buttonLoadBalancerListReload";
             this.buttonLoadBalancerListReload.Size = new System.Drawing.Size(107, 23);
             this.buttonLoadBalancerListReload.TabIndex = 39;
@@ -435,7 +459,7 @@
             // buttonDeleteLoadBalancer
             // 
             this.buttonDeleteLoadBalancer.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
-            this.buttonDeleteLoadBalancer.Location = new System.Drawing.Point(502, 396);
+            this.buttonDeleteLoadBalancer.Location = new System.Drawing.Point(502, 208);
             this.buttonDeleteLoadBalancer.Name = "buttonDeleteLoadBalancer";
             this.buttonDeleteLoadBalancer.Size = new System.Drawing.Size(118, 23);
             this.buttonDeleteLoadBalancer.TabIndex = 59;
@@ -443,22 +467,50 @@
             this.buttonDeleteLoadBalancer.UseVisualStyleBackColor = true;
             this.buttonDeleteLoadBalancer.Click += new System.EventHandler(this.buttonDeleteLoadBalancerInstance_Click);
             // 
-            // label1
+            // groupBoxTargetGroup
             // 
-            this.label1.AutoSize = true;
-            this.label1.Location = new System.Drawing.Point(804, 27);
-            this.label1.Name = "label1";
-            this.label1.Size = new System.Drawing.Size(43, 23);
-            this.label1.TabIndex = 70;
-            this.label1.Text = "VPC";
+            this.groupBoxTargetGroup.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.groupBoxTargetGroup.Controls.Add(this.buttonDelete);
+            this.groupBoxTargetGroup.Controls.Add(this.buttonReloadTargetGroup);
+            this.groupBoxTargetGroup.Controls.Add(this.dgvTargetGroup);
+            this.groupBoxTargetGroup.Location = new System.Drawing.Point(22, 270);
+            this.groupBoxTargetGroup.Name = "groupBoxTargetGroup";
+            this.groupBoxTargetGroup.Size = new System.Drawing.Size(853, 180);
+            this.groupBoxTargetGroup.TabIndex = 161;
+            this.groupBoxTargetGroup.TabStop = false;
+            this.groupBoxTargetGroup.Text = "Target Group List";
             // 
-            // comboBoxVPC
+            // buttonDelete
             // 
-            this.comboBoxVPC.FormattingEnabled = true;
-            this.comboBoxVPC.Location = new System.Drawing.Point(803, 44);
-            this.comboBoxVPC.Name = "comboBoxVPC";
-            this.comboBoxVPC.Size = new System.Drawing.Size(123, 31);
-            this.comboBoxVPC.TabIndex = 69;
+            this.buttonDelete.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
+            this.buttonDelete.Location = new System.Drawing.Point(132, 151);
+            this.buttonDelete.Name = "buttonDelete";
+            this.buttonDelete.Size = new System.Drawing.Size(107, 23);
+            this.buttonDelete.TabIndex = 41;
+            this.buttonDelete.Text = "Delete";
+            this.buttonDelete.UseVisualStyleBackColor = true;
+            // 
+            // buttonReloadTargetGroup
+            // 
+            this.buttonReloadTargetGroup.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
+            this.buttonReloadTargetGroup.Location = new System.Drawing.Point(19, 151);
+            this.buttonReloadTargetGroup.Name = "buttonReloadTargetGroup";
+            this.buttonReloadTargetGroup.Size = new System.Drawing.Size(107, 23);
+            this.buttonReloadTargetGroup.TabIndex = 40;
+            this.buttonReloadTargetGroup.Text = "Reload";
+            this.buttonReloadTargetGroup.UseVisualStyleBackColor = true;
+            // 
+            // dgvTargetGroup
+            // 
+            this.dgvTargetGroup.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.dgvTargetGroup.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
+            this.dgvTargetGroup.Location = new System.Drawing.Point(20, 22);
+            this.dgvTargetGroup.Name = "dgvTargetGroup";
+            this.dgvTargetGroup.RowHeadersWidth = 62;
+            this.dgvTargetGroup.Size = new System.Drawing.Size(816, 123);
+            this.dgvTargetGroup.TabIndex = 2;
             // 
             // UcLoadBalancer
             // 
@@ -476,6 +528,8 @@
             this.groupBoxSqlServerConfigurationTemplate.PerformLayout();
             this.groupBox1.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)(this.dgvloadBalancerList)).EndInit();
+            this.groupBoxTargetGroup.ResumeLayout(false);
+            ((System.ComponentModel.ISupportInitialize)(this.dgvTargetGroup)).EndInit();
             this.ResumeLayout(false);
 
         }
@@ -517,5 +571,9 @@
         private System.Windows.Forms.Button buttonCreateLoadBalancer;
         private System.Windows.Forms.Label label1;
         private System.Windows.Forms.ComboBox comboBoxVPC;
+        private System.Windows.Forms.GroupBox groupBoxTargetGroup;
+        private System.Windows.Forms.Button buttonDelete;
+        private System.Windows.Forms.Button buttonReloadTargetGroup;
+        private System.Windows.Forms.DataGridView dgvTargetGroup;
     }
 }

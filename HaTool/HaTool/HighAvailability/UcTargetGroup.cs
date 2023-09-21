@@ -116,8 +116,8 @@ namespace HaTool.HighAvailability
 
             dgvServerList.Columns.AddRange(new DataGridViewColumn[]
             {
-                ColumnMasterCheckBox, // Add this
-                ColumnSlaveCheckBox,  // Add this
+                ColumnMasterCheckBox   ,
+                ColumnSlaveCheckBox    ,
                 ColumnServerName       ,
                 ColumnServerZoneNo     ,
                 ColumnServerInstanceNo ,
@@ -471,30 +471,35 @@ namespace HaTool.HighAvailability
             comboBoxVPC.SelectedIndex = 0;
         }
 
-        private List<string> GetSelectedServerInstanceNos()
+        private List<Tuple<string, string, string>> GetSelectedServerInstanceNos()
         {
-            List<string> selectedServerInstanceNos = new List<string>();
+            List<Tuple<string, string, string>> selectedServers = new List<Tuple<string, string, string>>();
 
             foreach (DataGridViewRow row in dgvServerList.Rows)
             {
                 bool isMasterChecked = Convert.ToBoolean(row.Cells["Master"].Value);
                 bool isSlaveChecked = Convert.ToBoolean(row.Cells["Slave"].Value);
+                string instanceNo = row.Cells["InstanceNo"].Value.ToString();
+                string name = row.Cells["Name"].Value.ToString();
 
-                if (isMasterChecked || isSlaveChecked)
+                if (isMasterChecked)
                 {
-                    string instanceNo = row.Cells["InstanceNo"].Value.ToString();
-                    selectedServerInstanceNos.Add(instanceNo);
+                    selectedServers.Add(new Tuple<string, string, string>(instanceNo, name, "MASTER"));
+                }
+                else if (isSlaveChecked)
+                {
+                    selectedServers.Add(new Tuple<string, string, string>(instanceNo, name, "SLAVE"));
                 }
             }
 
-            return selectedServerInstanceNos;
+            return selectedServers;
         }
 
         private async Task CreateTargetGroup()
         {
             try
             {
-                List<string> selectedServerInstanceNos = GetSelectedServerInstanceNos();
+                List<Tuple<string, string, string>> selectedServers = GetSelectedServerInstanceNos();
 
                 string endpoint = dataManager.GetValue(DataManager.Category.ApiGateway, DataManager.Key.Endpoint);
                 string action = @"/vloadbalancer/v2/createTargetGroup";
@@ -505,10 +510,10 @@ namespace HaTool.HighAvailability
                 parameters.Add(new KeyValuePair<string, string>("vpcNo", comboBoxVPC.SelectedItem.ToString()));
                 parameters.Add(new KeyValuePair<string, string>("targetGroupName", textBoxTargetGroupName.Text));
 
-                for (int i = 0; i < selectedServerInstanceNos.Count; i++)
+                for (int i = 0; i < selectedServers.Count; i++)
                 {
                     string paramName = $"targetNoList.{i + 1}";
-                    parameters.Add(new KeyValuePair<string, string>(paramName, selectedServerInstanceNos[i]));
+                    parameters.Add(new KeyValuePair<string, string>(paramName, selectedServers[i].Item1));
                 }
 
                 SoaCall soaCall = new SoaCall();
@@ -600,7 +605,41 @@ namespace HaTool.HighAvailability
             }
         }
 
+        private async Task SaveClusterServerInfo(string loadBalancerName)
+        {
+            try
+            {
+                await fileDb.ReadTable(FileDb.TableName.TBL_CLUSTER_SERVER);
+                List<Tuple<string, string, string>> selectedServers = GetSelectedServerInstanceNos();
 
+                // Delete existing entries for the given loadBalancerName
+                foreach (var entry in fileDb.TBL_CLUSTER_SERVER.Data)
+                {
+                    if (entry.Key.clusterName.Equals(loadBalancerName, StringComparison.OrdinalIgnoreCase))
+                    {
+                        var p = new List<KeyValuePair<string, string>>();
+                        p.Add(new KeyValuePair<string, string>("clusterName", entry.Key.clusterName));
+                        p.Add(new KeyValuePair<string, string>("serverName", entry.Key.serverName));
+                        await fileDb.DeleteTable(FileDb.TableName.TBL_CLUSTER_SERVER, p);
+                    }
+                }
+
+                // Upsert the new entries
+                foreach (var server in selectedServers)
+                {
+                    var clusterServerInfo = new List<KeyValuePair<string, string>>();
+                    clusterServerInfo.Add(new KeyValuePair<string, string>("clusterName", loadBalancerName));
+                    clusterServerInfo.Add(new KeyValuePair<string, string>("serverName", server.Item2));
+                    clusterServerInfo.Add(new KeyValuePair<string, string>("serverRole", server.Item3));
+
+                    await fileDb.UpSertTable(FileDb.TableName.TBL_CLUSTER_SERVER, clusterServerInfo);
+                }
+            }
+            catch (Exception)
+            {
+                throw;
+            }
+        }
 
         private async void buttonServerListReload_Click(object sender, EventArgs e)
         {
@@ -696,12 +735,23 @@ namespace HaTool.HighAvailability
                 createLoadBalancerInstance createLoadBalancerInstance = JsonConvert.DeserializeObject<createLoadBalancerInstance>(response, options);
                 if (createLoadBalancerInstance.createLoadBalancerInstanceResponse.returnCode.Equals("0"))
                 {
+                    var _lbInstance = createLoadBalancerInstance.createLoadBalancerInstanceResponse.loadBalancerInstanceList[0];
+                    string loadBalancerInstanceNo = _lbInstance.loadBalancerInstanceNo;
+                    string loadBalancerDomain = _lbInstance.loadBalancerDomain;
+
+                    var p = new List<KeyValuePair<string, string>>();
+                    p.Add(new KeyValuePair<string, string>("clusterName", textBoxLoadBalancerName.Text.Trim()));
+                    p.Add(new KeyValuePair<string, string>("clusterNo", loadBalancerInstanceNo)); 
+                    p.Add(new KeyValuePair<string, string>("domainName", loadBalancerDomain)); 
+                    p.Add(new KeyValuePair<string, string>("clusterPort", textBoxLoadBalancerPort.Text.Trim()));
+
+                    await fileDb.UpSertTable(FileDb.TableName.TBL_CLUSTER, p);
+
                     MessageBox.Show("create requested");
                 }
 
-                //await LoadBalancerNameCheck((comboBoxRegion.SelectedItem as region).regionNo);
-                //await DbSave();
-
+                string selectedLoadBalancerName = textBoxLoadBalancerName.Text.Trim();
+                await SaveClusterServerInfo(selectedLoadBalancerName);
             }
             catch (Exception ex)
             {

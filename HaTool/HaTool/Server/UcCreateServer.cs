@@ -143,7 +143,7 @@ namespace HaTool.Server
                         {
                             var item = new accessControlGroup
                             {
-                                accessControlGroupConfigurationNo = a.accessControlGroupConfigurationNo,
+                                accessControlGroupNo = a.accessControlGroupNo,
                                 accessControlGroupName = a.accessControlGroupName,
                                 accessControlGroupDescription = a.accessControlGroupDescription,
                                 isDefault = a.isDefault,
@@ -704,27 +704,27 @@ namespace HaTool.Server
                                 if (comboBoxACG1.Text.Equals(""))
                                     p.Add(new KeyValuePair<string, string>("accessControlGroupConfigurationNoList_1", "NULL"));
                                 else
-                                    p.Add(new KeyValuePair<string, string>("accessControlGroupConfigurationNoList_1", (comboBoxACG1.SelectedItem as accessControlGroup).accessControlGroupConfigurationNo));
+                                    p.Add(new KeyValuePair<string, string>("accessControlGroupConfigurationNoList_1", (comboBoxACG1.SelectedItem as accessControlGroup).accessControlGroupNo));
 
                                 if (comboBoxACG2.Text.Equals(""))
                                     p.Add(new KeyValuePair<string, string>("accessControlGroupConfigurationNoList_2", "NULL"));
                                 else
-                                    p.Add(new KeyValuePair<string, string>("accessControlGroupConfigurationNoList_2", (comboBoxACG2.SelectedItem as accessControlGroup).accessControlGroupConfigurationNo));
+                                    p.Add(new KeyValuePair<string, string>("accessControlGroupConfigurationNoList_2", (comboBoxACG2.SelectedItem as accessControlGroup).accessControlGroupNo));
 
                                 if (comboBoxACG3.Text.Equals(""))
                                     p.Add(new KeyValuePair<string, string>("accessControlGroupConfigurationNoList_3", "NULL"));
                                 else
-                                    p.Add(new KeyValuePair<string, string>("accessControlGroupConfigurationNoList_3", (comboBoxACG3.SelectedItem as accessControlGroup).accessControlGroupConfigurationNo));
+                                    p.Add(new KeyValuePair<string, string>("accessControlGroupConfigurationNoList_3", (comboBoxACG3.SelectedItem as accessControlGroup).accessControlGroupNo));
 
                                 if (comboBoxACG4.Text.Equals(""))
                                     p.Add(new KeyValuePair<string, string>("accessControlGroupConfigurationNoList_4", "NULL"));
                                 else
-                                    p.Add(new KeyValuePair<string, string>("accessControlGroupConfigurationNoList_4", (comboBoxACG4.SelectedItem as accessControlGroup).accessControlGroupConfigurationNo));
+                                    p.Add(new KeyValuePair<string, string>("accessControlGroupConfigurationNoList_4", (comboBoxACG4.SelectedItem as accessControlGroup).accessControlGroupNo));
 
                                 if (comboBoxACG5.Text.Equals(""))
                                     p.Add(new KeyValuePair<string, string>("accessControlGroupConfigurationNoList_5", "NULL"));
                                 else
-                                    p.Add(new KeyValuePair<string, string>("accessControlGroupConfigurationNoList_5", (comboBoxACG5.SelectedItem as accessControlGroup).accessControlGroupConfigurationNo));
+                                    p.Add(new KeyValuePair<string, string>("accessControlGroupConfigurationNoList_5", (comboBoxACG5.SelectedItem as accessControlGroup).accessControlGroupNo));
 
                                 await fileDb.UpSertTable(FileDb.TableName.TBL_SERVER, p);
                             }
@@ -890,7 +890,6 @@ namespace HaTool.Server
                 List<KeyValuePair<string, string>> listKeyValueParameters = GetParameters();
                 listKeyValueParameters.Add(new KeyValuePair<string, string>("responseFormatType", "json"));
                 listKeyValueParameters.Add(new KeyValuePair<string, string>("networkInterfaceList.1.networkInterfaceOrder", "0")); //hardcoded - vserver/v2/getNetworkInterfaceList
-                listKeyValueParameters.Add(new KeyValuePair<string, string>("networkInterfaceList.1.accessControlGroupNoList.1", "128077")); //hardcoded - vserver/v2/getNetworkInterfaceList
                 //listKeyValueParameters.Add(new KeyValuePair<string, string>("raidTypeName", dataManager.GetValue(DataManager.Category.VpcInfo, DataManager.Key.raidTypeName))); /* vserver/v2/getRaidList */
                 listKeyValueParameters.Add(new KeyValuePair<string, string>("initScriptNo", dataManager.GetValue(DataManager.Category.InitScript, DataManager.Key.initScriptNo)));
 
@@ -961,30 +960,19 @@ namespace HaTool.Server
             p.Add(new KeyValuePair<string, string>("vpcNo", comboBoxVPC.SelectedItem.ToString()));
             p.Add(new KeyValuePair<string, string>("subnetNo", comboBoxSubnet.SelectedItem.ToString()));
 
-            if (comboBoxACG1.Text.Equals(""))
-                p.Add(new KeyValuePair<string, string>("accessControlGroupConfigurationNoList_1", "NULL"));
-            else
-                p.Add(new KeyValuePair<string, string>("accessControlGroupConfigurationNoList_1", (comboBoxACG1.SelectedItem as accessControlGroup).accessControlGroupConfigurationNo));
-
-            if (comboBoxACG2.Text.Equals(""))
-                p.Add(new KeyValuePair<string, string>("accessControlGroupConfigurationNoList_2", "NULL"));
-            else
-                p.Add(new KeyValuePair<string, string>("accessControlGroupConfigurationNoList_2", (comboBoxACG2.SelectedItem as accessControlGroup).accessControlGroupConfigurationNo));
-
-            if (comboBoxACG3.Text.Equals(""))
-                p.Add(new KeyValuePair<string, string>("accessControlGroupConfigurationNoList_3", "NULL"));
-            else
-                p.Add(new KeyValuePair<string, string>("accessControlGroupConfigurationNoList_3", (comboBoxACG3.SelectedItem as accessControlGroup).accessControlGroupConfigurationNo));
-
-            if (comboBoxACG4.Text.Equals(""))
-                p.Add(new KeyValuePair<string, string>("accessControlGroupConfigurationNoList_4", "NULL"));
-            else
-                p.Add(new KeyValuePair<string, string>("accessControlGroupConfigurationNoList_4", (comboBoxACG4.SelectedItem as accessControlGroup).accessControlGroupConfigurationNo));
-
-            if (comboBoxACG5.Text.Equals(""))
-                p.Add(new KeyValuePair<string, string>("accessControlGroupConfigurationNoList_5", "NULL"));
-            else
-                p.Add(new KeyValuePair<string, string>("accessControlGroupConfigurationNoList_5", (comboBoxACG5.SelectedItem as accessControlGroup).accessControlGroupConfigurationNo));
+            ComboBox[] comboBoxACGs = new ComboBox[] { comboBoxACG1, comboBoxACG2, comboBoxACG3, comboBoxACG4, comboBoxACG5 };
+            for (int i = 0; i < comboBoxACGs.Length; i++)
+            {
+                if (string.IsNullOrEmpty(comboBoxACGs[i].Text))
+                {
+                    p.Add(new KeyValuePair<string, string>($"networkInterfaceList.1.accessControlGroupNoList.{i + 1}", "NULL"));
+                }
+                else
+                {
+                    string acgConfigurationNo = (comboBoxACGs[i].SelectedItem as accessControlGroup).accessControlGroupNo;
+                    p.Add(new KeyValuePair<string, string>($"networkInterfaceList.1.accessControlGroupNoList.{i + 1}", acgConfigurationNo));
+                }
+            }
 
             return p; 
         }

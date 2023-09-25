@@ -426,7 +426,7 @@ namespace HaTool.Model.NCloud
 
     public class accessControlGroup
     {
-        public string accessControlGroupConfigurationNo { get; set; }
+        public string accessControlGroupNo { get; set; }
         public string accessControlGroupName { get; set; }
         public string accessControlGroupDescription { get; set; }
         public bool isDefault { get; set; }

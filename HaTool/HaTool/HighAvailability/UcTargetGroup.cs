@@ -509,13 +509,14 @@ namespace HaTool.HighAvailability
                 parameters.Add(new KeyValuePair<string, string>("healthCheckProtocolTypeCode", comboBoxHealthCheckProtocol.SelectedItem.ToString()));
                 parameters.Add(new KeyValuePair<string, string>("vpcNo", comboBoxVPC.SelectedItem.ToString()));
                 parameters.Add(new KeyValuePair<string, string>("targetGroupName", textBoxTargetGroupName.Text));
+                parameters.Add(new KeyValuePair<string, string>("targetGroupPort", textBoxTGPort.Text));
+                parameters.Add(new KeyValuePair<string, string>("healthCheckPort", textBoxTGPort.Text));
 
                 for (int i = 0; i < selectedServers.Count; i++)
                 {
-                    if (selectedServers[i].Item2 == "MASTER")
+                    if (selectedServers[i].Item3 == "MASTER")
                     {
-                        string paramName = $"targetNoList.{i + 1}";
-                        parameters.Add(new KeyValuePair<string, string>(paramName, selectedServers[i].Item1));
+                        parameters.Add(new KeyValuePair<string, string>("targetNoList.1", selectedServers[i].Item1));
                     }
                 }
 
@@ -710,10 +711,10 @@ namespace HaTool.HighAvailability
                 string action = @"/vloadbalancer/v2/createLoadBalancerInstance";
                 List<KeyValuePair<string, string>> parameters = new List<KeyValuePair<string, string>>();
                 parameters.Add(new KeyValuePair<string, string>("responseFormatType", "json"));
-                parameters.Add(new KeyValuePair<string, string>("loadBalancerTypeCode", "NETWORK")); // APPLICATION/NETWORK/NETWORK_PROXY
+                parameters.Add(new KeyValuePair<string, string>("loadBalancerTypeCode", "NETWORK")); //Restricting to L4 LB
                 parameters.Add(new KeyValuePair<string, string>("loadBalancerName", textBoxLoadBalancerName.Text.Trim()));
                 parameters.Add(new KeyValuePair<string, string>("loadBalancerListenerList.1.protocolTypeCode", comboBoxProtocol.Text.Trim()));
-                //parameters.Add(new KeyValuePair<string, string>("loadBalancerListenerList.1.Port", "8080")); //integer enable somehow
+                parameters.Add(new KeyValuePair<string, string>("loadBalancerListenerList.1.port", textBoxServerPort.Text));
                 parameters.Add(new KeyValuePair<string, string>("subnetNoList.1", comboBoxSubnet.SelectedItem.ToString()));
                 //parameters.Add(new KeyValuePair<string, string>("loadBalancerRuleList.1.serverPort", textBoxServerPort.Text.Trim()));
                 parameters.Add(new KeyValuePair<string, string>("regionCode", (comboBoxRegion.SelectedItem as region).regionCode));

@@ -32,6 +32,7 @@
             this.dgvServerList = new System.Windows.Forms.DataGridView();
             this.groupBoxMirroring = new System.Windows.Forms.GroupBox();
             this.groupBoxSqlServerConfigurationTemplate = new System.Windows.Forms.GroupBox();
+            this.buttonCreateLoadBalancer = new System.Windows.Forms.Button();
             this.label3 = new System.Windows.Forms.Label();
             this.comboBox1 = new System.Windows.Forms.ComboBox();
             this.buttonShowCheckedLBDetailInfo = new System.Windows.Forms.Button();
@@ -53,7 +54,6 @@
             this.label5 = new System.Windows.Forms.Label();
             this.labelLoadBalancerPort = new System.Windows.Forms.Label();
             this.groupBoxTargetGroup = new System.Windows.Forms.GroupBox();
-            this.buttonCreateLoadBalancer = new System.Windows.Forms.Button();
             this.buttonDelete = new System.Windows.Forms.Button();
             this.buttonReloadTargetGroup = new System.Windows.Forms.Button();
             this.dgvTargetGroup = new System.Windows.Forms.DataGridView();
@@ -68,6 +68,8 @@
             this.comboBoxVPC = new System.Windows.Forms.ComboBox();
             this.label1 = new System.Windows.Forms.Label();
             this.groupBoxSelectHaGroup = new System.Windows.Forms.GroupBox();
+            this.textBoxTGPort = new System.Windows.Forms.TextBox();
+            this.label6 = new System.Windows.Forms.Label();
             ((System.ComponentModel.ISupportInitialize)(this.dgvServerList)).BeginInit();
             this.groupBoxMirroring.SuspendLayout();
             this.groupBoxSqlServerConfigurationTemplate.SuspendLayout();
@@ -146,6 +148,17 @@
             this.groupBoxSqlServerConfigurationTemplate.TabIndex = 163;
             this.groupBoxSqlServerConfigurationTemplate.TabStop = false;
             this.groupBoxSqlServerConfigurationTemplate.Text = "Load Balancer Configuration Template";
+            // 
+            // buttonCreateLoadBalancer
+            // 
+            this.buttonCreateLoadBalancer.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
+            this.buttonCreateLoadBalancer.Location = new System.Drawing.Point(683, 74);
+            this.buttonCreateLoadBalancer.Name = "buttonCreateLoadBalancer";
+            this.buttonCreateLoadBalancer.Size = new System.Drawing.Size(118, 23);
+            this.buttonCreateLoadBalancer.TabIndex = 69;
+            this.buttonCreateLoadBalancer.Text = "Create";
+            this.buttonCreateLoadBalancer.UseVisualStyleBackColor = true;
+            this.buttonCreateLoadBalancer.Click += new System.EventHandler(this.buttonCreateLoadBalancer_Click);
             // 
             // label3
             // 
@@ -341,17 +354,6 @@
             this.groupBoxTargetGroup.TabStop = false;
             this.groupBoxTargetGroup.Text = "Target Group List";
             // 
-            // buttonCreateLoadBalancer
-            // 
-            this.buttonCreateLoadBalancer.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
-            this.buttonCreateLoadBalancer.Location = new System.Drawing.Point(683, 74);
-            this.buttonCreateLoadBalancer.Name = "buttonCreateLoadBalancer";
-            this.buttonCreateLoadBalancer.Size = new System.Drawing.Size(118, 23);
-            this.buttonCreateLoadBalancer.TabIndex = 69;
-            this.buttonCreateLoadBalancer.Text = "Create";
-            this.buttonCreateLoadBalancer.UseVisualStyleBackColor = true;
-            this.buttonCreateLoadBalancer.Click += new System.EventHandler(this.buttonCreateLoadBalancer_Click);
-            // 
             // buttonDelete
             // 
             this.buttonDelete.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
@@ -388,6 +390,8 @@
             // 
             this.groupBoxCreateTG.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
+            this.groupBoxCreateTG.Controls.Add(this.textBoxTGPort);
+            this.groupBoxCreateTG.Controls.Add(this.label6);
             this.groupBoxCreateTG.Controls.Add(this.textBoxTargetGroupName);
             this.groupBoxCreateTG.Controls.Add(this.labelCurrentAccessKey);
             this.groupBoxCreateTG.Controls.Add(this.comboBoxHealthCheckProtocol);
@@ -502,6 +506,23 @@
             this.groupBoxSelectHaGroup.TabStop = false;
             this.groupBoxSelectHaGroup.Text = "Select Server";
             // 
+            // textBoxTGPort
+            // 
+            this.textBoxTGPort.ForeColor = System.Drawing.SystemColors.WindowText;
+            this.textBoxTGPort.Location = new System.Drawing.Point(522, 44);
+            this.textBoxTGPort.Name = "textBoxTGPort";
+            this.textBoxTGPort.Size = new System.Drawing.Size(123, 30);
+            this.textBoxTGPort.TabIndex = 169;
+            // 
+            // label6
+            // 
+            this.label6.AutoSize = true;
+            this.label6.Location = new System.Drawing.Point(525, 24);
+            this.label6.Name = "label6";
+            this.label6.Size = new System.Drawing.Size(54, 23);
+            this.label6.TabIndex = 170;
+            this.label6.Text = "Port";
+            // 
             // UcTargetGroup
             // 
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.None;
@@ -566,5 +587,7 @@
         private System.Windows.Forms.Label label5;
         private System.Windows.Forms.Label labelLoadBalancerPort;
         private System.Windows.Forms.Button buttonCreateLoadBalancer;
+        private System.Windows.Forms.TextBox textBoxTGPort;
+        private System.Windows.Forms.Label label6;
     }
 }

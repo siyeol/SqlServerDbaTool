@@ -664,7 +664,6 @@ namespace HaTool.Server
                                 serverName = a.serverName,
                                 serverInstanceNo = a.serverInstanceNo,
                                 publicIp = a.publicIp,
-                                privateIp = a.privateIp,
                                 regionCode = a.regionCode,
                                 zoneCode = a.zoneCode,
                                 serverImageProductCode = a.serverImageProductCode,
@@ -691,7 +690,6 @@ namespace HaTool.Server
                                 p.Add(new KeyValuePair<string, string>("serverName", a.serverName));
                                 p.Add(new KeyValuePair<string, string>("serverInstanceNo", a.serverInstanceNo));
                                 p.Add(new KeyValuePair<string, string>("serverPublicIp", a.publicIp));
-                                p.Add(new KeyValuePair<string, string>("serverPrivateIp", a.privateIp));
                                 p.Add(new KeyValuePair<string, string>("regionCode", a.regionCode));
                                 p.Add(new KeyValuePair<string, string>("zoneCode", a.zoneCode));
                                 p.Add(new KeyValuePair<string, string>("serverImageProductCode", a.serverImageProductCode));
@@ -837,7 +835,6 @@ namespace HaTool.Server
                                 serverInstanceNo = a.serverInstanceNo,
                                 serverName = a.serverName,
                                 publicIp = a.publicIp,
-                                privateIp = a.privateIp,
                                 serverInstanceStatus = new codeCodeName
                                 {
                                     code = a.serverInstanceStatus.code,
@@ -950,7 +947,6 @@ namespace HaTool.Server
             p.Add(new KeyValuePair<string, string>("serverName", textBoxServerName.Text));
             p.Add(new KeyValuePair<string, string>("serverInstanceNo", CheckedServer.serverInstanceNo));
             p.Add(new KeyValuePair<string, string>("serverPublicIp", CheckedServer.publicIp));
-            p.Add(new KeyValuePair<string, string>("serverPrivateIp", CheckedServer.privateIp));
             p.Add(new KeyValuePair<string, string>("regionCode", (comboBoxRegion.SelectedItem as region).regionCode)); // CHANGE HERE
             p.Add(new KeyValuePair<string, string>("zoneCode", (comboBoxZone.SelectedItem as zone).zoneCode)); // CHANGE HERE
             p.Add(new KeyValuePair<string, string>("serverImageProductCode", (comboBoxServerImage.SelectedItem as imgProduct).productCode));

@@ -15,6 +15,7 @@ using Newtonsoft.Json;
 using HaTool.Model.NCloud;
 using LogClient;
 using Newtonsoft.Json.Linq;
+using System.Net;
 
 namespace HaTool.Server
 {
@@ -786,12 +787,13 @@ namespace HaTool.Server
                 {
                     if (bool.Parse(item.Cells["CheckBox"].Value.ToString()))
                     {
-                        string publicIp = await CreatePublicIpInstance(item.Cells["InstanceNo"].Value.ToString());
-                        if (publicIp != null && publicIp.Length > 0)
+                        var ipTuple = await CreatePublicIpInstance(item.Cells["InstanceNo"].Value.ToString());
+                        if (!string.IsNullOrEmpty(ipTuple.publicIp))
                         {
                             var p = new List<KeyValuePair<string, string>>();
                             p.Add(new KeyValuePair<string, string>("serverName", item.Cells["Name"].Value.ToString()));
-                            p.Add(new KeyValuePair<string, string>("serverPublicIp", publicIp));
+                            p.Add(new KeyValuePair<string, string>("serverPublicIp", ipTuple.publicIp));
+                            p.Add(new KeyValuePair<string, string>("serverPrivateIp", ipTuple.privateIp));
                             await fileDb.UpSertTable(FileDb.TableName.TBL_SERVER, p);
                         }
                     }
@@ -808,9 +810,10 @@ namespace HaTool.Server
             }
         }
 
-        private async Task<string> CreatePublicIpInstance(string serverInstanceNo)
+        private async Task<(string publicIp, string privateIp)> CreatePublicIpInstance(string serverInstanceNo)
         {
-            string publicIp = string.Empty;
+            string _publicIp = string.Empty;
+            string _privateIp = string.Empty;
             try
             {
                 string endpoint = dataManager.GetValue(DataManager.Category.ApiGateway, DataManager.Key.Endpoint);
@@ -839,7 +842,10 @@ namespace HaTool.Server
                 if (createPublicIpInstance.createPublicIpInstanceResponse.returnCode.Equals("0"))
                 {
                     foreach (var a in createPublicIpInstance.createPublicIpInstanceResponse.publicIpInstanceList)
-                        publicIp = a.publicIp;
+                    {
+                        _publicIp = a.publicIp;
+                        _privateIp = a.privateIp;
+                    }
 
                     if (createPublicIpInstance.createPublicIpInstanceResponse.totalRows == 0)
                         throw new Exception("createPublicIpInstance error");
@@ -850,7 +856,7 @@ namespace HaTool.Server
             {
                 throw;
             }
-            return publicIp;
+            return (_publicIp, _privateIp);
         }
 
         private async void buttonServerListReload_Click(object sender, EventArgs e)

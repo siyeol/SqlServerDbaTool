@@ -353,6 +353,7 @@ namespace HaTool.Model.NCloud
     {
         public string publicIpInstanceNo { get; set; }
         public string publicIp { get; set; }
+        public string privateIp {  get; set; }
         public string publicIpDescription { get; set; }
         public codeCodeName internetLineType { get; set; }
         public string publicIpInstanceStatusName { get; set; }

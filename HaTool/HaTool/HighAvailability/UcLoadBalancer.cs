@@ -87,7 +87,7 @@ namespace HaTool.HighAvailability
 
             ColumnLbCheckBox.HeaderText   = "CheckBox";
             ColumnLbName.HeaderText       = "Name";
-            ColumnLbZoneNo.HeaderText     = "ZoneNo";
+            ColumnLbZoneNo.HeaderText     = "Zone";
             ColumnLbInstanceNo.HeaderText = "InstanceNo";
             ColumnLbProtocol.HeaderText   = "Protocol";
             ColumnLbDomainName.HeaderText  = "DomainName";

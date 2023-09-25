@@ -79,7 +79,7 @@ namespace HaTool.HighAvailability
             ColumnMasterCheckBox.HeaderText = "Master";
             ColumnSlaveCheckBox.HeaderText = "Slave";
             ColumnServerName.HeaderText = "Name";
-            ColumnServerZoneNo.HeaderText = "ZoneNo";
+            ColumnServerZoneNo.HeaderText = "Zone";
             ColumnServerInstanceNo.HeaderText = "InstanceNo";
             ColumnServerPublicIp.HeaderText = "PublicIp";
             ColumnServerPrivateIp.HeaderText = "PrivateIp";

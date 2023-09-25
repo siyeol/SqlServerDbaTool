@@ -74,7 +74,7 @@ namespace HaTool.Server
 
             ColumnServerCheckBox.HeaderText = "CheckBox";
             ColumnServerName.HeaderText = "Name";
-            ColumnServerZoneNo.HeaderText = "ZoneNo";
+            ColumnServerZoneNo.HeaderText = "Zone";
             ColumnServerInstanceNo.HeaderText = "InstanceNo";
             ColumnServerPublicIp.HeaderText = "PublicIp";
             ColumnServerPrivateIp.HeaderText = "PrivateIp";

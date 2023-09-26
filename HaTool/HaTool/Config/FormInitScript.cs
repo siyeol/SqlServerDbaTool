@@ -213,16 +213,23 @@ namespace HaTool.Config
 
         private void TemplateChange()
         {
+            // hardcoded - for initscript private linklocal endpoint embedding
+            string _scriptObjectEndPoint = objectEndPoint;
+            if (_scriptObjectEndPoint == "https://kr.object.ncloudstorage.com")
+            {
+                _scriptObjectEndPoint = "https://kr.object.private.ncloudstorage.com";
+            }
+
             string vbTemplate = string.Empty;
             vbTemplate = userDataTemplate.Replace("DP_BUCKET_DP", bucket);
             vbTemplate = vbTemplate.Replace("DP_PSFILENAME_DP", textBoxPowerShellScriptName.Text);
-            vbTemplate = vbTemplate.Replace("DP_OJBJECT_ENDPOINT_DP", objectEndPoint);
+            vbTemplate = vbTemplate.Replace("DP_OJBJECT_ENDPOINT_DP", _scriptObjectEndPoint);
             userDataTemplateChanged = vbTemplate;
             
             string psTemplate = string.Empty;
             psTemplate = psContentsTemplate.Replace("DP_AGENT_FOLDER_DP", textBoxAgentFolder.Text);
             psTemplate = psTemplate.Replace("DP_BUCKET_DP", bucket);
-            psTemplate = psTemplate.Replace("DP_OJBJECT_ENDPOINT_DP", objectEndPoint);
+            psTemplate = psTemplate.Replace("DP_OJBJECT_ENDPOINT_DP", _scriptObjectEndPoint);
             psContentsTemplateChanged = psTemplate;
         }
 

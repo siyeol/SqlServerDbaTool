@@ -46,15 +46,6 @@ namespace HaTool.HighAvailability
         DataGridViewTextBoxColumn  ColumnLbStatus;
         DataGridViewTextBoxColumn  ColumnLbOperation;
 
-        DataGridViewCheckBoxColumn colTargetGroupCheckBox;
-        DataGridViewTextBoxColumn colTargetGroupName;
-        DataGridViewTextBoxColumn colTargetGroupNo;
-        DataGridViewTextBoxColumn colProtocol;
-        DataGridViewTextBoxColumn colPort;
-        DataGridViewTextBoxColumn colTargetType;
-        DataGridViewTextBoxColumn colLoadBalancer;
-        DataGridViewTextBoxColumn colVpc;
-
         FormPreview formPreview = FormPreview.Instance;
 
         public string Sp_configure { get; set; }
@@ -75,35 +66,15 @@ namespace HaTool.HighAvailability
             ColumnLbStatus        = new DataGridViewTextBoxColumn();
             ColumnLbOperation     = new DataGridViewTextBoxColumn();
 
-            colTargetGroupCheckBox = new DataGridViewCheckBoxColumn();
-            colTargetGroupName = new DataGridViewTextBoxColumn();
-            colTargetGroupNo = new DataGridViewTextBoxColumn();
-            colProtocol = new DataGridViewTextBoxColumn();
-            colPort = new DataGridViewTextBoxColumn();
-            colTargetType = new DataGridViewTextBoxColumn();
-            colLoadBalancer = new DataGridViewTextBoxColumn();
-            colVpc = new DataGridViewTextBoxColumn();
-
-
             ColumnLbCheckBox.HeaderText   = "CheckBox";
             ColumnLbName.HeaderText       = "Name";
-            ColumnLbZoneNo.HeaderText     = "Zone";
+            ColumnLbZoneNo.HeaderText     = "ZoneNo";
             ColumnLbInstanceNo.HeaderText = "InstanceNo";
             ColumnLbProtocol.HeaderText   = "Protocol";
             ColumnLbDomainName.HeaderText  = "DomainName";
             ColumnLbStatus.HeaderText     = "Status";
             ColumnLbOperation.HeaderText  = "Operation";
-
-            colTargetGroupCheckBox.HeaderText = "CheckBox";
-            colTargetGroupName.HeaderText = "Target Group Name";
-            colTargetGroupNo.HeaderText = "Target Group Number";
-            colProtocol.HeaderText = "Protocol";
-            colPort.HeaderText = "Port";
-            colTargetType.HeaderText = "Target Type";
-            colLoadBalancer.HeaderText = "Connected Load Balancer";
-            colVpc.HeaderText = "VPC";
-
-
+            
             ColumnLbCheckBox.Name     = "CheckBox";
             ColumnLbName.Name         = "Name";
             ColumnLbZoneNo.Name       = "ZoneNo";
@@ -112,15 +83,6 @@ namespace HaTool.HighAvailability
             ColumnLbDomainName.Name    = "DomainName";
             ColumnLbStatus.Name       = "Status";
             ColumnLbOperation.Name    = "Operation";
-
-            colTargetGroupCheckBox.Name = "CheckBox";
-            colTargetGroupName.Name = "TargetGroupName";
-            colTargetGroupNo.Name = "TargetGroupNo";
-            colProtocol.Name = "Protocol";
-            colPort.Name = "Port";
-            colTargetType.Name = "TargetType";
-            colLoadBalancer.Name = "LoadBalancer";
-            colVpc.Name = "Vpc";
 
 
             dgvloadBalancerList.Columns.AddRange(new DataGridViewColumn[]
@@ -149,29 +111,6 @@ namespace HaTool.HighAvailability
             dgvloadBalancerList.CellContentClick += new DataGridViewCellEventHandler(ControlHelpers.dgvSingleCheckBox);
             dgvloadBalancerList.CellContentClick += new DataGridViewCellEventHandler(ControlHelpers.dgvLineColorChange);
 
-
-            dgvTargetGroup.Columns.AddRange(new DataGridViewColumn[]
-            {
-                colTargetGroupCheckBox,
-                colTargetGroupName,
-                colTargetGroupNo,
-                colProtocol,
-                colPort,
-                colTargetType,
-                colLoadBalancer,
-                colVpc
-            });
-
-            dgvTargetGroup.AllowUserToAddRows = false;
-            dgvTargetGroup.RowHeadersVisible = false;
-            dgvTargetGroup.BackgroundColor = Color.White;
-            dgvTargetGroup.AutoResizeColumns();
-            dgvTargetGroup.AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.AllCells;
-            dgvTargetGroup.Columns["Vpc"].AutoSizeMode = DataGridViewAutoSizeColumnMode.Fill;
-            dgvTargetGroup.AllowUserToResizeRows = false;
-
-            ControlHelpers.dgvDesign(dgvTargetGroup);
-            dgvTargetGroup.CellContentClick += new DataGridViewCellEventHandler(ControlHelpers.dgvLineColorChange);
         }
 
         public UcLoadBalancer()
@@ -365,7 +304,7 @@ namespace HaTool.HighAvailability
                 tasks.Add(GetSubnetList());
                 tasks.Add(loadBalancerListLoad());
                 tasks.Add(GetVpcList());
-                tasks.Add(GetTargetGroup());
+                tasks.Add(GetTargetGroup()); //test
                 await Task.WhenAll(tasks);
                 //comboBoxZone.Text = "KR-1";
                 //comboBoxZone.Enabled = false;
@@ -610,20 +549,7 @@ namespace HaTool.HighAvailability
                 MessageBox.Show(ex.Message);
             }
         }
-
-        private string GetSelectedTargetGroupNo()
-        {
-            foreach (DataGridViewRow row in dgvTargetGroup.Rows)
-            {
-                bool isChecked = Convert.ToBoolean(row.Cells["CheckBox"].Value);  // Replace with the actual checkbox column name
-                if (isChecked)
-                {
-                    return row.Cells["TargetGroupNo"].Value.ToString();
-                }
-            }
-            return null;
-        }
-
+        
         private async void buttonCreateLoadBalancer_Click(object sender, EventArgs e)
         {
             try
@@ -636,12 +562,12 @@ namespace HaTool.HighAvailability
                 parameters.Add(new KeyValuePair<string, string>("loadBalancerTypeCode", "NETWORK")); // APPLICATION/NETWORK/NETWORK_PROXY
                 parameters.Add(new KeyValuePair<string, string>("loadBalancerName", textBoxLoadBalancerName.Text.Trim()));
                 parameters.Add(new KeyValuePair<string, string>("loadBalancerRuleList.1.protocolTypeCode", comboBoxProtocol.Text.Trim()));
-                //parameters.Add(new KeyValuePair<string, string>("loadBalancerRuleList.1.loadBalancerPort", textBoxLoadBalancerPort.Text.Trim()));
+                parameters.Add(new KeyValuePair<string, string>("loadBalancerRuleList.1.loadBalancerPort", textBoxLoadBalancerPort.Text.Trim()));
                 parameters.Add(new KeyValuePair<string, string>("loadBalancerSubnetList.1.subnetNo", comboBoxSubnet.SelectedItem.ToString()));
                 //parameters.Add(new KeyValuePair<string, string>("loadBalancerRuleList.1.serverPort", textBoxServerPort.Text.Trim()));
                 parameters.Add(new KeyValuePair<string, string>("regionCode", (comboBoxRegion.SelectedItem as region).regionCode));
                 parameters.Add(new KeyValuePair<string, string>("vpcNo", comboBoxVPC.SelectedItem.ToString()));
-                parameters.Add(new KeyValuePair<string, string>("loadBalancerListenerList.1.targetGroupNo", GetSelectedTargetGroupNo()));
+                parameters.Add(new KeyValuePair<string, string>("loadBalancerListenerList.1.targetGroupNo", dataManager.GetValue(DataManager.Category.LoadBalancer, DataManager.Key.targetGroupNo)));
                 SoaCall soaCall = new SoaCall();
                 var task = soaCall.WebApiCall(endpoint, RequestType.POST, action, parameters, LogClient.Config.Instance.GetValue(Category.Api, Key.AccessKey), LogClient.Config.Instance.GetValue(Category.Api, Key.SecretKey));
                 string response = await task;
@@ -667,8 +593,7 @@ namespace HaTool.HighAvailability
                 await LoadBalancerNameCheck((comboBoxRegion.SelectedItem as region).regionNo);
                 await DbSave();
                 await loadBalancerListLoad();
-                string selectedLoadBalancerName = textBoxLoadBalancerName.Text.Trim();
-                await SaveClusterServerInfo(selectedLoadBalancerName);
+
             }
             catch (Exception ex)
             {
@@ -894,7 +819,43 @@ namespace HaTool.HighAvailability
             return loadBalancerInstanceInfo;
         }
 
+        private async void CreateTargetGroup()
+        {
+            try
+            {
+                string endpoint = dataManager.GetValue(DataManager.Category.ApiGateway, DataManager.Key.Endpoint);
+                string action = @"/vloadbalancer/v2/createTargetGroup";
+                List<KeyValuePair<string, string>> parameters = new List<KeyValuePair<string, string>>();
+                parameters.Add(new KeyValuePair<string, string>("responseFormatType", "json"));
+                parameters.Add(new KeyValuePair<string, string>("targetGroupProtocolTypeCode", "TCP"));
+                parameters.Add(new KeyValuePair<string, string>("healthCheckProtocolTypeCode", "TCP"));
+                parameters.Add(new KeyValuePair<string, string>("vpcNo", comboBoxVPC.SelectedItem.ToString()));
 
+                SoaCall soaCall = new SoaCall();
+                var task = soaCall.WebApiCall(endpoint, RequestType.POST, action, parameters, LogClient.Config.Instance.GetValue(Category.Api, Key.AccessKey), LogClient.Config.Instance.GetValue(Category.Api, Key.SecretKey));
+                string response = await task;
+
+                JsonSerializerSettings options = new JsonSerializerSettings
+                {
+                    NullValueHandling = NullValueHandling.Ignore,
+                    MissingMemberHandling = MissingMemberHandling.Ignore
+                };
+
+                if (response.Contains("responseError"))
+                {
+                    hasError hasError = JsonConvert.DeserializeObject<hasError>(response, options);
+                    throw new Exception(hasError.responseError.returnMessage);
+                }
+                else
+                {
+                    // TODO : Implement Parsing
+                }
+            }
+            catch (Exception)
+            {
+                throw;
+            }
+        }
 
         private async Task GetTargetGroup()
         {
@@ -904,6 +865,7 @@ namespace HaTool.HighAvailability
                 string action = @"/vloadbalancer/v2/getTargetGroupList";
                 List<KeyValuePair<string, string>> parameters = new List<KeyValuePair<string, string>>();
                 parameters.Add(new KeyValuePair<string, string>("responseFormatType", "json"));
+                //parameters.Add(new KeyValuePair<string, string>("vpcNo", comboBoxVPC.SelectedItem.ToString()));
 
                 SoaCall soaCall = new SoaCall();
                 var task = soaCall.WebApiCall(endpoint, RequestType.POST, action, parameters, LogClient.Config.Instance.GetValue(Category.Api, Key.AccessKey), LogClient.Config.Instance.GetValue(Category.Api, Key.SecretKey));
@@ -925,22 +887,15 @@ namespace HaTool.HighAvailability
                     getTargetGroupList getTargetGroupList = JsonConvert.DeserializeObject<getTargetGroupList>(response, options);
                     if (getTargetGroupList.getTargetGroupListResponse.returnCode.Equals("0"))
                     {
-                        dgvTargetGroup.InvokeIfRequired(s =>
+                        //string _subnetNo = getSubnetList.getSubnetListResponse.subnetList[0].subnetNo.ToString(); // FRAGILE: Replace with TODO
+                        //dataManager.SetValue(DataManager.Category.VpcInfo, DataManager.Key.subnetNo, _subnetNo);
+
+                        //comboBoxSubnet.Items.Clear();
+                        foreach (var _targetGroup in getTargetGroupList.getTargetGroupListResponse.targetGroupList)
                         {
-                            s.Rows.Clear();
-                            foreach (var item in getTargetGroupList.getTargetGroupListResponse.targetGroupList)
-                            {
-                                int n = s.Rows.Add();
-                                s.Rows[n].Cells["CheckBox"].Value = false;
-                                s.Rows[n].Cells["TargetGroupName"].Value = item.targetGroupName;
-                                s.Rows[n].Cells["TargetGroupNo"].Value = item.targetGroupNo;
-                                s.Rows[n].Cells["Protocol"].Value = item.targetGroupProtocolType.code;
-                                s.Rows[n].Cells["Port"].Value = item.targetGroupPort;
-                                s.Rows[n].Cells["TargetType"].Value = item.targetType.code;
-                                s.Rows[n].Cells["LoadBalancer"].Value = item.loadBalancerInstanceNo;
-                                s.Rows[n].Cells["Vpc"].Value = item.vpcNo;
-                            }
-                        });
+                            dataManager.SetValue(DataManager.Category.LoadBalancer, DataManager.Key.targetGroupNo, _targetGroup.targetGroupNo.ToString());
+                            break;
+                        }
                     }
                 }
             }
@@ -950,7 +905,6 @@ namespace HaTool.HighAvailability
                 throw;
             }
         }
-
 
 
 

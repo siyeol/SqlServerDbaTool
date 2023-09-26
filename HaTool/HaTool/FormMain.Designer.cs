@@ -42,6 +42,7 @@
             this.setSqlServerToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.setServerDiskToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.highAvailabilityToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.targetGroupToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.loadBalancerToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.mirroringToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.failoverPolicyToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -58,7 +59,6 @@
             this.infoToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.panelMain = new System.Windows.Forms.Panel();
             this.pictureBoxMain = new System.Windows.Forms.PictureBox();
-            this.targetGroupToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.menuStrip.SuspendLayout();
             this.panelMain.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBoxMain)).BeginInit();
@@ -190,31 +190,38 @@
             this.highAvailabilityToolStripMenuItem.Size = new System.Drawing.Size(213, 28);
             this.highAvailabilityToolStripMenuItem.Text = "High Availability";
             // 
+            // targetGroupToolStripMenuItem
+            // 
+            this.targetGroupToolStripMenuItem.Name = "targetGroupToolStripMenuItem";
+            this.targetGroupToolStripMenuItem.Size = new System.Drawing.Size(440, 34);
+            this.targetGroupToolStripMenuItem.Text = "Target Group and Load Balancer";
+            this.targetGroupToolStripMenuItem.Click += new System.EventHandler(this.targetGroupToolStripMenuItem_Click);
+            // 
             // loadBalancerToolStripMenuItem
             // 
             this.loadBalancerToolStripMenuItem.Name = "loadBalancerToolStripMenuItem";
-            this.loadBalancerToolStripMenuItem.Size = new System.Drawing.Size(517, 34);
-            this.loadBalancerToolStripMenuItem.Text = "Create Load Balancer and Set HA Group";
+            this.loadBalancerToolStripMenuItem.Size = new System.Drawing.Size(440, 34);
+            this.loadBalancerToolStripMenuItem.Text = "Check Load Balancer and HA";
             this.loadBalancerToolStripMenuItem.Click += new System.EventHandler(this.loadBalancerToolStripMenuItem_Click);
             // 
             // mirroringToolStripMenuItem
             // 
             this.mirroringToolStripMenuItem.Name = "mirroringToolStripMenuItem";
-            this.mirroringToolStripMenuItem.Size = new System.Drawing.Size(517, 34);
+            this.mirroringToolStripMenuItem.Size = new System.Drawing.Size(440, 34);
             this.mirroringToolStripMenuItem.Text = "Database Mirroring";
             this.mirroringToolStripMenuItem.Click += new System.EventHandler(this.mirroringToolStripMenuItem_Click);
             // 
             // failoverPolicyToolStripMenuItem
             // 
             this.failoverPolicyToolStripMenuItem.Name = "failoverPolicyToolStripMenuItem";
-            this.failoverPolicyToolStripMenuItem.Size = new System.Drawing.Size(517, 34);
+            this.failoverPolicyToolStripMenuItem.Size = new System.Drawing.Size(440, 34);
             this.failoverPolicyToolStripMenuItem.Text = "Failover Policy";
             this.failoverPolicyToolStripMenuItem.Click += new System.EventHandler(this.failoverPolicyToolStripMenuItem_Click);
             // 
             // databaseBackupToolStripMenuItem
             // 
             this.databaseBackupToolStripMenuItem.Name = "databaseBackupToolStripMenuItem";
-            this.databaseBackupToolStripMenuItem.Size = new System.Drawing.Size(517, 34);
+            this.databaseBackupToolStripMenuItem.Size = new System.Drawing.Size(440, 34);
             this.databaseBackupToolStripMenuItem.Text = "Backup Policy";
             this.databaseBackupToolStripMenuItem.Click += new System.EventHandler(this.databaseBackupToolStripMenuItem_Click);
             // 
@@ -317,13 +324,6 @@
             this.pictureBoxMain.Size = new System.Drawing.Size(1159, 644);
             this.pictureBoxMain.TabIndex = 0;
             this.pictureBoxMain.TabStop = false;
-            // 
-            // targetGroupToolStripMenuItem
-            // 
-            this.targetGroupToolStripMenuItem.Name = "targetGroupToolStripMenuItem";
-            this.targetGroupToolStripMenuItem.Size = new System.Drawing.Size(517, 34);
-            this.targetGroupToolStripMenuItem.Text = "Target Group";
-            this.targetGroupToolStripMenuItem.Click += new System.EventHandler(this.targetGroupToolStripMenuItem_Click);
             // 
             // FormMain
             // 

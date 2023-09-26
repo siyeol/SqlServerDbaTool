@@ -33,8 +33,6 @@
             this.groupBoxMirroring = new System.Windows.Forms.GroupBox();
             this.groupBoxSqlServerConfigurationTemplate = new System.Windows.Forms.GroupBox();
             this.buttonCreateLoadBalancer = new System.Windows.Forms.Button();
-            this.label3 = new System.Windows.Forms.Label();
-            this.comboBox1 = new System.Windows.Forms.ComboBox();
             this.buttonShowCheckedLBDetailInfo = new System.Windows.Forms.Button();
             this.buttonLoadBalancerNameCheck = new System.Windows.Forms.Button();
             this.buttonDbDelete = new System.Windows.Forms.Button();
@@ -58,6 +56,8 @@
             this.buttonReloadTargetGroup = new System.Windows.Forms.Button();
             this.dgvTargetGroup = new System.Windows.Forms.DataGridView();
             this.groupBoxCreateTG = new System.Windows.Forms.GroupBox();
+            this.textBoxTGPort = new System.Windows.Forms.TextBox();
+            this.label6 = new System.Windows.Forms.Label();
             this.textBoxTargetGroupName = new System.Windows.Forms.TextBox();
             this.labelCurrentAccessKey = new System.Windows.Forms.Label();
             this.comboBoxHealthCheckProtocol = new System.Windows.Forms.ComboBox();
@@ -68,8 +68,6 @@
             this.comboBoxVPC = new System.Windows.Forms.ComboBox();
             this.label1 = new System.Windows.Forms.Label();
             this.groupBoxSelectHaGroup = new System.Windows.Forms.GroupBox();
-            this.textBoxTGPort = new System.Windows.Forms.TextBox();
-            this.label6 = new System.Windows.Forms.Label();
             ((System.ComponentModel.ISupportInitialize)(this.dgvServerList)).BeginInit();
             this.groupBoxMirroring.SuspendLayout();
             this.groupBoxSqlServerConfigurationTemplate.SuspendLayout();
@@ -122,8 +120,6 @@
             this.groupBoxSqlServerConfigurationTemplate.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
             this.groupBoxSqlServerConfigurationTemplate.Controls.Add(this.buttonCreateLoadBalancer);
-            this.groupBoxSqlServerConfigurationTemplate.Controls.Add(this.label3);
-            this.groupBoxSqlServerConfigurationTemplate.Controls.Add(this.comboBox1);
             this.groupBoxSqlServerConfigurationTemplate.Controls.Add(this.buttonShowCheckedLBDetailInfo);
             this.groupBoxSqlServerConfigurationTemplate.Controls.Add(this.buttonLoadBalancerNameCheck);
             this.groupBoxSqlServerConfigurationTemplate.Controls.Add(this.buttonDbDelete);
@@ -159,23 +155,6 @@
             this.buttonCreateLoadBalancer.Text = "Create";
             this.buttonCreateLoadBalancer.UseVisualStyleBackColor = true;
             this.buttonCreateLoadBalancer.Click += new System.EventHandler(this.buttonCreateLoadBalancer_Click);
-            // 
-            // label3
-            // 
-            this.label3.AutoSize = true;
-            this.label3.Location = new System.Drawing.Point(804, 27);
-            this.label3.Name = "label3";
-            this.label3.Size = new System.Drawing.Size(43, 23);
-            this.label3.TabIndex = 70;
-            this.label3.Text = "VPC";
-            // 
-            // comboBox1
-            // 
-            this.comboBox1.FormattingEnabled = true;
-            this.comboBox1.Location = new System.Drawing.Point(803, 44);
-            this.comboBox1.Name = "comboBox1";
-            this.comboBox1.Size = new System.Drawing.Size(123, 31);
-            this.comboBox1.TabIndex = 69;
             // 
             // buttonShowCheckedLBDetailInfo
             // 
@@ -408,6 +387,23 @@
             this.groupBoxCreateTG.TabStop = false;
             this.groupBoxCreateTG.Text = "Create Target Group";
             // 
+            // textBoxTGPort
+            // 
+            this.textBoxTGPort.ForeColor = System.Drawing.SystemColors.WindowText;
+            this.textBoxTGPort.Location = new System.Drawing.Point(522, 44);
+            this.textBoxTGPort.Name = "textBoxTGPort";
+            this.textBoxTGPort.Size = new System.Drawing.Size(123, 30);
+            this.textBoxTGPort.TabIndex = 169;
+            // 
+            // label6
+            // 
+            this.label6.AutoSize = true;
+            this.label6.Location = new System.Drawing.Point(525, 24);
+            this.label6.Name = "label6";
+            this.label6.Size = new System.Drawing.Size(54, 23);
+            this.label6.TabIndex = 170;
+            this.label6.Text = "Port";
+            // 
             // textBoxTargetGroupName
             // 
             this.textBoxTargetGroupName.ForeColor = System.Drawing.SystemColors.WindowText;
@@ -506,23 +502,6 @@
             this.groupBoxSelectHaGroup.TabStop = false;
             this.groupBoxSelectHaGroup.Text = "Select Server";
             // 
-            // textBoxTGPort
-            // 
-            this.textBoxTGPort.ForeColor = System.Drawing.SystemColors.WindowText;
-            this.textBoxTGPort.Location = new System.Drawing.Point(522, 44);
-            this.textBoxTGPort.Name = "textBoxTGPort";
-            this.textBoxTGPort.Size = new System.Drawing.Size(123, 30);
-            this.textBoxTGPort.TabIndex = 169;
-            // 
-            // label6
-            // 
-            this.label6.AutoSize = true;
-            this.label6.Location = new System.Drawing.Point(525, 24);
-            this.label6.Name = "label6";
-            this.label6.Size = new System.Drawing.Size(54, 23);
-            this.label6.TabIndex = 170;
-            this.label6.Text = "Port";
-            // 
             // UcTargetGroup
             // 
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.None;
@@ -566,8 +545,6 @@
         private System.Windows.Forms.DataGridView dgvTargetGroup;
         private System.Windows.Forms.Button buttonDelete;
         private System.Windows.Forms.GroupBox groupBoxSqlServerConfigurationTemplate;
-        private System.Windows.Forms.Label label3;
-        private System.Windows.Forms.ComboBox comboBox1;
         private System.Windows.Forms.Button buttonShowCheckedLBDetailInfo;
         private System.Windows.Forms.Button buttonLoadBalancerNameCheck;
         private System.Windows.Forms.Button buttonDbDelete;

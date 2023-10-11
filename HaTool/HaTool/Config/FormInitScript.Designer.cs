@@ -105,9 +105,9 @@
             // 
             // buttonVerify
             // 
-            this.buttonVerify.Location = new System.Drawing.Point(265, 282);
+            this.buttonVerify.Location = new System.Drawing.Point(231, 282);
             this.buttonVerify.Name = "buttonVerify";
-            this.buttonVerify.Size = new System.Drawing.Size(90, 23);
+            this.buttonVerify.Size = new System.Drawing.Size(98, 23);
             this.buttonVerify.TabIndex = 7;
             this.buttonVerify.Text = "Verify";
             this.buttonVerify.UseVisualStyleBackColor = true;
@@ -125,9 +125,9 @@
             // 
             // buttonClose
             // 
-            this.buttonClose.Location = new System.Drawing.Point(369, 282);
+            this.buttonClose.Location = new System.Drawing.Point(335, 282);
             this.buttonClose.Name = "buttonClose";
-            this.buttonClose.Size = new System.Drawing.Size(90, 23);
+            this.buttonClose.Size = new System.Drawing.Size(98, 23);
             this.buttonClose.TabIndex = 11;
             this.buttonClose.Text = "Close";
             this.buttonClose.UseVisualStyleBackColor = true;
@@ -135,9 +135,9 @@
             // 
             // buttonCreate
             // 
-            this.buttonCreate.Location = new System.Drawing.Point(146, 282);
+            this.buttonCreate.Location = new System.Drawing.Point(127, 282);
             this.buttonCreate.Name = "buttonCreate";
-            this.buttonCreate.Size = new System.Drawing.Size(90, 23);
+            this.buttonCreate.Size = new System.Drawing.Size(98, 23);
             this.buttonCreate.TabIndex = 12;
             this.buttonCreate.Text = "Create";
             this.buttonCreate.UseVisualStyleBackColor = true;

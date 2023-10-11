@@ -121,6 +121,7 @@ SQL Server DBA Tool for VPC 은 Korea Region "VPC" 환경의 SW.VSVR.DBMS.WND64.
             1. Subnet은 Instance가 생성된 subnet이 아닌 LoadBalancer 전용 Subnet이어야 하며
             2. Target Group Port, Load Balancer Port, Server Port가 모두 같아야 합니다.
          4. Create을 눌러 Load Balanacer를 생성합니다. 
+            ![](mdimg/img10.PNG)
       2. Check Load Balancer and HA
          1. Load Balancer List에서 설정한 Load Balancer 의 CheckBox에 체크한 후 Load HA Info 버튼을 클릭합니다. 
          2. 앞서 설정한 Master와 Slave의 설정이 맞는지 확인합니다.

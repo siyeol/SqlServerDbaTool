@@ -181,7 +181,7 @@ namespace HaTool.HighAvailability
                                 s.Rows[n].Cells["Name"].Value = a.Key.clusterName;
                                 s.Rows[n].Cells["ZoneNo"].Value = lbInstance.regionCode;
                                 s.Rows[n].Cells["InstanceNo"].Value = lbInstance.loadBalancerInstanceNo;
-                                s.Rows[n].Cells["Protocol"].Value = "";
+                                s.Rows[n].Cells["Protocol"].Value = "TCP"; // force L4 LB only - TCP inline
                                 s.Rows[n].Cells["DomainName"].Value = lbInstance.loadBalancerDomain;
                                 s.Rows[n].Cells["Status"].Value = lbInstance.loadBalancerInstanceStatus.code;
                                 s.Rows[n].Cells["Operation"].Value = lbInstance.loadBalancerInstanceOperation.code;
@@ -298,16 +298,9 @@ namespace HaTool.HighAvailability
             try
             {
                 dataManager.LoadUserData();
-                LoadTextData();
                 List<Task> tasks = new List<Task>();
-                tasks.Add(GetRegionList());
-                tasks.Add(GetSubnetList());
                 tasks.Add(loadBalancerListLoad());
-                tasks.Add(GetVpcList());
-                tasks.Add(GetTargetGroup()); //test
                 await Task.WhenAll(tasks);
-                //comboBoxZone.Text = "KR-1";
-                //comboBoxZone.Enabled = false;
             }
             catch(Exception ex)
             {
@@ -315,107 +308,6 @@ namespace HaTool.HighAvailability
             }
         }
 
-        private async Task GetVpcList()
-        {
-            try
-            {
-                string endpoint = dataManager.GetValue(DataManager.Category.ApiGateway, DataManager.Key.Endpoint);
-                string action = @"/vpc/v2/getVpcList";
-                List<KeyValuePair<string, string>> parameters = new List<KeyValuePair<string, string>>();
-                parameters.Add(new KeyValuePair<string, string>("responseFormatType", "json"));
-                SoaCall soaCall = new SoaCall();
-                var task = soaCall.WebApiCall(endpoint, RequestType.POST, action, parameters, LogClient.Config.Instance.GetValue(Category.Api, Key.AccessKey), LogClient.Config.Instance.GetValue(Category.Api, Key.SecretKey));
-                string response = await task;
-
-                JsonSerializerSettings options = new JsonSerializerSettings
-                {
-                    NullValueHandling = NullValueHandling.Ignore,
-                    MissingMemberHandling = MissingMemberHandling.Ignore
-                };
-
-                if (response.Contains("responseError"))
-                {
-                    hasError errorResponse = JsonConvert.DeserializeObject<hasError>(response, options);
-                    throw new Exception(errorResponse.responseError.returnMessage);
-                }
-                else
-                {
-                    getVpcList getVpcList = JsonConvert.DeserializeObject<getVpcList>(response, options);
-                    if (getVpcList.getVpcListResponse.returnCode.Equals("0"))
-                    {
-                        foreach (var vpc in getVpcList.getVpcListResponse.vpcList)
-                        {
-                            comboBoxVPC.Items.Add(vpc.vpcNo.ToString());
-                        }
-                    }
-                }
-            }
-            catch (Exception)
-            {
-                throw;
-            }
-            comboBoxVPC.SelectedIndex = 0;
-        }
-
-        private async Task GetSubnetList()
-        {
-            try
-            {
-                string endpoint = dataManager.GetValue(DataManager.Category.ApiGateway, DataManager.Key.Endpoint);
-                string action = @"/vpc/v2/getSubnetList";
-                List<KeyValuePair<string, string>> parameters = new List<KeyValuePair<string, string>>();
-                parameters.Add(new KeyValuePair<string, string>("responseFormatType", "json"));
-                //parameters.Add(new KeyValuePair<string, string>("vpcNo", vpcNo));
-                SoaCall soaCall = new SoaCall();
-                var task = soaCall.WebApiCall(endpoint, RequestType.POST, action, parameters, LogClient.Config.Instance.GetValue(Category.Api, Key.AccessKey), LogClient.Config.Instance.GetValue(Category.Api, Key.SecretKey));
-                string response = await task;
-
-                JsonSerializerSettings options = new JsonSerializerSettings
-                {
-                    NullValueHandling = NullValueHandling.Ignore,
-                    MissingMemberHandling = MissingMemberHandling.Ignore
-                };
-
-                if (response.Contains("responseError"))
-                {
-                    hasError errorResponse = JsonConvert.DeserializeObject<hasError>(response, options);
-                    throw new Exception(errorResponse.responseError.returnMessage);
-                }
-                else
-                {
-                    getSubnetList getSubnetList = JsonConvert.DeserializeObject<getSubnetList>(response, options);
-                    if (getSubnetList.getSubnetListResponse.returnCode.Equals("0"))
-                    {
-                        comboBoxSubnet.Items.Clear();
-                        foreach (var subnet in getSubnetList.getSubnetListResponse.subnetList)
-                        {
-                            comboBoxSubnet.Items.Add(subnet.subnetNo.ToString());
-                        }
-                    }
-                }
-            }
-            catch (Exception)
-            {
-                throw;
-            }
-            comboBoxSubnet.SelectedIndex = 0;
-        }
-
-        private void LoadTextData()
-        {
-            try
-            {
-                comboBoxProtocol.Text = dataManager.GetValue(DataManager.Category.LoadBalancer, DataManager.Key.Protocol).Trim();
-                textBoxLoadBalancerName.Text = dataManager.GetValue(DataManager.Category.LoadBalancer, DataManager.Key.Name).Trim();
-                textBoxLoadBalancerPort.Text = dataManager.GetValue(DataManager.Category.LoadBalancer, DataManager.Key.LoadBalancerPort).Trim();
-                textBoxServerPort.Text = dataManager.GetValue(DataManager.Category.SetSql, DataManager.Key.Port).Trim();
-            }
-            catch (Exception)
-            {
-                throw;
-            }
-
-        }
 
         public static Dictionary<string, string> ReadPowerShell(string queryAll)
         {
@@ -531,248 +423,6 @@ namespace HaTool.HighAvailability
                 MessageBox.Show(ex.Message);
             }
         }
-
-
-        private void buttonSaveTemplate_Click(object sender, EventArgs e)
-        {
-            try
-            {
-                dataManager.SetValue(DataManager.Category.LoadBalancer, DataManager.Key.Protocol, comboBoxProtocol.Text.Trim());
-                dataManager.SetValue(DataManager.Category.LoadBalancer, DataManager.Key.Name, textBoxLoadBalancerName.Text.Trim());
-                dataManager.SetValue(DataManager.Category.LoadBalancer, DataManager.Key.LoadBalancerPort, textBoxLoadBalancerPort.Text.Trim());
-                dataManager.SetValue(DataManager.Category.SetSql, DataManager.Key.Port, textBoxServerPort.Text.Trim());
-                dataManager.SaveUserData();
-                MessageBox.Show("template changed");
-            }
-            catch (Exception ex)
-            {
-                MessageBox.Show(ex.Message);
-            }
-        }
-        
-        private async void buttonCreateLoadBalancer_Click(object sender, EventArgs e)
-        {
-            try
-            {
-                ControlHelpers.ButtonStatusChange(buttonCreateLoadBalancer, "Requested");
-                string endpoint = dataManager.GetValue(DataManager.Category.ApiGateway, DataManager.Key.Endpoint);
-                string action = @"/vloadbalancer/v2/createLoadBalancerInstance";
-                List<KeyValuePair<string, string>> parameters = new List<KeyValuePair<string, string>>();
-                parameters.Add(new KeyValuePair<string, string>("responseFormatType", "json"));
-                parameters.Add(new KeyValuePair<string, string>("loadBalancerTypeCode", "NETWORK")); // APPLICATION/NETWORK/NETWORK_PROXY
-                parameters.Add(new KeyValuePair<string, string>("loadBalancerName", textBoxLoadBalancerName.Text.Trim()));
-                parameters.Add(new KeyValuePair<string, string>("loadBalancerRuleList.1.protocolTypeCode", comboBoxProtocol.Text.Trim()));
-                parameters.Add(new KeyValuePair<string, string>("loadBalancerRuleList.1.loadBalancerPort", textBoxLoadBalancerPort.Text.Trim()));
-                parameters.Add(new KeyValuePair<string, string>("loadBalancerSubnetList.1.subnetNo", comboBoxSubnet.SelectedItem.ToString()));
-                //parameters.Add(new KeyValuePair<string, string>("loadBalancerRuleList.1.serverPort", textBoxServerPort.Text.Trim()));
-                parameters.Add(new KeyValuePair<string, string>("regionCode", (comboBoxRegion.SelectedItem as region).regionCode));
-                parameters.Add(new KeyValuePair<string, string>("vpcNo", comboBoxVPC.SelectedItem.ToString()));
-                parameters.Add(new KeyValuePair<string, string>("loadBalancerListenerList.1.targetGroupNo", dataManager.GetValue(DataManager.Category.LoadBalancer, DataManager.Key.targetGroupNo)));
-                SoaCall soaCall = new SoaCall();
-                var task = soaCall.WebApiCall(endpoint, RequestType.POST, action, parameters, LogClient.Config.Instance.GetValue(Category.Api, Key.AccessKey), LogClient.Config.Instance.GetValue(Category.Api, Key.SecretKey));
-                string response = await task;
-
-                JsonSerializerSettings options = new JsonSerializerSettings
-                {
-                    NullValueHandling = NullValueHandling.Ignore,
-                    MissingMemberHandling = MissingMemberHandling.Ignore
-                };
-
-                if (response.Contains("responseError"))
-                {
-                    hasError hasError = JsonConvert.DeserializeObject<hasError>(response, options);
-                    throw new Exception(hasError.responseError.returnMessage);
-                }
-                
-                createLoadBalancerInstance createLoadBalancerInstance = JsonConvert.DeserializeObject<createLoadBalancerInstance>(response, options);
-                if (createLoadBalancerInstance.createLoadBalancerInstanceResponse.returnCode.Equals("0"))
-                {
-                    MessageBox.Show("create requested");
-                }
-                
-                await LoadBalancerNameCheck((comboBoxRegion.SelectedItem as region).regionNo);
-                await DbSave();
-                await loadBalancerListLoad();
-
-            }
-            catch (Exception ex)
-            {
-                MessageBox.Show(ex.Message);
-            }
-            finally
-            {
-                ControlHelpers.ButtonStatusChange(buttonCreateLoadBalancer, "Create");
-            }
-
-        }
-
-        private void buttonLoadTemplate_Click(object sender, EventArgs e)
-        {
-            try
-            {
-                LoadTextData();
-                MessageBox.Show("loaded");
-            }
-            catch (Exception ex)
-            {
-                MessageBox.Show(ex.Message);
-            }
-        }
-
-        private async Task DbSave()
-        {
-            try
-            {
-                var p = new List<KeyValuePair<string, string>>();
-                p.Add(new KeyValuePair<string, string>("clusterName", textBoxLoadBalancerName.Text.Trim()));
-                p.Add(new KeyValuePair<string, string>("clusterNo", checkedLoadBalancerInstanceNo.Trim()));
-                p.Add(new KeyValuePair<string, string>("domainName", checkedDomainName.Trim()));
-                p.Add(new KeyValuePair<string, string>("clusterPort", textBoxLoadBalancerPort.Text.Trim()));
-                
-                await fileDb.UpSertTable(FileDb.TableName.TBL_CLUSTER, p);
-            }
-            catch (Exception)
-            {
-                throw;
-            }
-        }
-
-        private async void buttonDbSave_Click(object sender, EventArgs e)
-        {
-            try
-            {
-                if(textBoxLoadBalancerName.Text.Length > 1)
-                    await DbSave();
-                await loadBalancerListLoad();
-            }
-            catch (Exception ex)
-            {
-                MessageBox.Show(ex.Message);
-            }
-            
-        }
-
-        private async Task GetRegionList()
-        {
-            try
-            {
-                string endpoint = dataManager.GetValue(DataManager.Category.ApiGateway, DataManager.Key.Endpoint);
-                string action = @"/vserver/v2/getRegionList";
-                List<KeyValuePair<string, string>> parameters = new List<KeyValuePair<string, string>>();
-                parameters.Add(new KeyValuePair<string, string>("responseFormatType", "json"));
-                SoaCall soaCall = new SoaCall();
-                var task = soaCall.WebApiCall(endpoint, RequestType.POST, action, parameters, LogClient.Config.Instance.GetValue(Category.Api, Key.AccessKey), LogClient.Config.Instance.GetValue(Category.Api, Key.SecretKey));
-                string response = await task;
-
-                JsonSerializerSettings options = new JsonSerializerSettings
-                {
-                    NullValueHandling = NullValueHandling.Ignore,
-                    MissingMemberHandling = MissingMemberHandling.Ignore
-                };
-
-                if (response.Contains("responseError"))
-                {
-                    hasError hasError = JsonConvert.DeserializeObject<hasError>(response, options);
-                    throw new Exception(hasError.responseError.returnMessage);
-                }
-                else
-                {
-                    getRegionList getRegionList = JsonConvert.DeserializeObject<getRegionList>(response, options);
-                    if (getRegionList.getRegionListResponse.returnCode.Equals("0"))
-                    {
-                        comboBoxRegion.Items.Clear();
-                        foreach (var a in getRegionList.getRegionListResponse.regionList)
-                        {
-                            var item = new region
-                            {
-                                regionNo = a.regionNo,
-                                regionCode = a.regionCode,
-                                regionName = a.regionName
-                            };
-                            // regionNo 1 Korea
-                            comboBoxRegion.Items.Add(item);
-                        }
-                    }
-                }
-            }
-            catch (Exception)
-            {
-                throw;
-            }
-
-            comboBoxRegion.SelectedIndex = 0;
-        }
-
-
-        private async Task LoadBalancerNameCheck(string regionNo = "1")
-        {
-            try
-            {
-                ControlHelpers.ButtonStatusChange(buttonLoadBalancerNameCheck, "Requested");
-                buttonLoadBalancerNameCheck.Enabled = false;
-
-                string endpoint = dataManager.GetValue(DataManager.Category.ApiGateway, DataManager.Key.Endpoint);
-                string action = @"/vloadbalancer/v2/getLoadBalancerInstanceList";
-                List<KeyValuePair<string, string>> parameters = new List<KeyValuePair<string, string>>();
-                parameters.Add(new KeyValuePair<string, string>("responseFormatType", "json"));
-
-                SoaCall soaCall = new SoaCall();
-                var task = soaCall.WebApiCall(endpoint, RequestType.POST, action, parameters, LogClient.Config.Instance.GetValue(Category.Api, Key.AccessKey), LogClient.Config.Instance.GetValue(Category.Api, Key.SecretKey));
-                string response = await task;
-
-                JsonSerializerSettings options = new JsonSerializerSettings
-                {
-                    NullValueHandling = NullValueHandling.Ignore,
-                    MissingMemberHandling = MissingMemberHandling.Ignore
-                };
-
-                if (response.Contains("responseError"))
-                {
-                    hasError hasError = JsonConvert.DeserializeObject<hasError>(response, options);
-                    throw new Exception(hasError.responseError.returnMessage);
-                }
-                else
-                {
-                    getLoadBalancerInstanceList getLoadBalancerInstanceList = JsonConvert.DeserializeObject<getLoadBalancerInstanceList>(response, options);
-                    if (getLoadBalancerInstanceList.getLoadBalancerInstanceListResponse.returnCode.Equals("0"))
-                    {
-                        bool existsMatchedLoadBalancer = false;
-                        foreach (var a in getLoadBalancerInstanceList.getLoadBalancerInstanceListResponse.loadBalancerInstanceList)
-                        {
-                            if (textBoxLoadBalancerName.Text.Equals(a.loadBalancerName, StringComparison.OrdinalIgnoreCase))
-                            {
-                                existsMatchedLoadBalancer = true;
-                                checkedDomainName = a.loadBalancerDomain;
-                                checkedLoadBalancerInstance = a;
-                                checkedLoadBalancerInstanceNo = a.loadBalancerInstanceNo;
-                                buttonShowLBDetail.Enabled = true;
-                                checkedLBName = a.loadBalancerName;
-
-                            }
-                        }
-                        if (getLoadBalancerInstanceList.getLoadBalancerInstanceListResponse.totalRows == 0 || !existsMatchedLoadBalancer)
-                        {
-                            buttonShowLBDetail.Enabled = false;
-                            checkedDomainName = "";
-                            checkedLoadBalancerInstance = null;
-                            checkedLoadBalancerInstanceNo = "NULL";
-                            MessageBox.Show("loadbalancer not founds");
-                        }
-                    }
-                }
-            }
-            catch (Exception)
-            {
-                throw;
-            }
-            finally
-            {
-                
-                ControlHelpers.ButtonStatusChange(buttonLoadBalancerNameCheck, "Exists Check");
-                buttonLoadBalancerNameCheck.Enabled = true;
-            }
-        }
-
         private async Task<string> GetLoadBalancerInfo(string instanceNo)
         {
             string loadBalancerInstanceInfo = string.Empty;
@@ -818,95 +468,6 @@ namespace HaTool.HighAvailability
             }
             return loadBalancerInstanceInfo;
         }
-
-        private async void CreateTargetGroup()
-        {
-            try
-            {
-                string endpoint = dataManager.GetValue(DataManager.Category.ApiGateway, DataManager.Key.Endpoint);
-                string action = @"/vloadbalancer/v2/createTargetGroup";
-                List<KeyValuePair<string, string>> parameters = new List<KeyValuePair<string, string>>();
-                parameters.Add(new KeyValuePair<string, string>("responseFormatType", "json"));
-                parameters.Add(new KeyValuePair<string, string>("targetGroupProtocolTypeCode", "TCP"));
-                parameters.Add(new KeyValuePair<string, string>("healthCheckProtocolTypeCode", "TCP"));
-                parameters.Add(new KeyValuePair<string, string>("vpcNo", comboBoxVPC.SelectedItem.ToString()));
-
-                SoaCall soaCall = new SoaCall();
-                var task = soaCall.WebApiCall(endpoint, RequestType.POST, action, parameters, LogClient.Config.Instance.GetValue(Category.Api, Key.AccessKey), LogClient.Config.Instance.GetValue(Category.Api, Key.SecretKey));
-                string response = await task;
-
-                JsonSerializerSettings options = new JsonSerializerSettings
-                {
-                    NullValueHandling = NullValueHandling.Ignore,
-                    MissingMemberHandling = MissingMemberHandling.Ignore
-                };
-
-                if (response.Contains("responseError"))
-                {
-                    hasError hasError = JsonConvert.DeserializeObject<hasError>(response, options);
-                    throw new Exception(hasError.responseError.returnMessage);
-                }
-                else
-                {
-                    // TODO : Implement Parsing
-                }
-            }
-            catch (Exception)
-            {
-                throw;
-            }
-        }
-
-        private async Task GetTargetGroup()
-        {
-            try
-            {
-                string endpoint = dataManager.GetValue(DataManager.Category.ApiGateway, DataManager.Key.Endpoint);
-                string action = @"/vloadbalancer/v2/getTargetGroupList";
-                List<KeyValuePair<string, string>> parameters = new List<KeyValuePair<string, string>>();
-                parameters.Add(new KeyValuePair<string, string>("responseFormatType", "json"));
-                //parameters.Add(new KeyValuePair<string, string>("vpcNo", comboBoxVPC.SelectedItem.ToString()));
-
-                SoaCall soaCall = new SoaCall();
-                var task = soaCall.WebApiCall(endpoint, RequestType.POST, action, parameters, LogClient.Config.Instance.GetValue(Category.Api, Key.AccessKey), LogClient.Config.Instance.GetValue(Category.Api, Key.SecretKey));
-                string response = await task;
-
-                JsonSerializerSettings options = new JsonSerializerSettings
-                {
-                    NullValueHandling = NullValueHandling.Ignore,
-                    MissingMemberHandling = MissingMemberHandling.Ignore
-                };
-
-                if (response.Contains("responseError"))
-                {
-                    hasError hasError = JsonConvert.DeserializeObject<hasError>(response, options);
-                    throw new Exception(hasError.responseError.returnMessage);
-                }
-                else
-                {
-                    getTargetGroupList getTargetGroupList = JsonConvert.DeserializeObject<getTargetGroupList>(response, options);
-                    if (getTargetGroupList.getTargetGroupListResponse.returnCode.Equals("0"))
-                    {
-                        //string _subnetNo = getSubnetList.getSubnetListResponse.subnetList[0].subnetNo.ToString(); // FRAGILE: Replace with TODO
-                        //dataManager.SetValue(DataManager.Category.VpcInfo, DataManager.Key.subnetNo, _subnetNo);
-
-                        //comboBoxSubnet.Items.Clear();
-                        foreach (var _targetGroup in getTargetGroupList.getTargetGroupListResponse.targetGroupList)
-                        {
-                            dataManager.SetValue(DataManager.Category.LoadBalancer, DataManager.Key.targetGroupNo, _targetGroup.targetGroupNo.ToString());
-                            break;
-                        }
-                    }
-                }
-            }
-            catch (Exception ex)
-            {
-                MessageBox.Show(ex.Message);
-                throw;
-            }
-        }
-
-
 
 
         private async void buttonShowLBDetail_Click(object sender, EventArgs e)
@@ -1025,71 +586,7 @@ namespace HaTool.HighAvailability
             }
         }
 
-        private async void buttonSetHA_Click(object sender, EventArgs e)
-        {
 
-            try
-            {
-                ControlHelpers.ButtonStatusChange(buttonSetHA, "Requested");
-                if (comboBoxMasterServer.Text.Equals(comboBoxSlaveServer.Text))
-                    throw new Exception("The master and slave servers can not be the same.");
-                string selectedLoadBalancerName = CheckedLoadBalancerName();
-                string selectedLoadBalancerInstanceNo = IsOneCheckedLoadBalancerListReturnLBInstanceNo();
-                await ChangeLoadBalancedServerInstances(selectedLoadBalancerInstanceNo, (comboBoxMasterServer.SelectedItem as serverInstance).serverInstanceNo);
-                await SaveClusterServerInfo(selectedLoadBalancerName);
-            }
-            catch (Exception ex)
-            {
-                MessageBox.Show(ex.Message);
-            }
-            finally
-            {
-                ControlHelpers.ButtonStatusChange(buttonSetHA, "Set HA");
-            }
-        }
-
-        private async Task ChangeLoadBalancedServerInstances(string loadBalancerInstanceNo, string masterServerInstanceNo = "")
-        {
-            // join load balancer master only
-            try
-            {
-
-                string endpoint = dataManager.GetValue(DataManager.Category.ApiGateway, DataManager.Key.Endpoint);
-                string action = @"/vloadbalancer/v2/changeLoadBalancedServerInstanceConfiguration";
-                List<KeyValuePair<string, string>> parameters = new List<KeyValuePair<string, string>>();
-                parameters.Add(new KeyValuePair<string, string>("responseFormatType", "json"));
-                parameters.Add(new KeyValuePair<string, string>("loadBalancerInstanceNo", loadBalancerInstanceNo));
-                if (masterServerInstanceNo.Length != 0)
-                    parameters.Add(new KeyValuePair<string, string>("serverInstanceNo", masterServerInstanceNo));
-                    
-                SoaCall soaCall = new SoaCall();
-                var task = soaCall.WebApiCall(endpoint, RequestType.POST, action, parameters, LogClient.Config.Instance.GetValue(Category.Api, Key.AccessKey), LogClient.Config.Instance.GetValue(Category.Api, Key.SecretKey));
-                string response = await task;
-
-                JsonSerializerSettings options = new JsonSerializerSettings
-                {
-                    NullValueHandling = NullValueHandling.Ignore,
-                    MissingMemberHandling = MissingMemberHandling.Ignore
-                };
-
-                if (response.Contains("responseError"))
-                {
-                    hasError hasError = JsonConvert.DeserializeObject<hasError>(response, options);
-                    throw new Exception(hasError.responseError.returnMessage);
-                }
-
-                changeLoadBalancedServerInstanceConfiguration changeLoadBalancedServerInstanceConfiguration = JsonConvert.DeserializeObject<changeLoadBalancedServerInstanceConfiguration>(response, options);
-                if (changeLoadBalancedServerInstanceConfiguration.changeLoadBalancedServerInstanceConfigurationResponse.returnCode.Equals("0"))
-                {
-                    MessageBox.Show("change load balancer requested");
-                }
-            }
-            catch (Exception)
-            {
-                throw;
-            }
-            
-        }
 
         private async Task SaveClusterServerInfo(string loadBalancerName)
         {
@@ -1205,27 +702,6 @@ namespace HaTool.HighAvailability
                 throw;
             }
             return loadBalancerInstanceNo;
-        }
-
-        private async void buttonDelHA_Click(object sender, EventArgs e)
-        {
-            try
-            {
-                ControlHelpers.ButtonStatusChange(buttonDelHA, "Requested");
-                string selectedLoadBalancerName = CheckedLoadBalancerName();
-                await ChangeLoadBalancedServerInstances(CheckedLoadBalancerInstanceNo());
-                await DeleteClusterServerInfo(selectedLoadBalancerName);
-                comboBoxMasterServer.Text = "";
-                comboBoxSlaveServer.Text = "";
-            }
-            catch (Exception ex)
-            {
-                MessageBox.Show(ex.Message);
-            }
-            finally
-            {
-                ControlHelpers.ButtonStatusChange(buttonDelHA, "Del HA");
-            }
         }
 
         private async Task DeleteClusterServerInfo(string loadBalancerName)
@@ -1401,17 +877,6 @@ namespace HaTool.HighAvailability
             }
         }
 
-        private async void buttonNameCheck_Click(object sender, EventArgs e)
-        {
-            try
-            {
-                await LoadBalancerNameCheck((comboBoxRegion.SelectedItem as region).regionNo);
-            }
-            catch (Exception ex)
-            {
-                MessageBox.Show(ex.Message);
-            }
-        }
 
         private void buttonShowCheckedLBDetailInfo_Click(object sender, EventArgs e)
         {
@@ -1419,8 +884,8 @@ namespace HaTool.HighAvailability
             {
                 // textBoxLoadBalancerName
 
-                if (!checkedLBName.Equals(textBoxLoadBalancerName.Text, StringComparison.OrdinalIgnoreCase))
-                    throw new Exception ("load balancer name check first");
+                //if (!checkedLBName.Equals(textBoxLoadBalancerName.Text, StringComparison.OrdinalIgnoreCase))
+                //    throw new Exception ("load balancer name check first");
 
                 if (checkedLoadBalancerInstance != null)
                 {

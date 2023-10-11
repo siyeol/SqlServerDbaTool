@@ -33,14 +33,10 @@
             this.groupBoxMirroring = new System.Windows.Forms.GroupBox();
             this.groupBoxSqlServerConfigurationTemplate = new System.Windows.Forms.GroupBox();
             this.buttonCreateLoadBalancer = new System.Windows.Forms.Button();
-            this.buttonShowCheckedLBDetailInfo = new System.Windows.Forms.Button();
-            this.buttonLoadBalancerNameCheck = new System.Windows.Forms.Button();
-            this.buttonDbDelete = new System.Windows.Forms.Button();
             this.labelZone = new System.Windows.Forms.Label();
             this.comboBoxRegion = new System.Windows.Forms.ComboBox();
             this.comboBoxSubnet = new System.Windows.Forms.ComboBox();
             this.labelRegion = new System.Windows.Forms.Label();
-            this.buttonDbSave = new System.Windows.Forms.Button();
             this.comboBoxProtocol = new System.Windows.Forms.ComboBox();
             this.buttonLoadTemplate = new System.Windows.Forms.Button();
             this.textBoxServerPort = new System.Windows.Forms.TextBox();
@@ -120,14 +116,10 @@
             this.groupBoxSqlServerConfigurationTemplate.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
             this.groupBoxSqlServerConfigurationTemplate.Controls.Add(this.buttonCreateLoadBalancer);
-            this.groupBoxSqlServerConfigurationTemplate.Controls.Add(this.buttonShowCheckedLBDetailInfo);
-            this.groupBoxSqlServerConfigurationTemplate.Controls.Add(this.buttonLoadBalancerNameCheck);
-            this.groupBoxSqlServerConfigurationTemplate.Controls.Add(this.buttonDbDelete);
             this.groupBoxSqlServerConfigurationTemplate.Controls.Add(this.labelZone);
             this.groupBoxSqlServerConfigurationTemplate.Controls.Add(this.comboBoxRegion);
             this.groupBoxSqlServerConfigurationTemplate.Controls.Add(this.comboBoxSubnet);
             this.groupBoxSqlServerConfigurationTemplate.Controls.Add(this.labelRegion);
-            this.groupBoxSqlServerConfigurationTemplate.Controls.Add(this.buttonDbSave);
             this.groupBoxSqlServerConfigurationTemplate.Controls.Add(this.comboBoxProtocol);
             this.groupBoxSqlServerConfigurationTemplate.Controls.Add(this.buttonLoadTemplate);
             this.groupBoxSqlServerConfigurationTemplate.Controls.Add(this.textBoxServerPort);
@@ -148,43 +140,13 @@
             // buttonCreateLoadBalancer
             // 
             this.buttonCreateLoadBalancer.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
-            this.buttonCreateLoadBalancer.Location = new System.Drawing.Point(683, 74);
+            this.buttonCreateLoadBalancer.Location = new System.Drawing.Point(265, 74);
             this.buttonCreateLoadBalancer.Name = "buttonCreateLoadBalancer";
             this.buttonCreateLoadBalancer.Size = new System.Drawing.Size(118, 23);
             this.buttonCreateLoadBalancer.TabIndex = 69;
             this.buttonCreateLoadBalancer.Text = "Create";
             this.buttonCreateLoadBalancer.UseVisualStyleBackColor = true;
             this.buttonCreateLoadBalancer.Click += new System.EventHandler(this.buttonCreateLoadBalancer_Click);
-            // 
-            // buttonShowCheckedLBDetailInfo
-            // 
-            this.buttonShowCheckedLBDetailInfo.ForeColor = System.Drawing.SystemColors.AppWorkspace;
-            this.buttonShowCheckedLBDetailInfo.Location = new System.Drawing.Point(384, 74);
-            this.buttonShowCheckedLBDetailInfo.Name = "buttonShowCheckedLBDetailInfo";
-            this.buttonShowCheckedLBDetailInfo.Size = new System.Drawing.Size(118, 23);
-            this.buttonShowCheckedLBDetailInfo.TabIndex = 68;
-            this.buttonShowCheckedLBDetailInfo.Text = "Show Detail";
-            this.buttonShowCheckedLBDetailInfo.UseVisualStyleBackColor = true;
-            // 
-            // buttonLoadBalancerNameCheck
-            // 
-            this.buttonLoadBalancerNameCheck.ForeColor = System.Drawing.SystemColors.AppWorkspace;
-            this.buttonLoadBalancerNameCheck.Location = new System.Drawing.Point(262, 74);
-            this.buttonLoadBalancerNameCheck.Name = "buttonLoadBalancerNameCheck";
-            this.buttonLoadBalancerNameCheck.Size = new System.Drawing.Size(118, 23);
-            this.buttonLoadBalancerNameCheck.TabIndex = 67;
-            this.buttonLoadBalancerNameCheck.Text = "Exists Check";
-            this.buttonLoadBalancerNameCheck.UseVisualStyleBackColor = true;
-            // 
-            // buttonDbDelete
-            // 
-            this.buttonDbDelete.ForeColor = System.Drawing.SystemColors.AppWorkspace;
-            this.buttonDbDelete.Location = new System.Drawing.Point(593, 74);
-            this.buttonDbDelete.Name = "buttonDbDelete";
-            this.buttonDbDelete.Size = new System.Drawing.Size(84, 23);
-            this.buttonDbDelete.TabIndex = 58;
-            this.buttonDbDelete.Text = "db delete";
-            this.buttonDbDelete.UseVisualStyleBackColor = true;
             // 
             // labelZone
             // 
@@ -219,16 +181,6 @@
             this.labelRegion.Size = new System.Drawing.Size(76, 23);
             this.labelRegion.TabIndex = 65;
             this.labelRegion.Text = "Region";
-            // 
-            // buttonDbSave
-            // 
-            this.buttonDbSave.ForeColor = System.Drawing.SystemColors.AppWorkspace;
-            this.buttonDbSave.Location = new System.Drawing.Point(507, 74);
-            this.buttonDbSave.Name = "buttonDbSave";
-            this.buttonDbSave.Size = new System.Drawing.Size(84, 23);
-            this.buttonDbSave.TabIndex = 57;
-            this.buttonDbSave.Text = "db save";
-            this.buttonDbSave.UseVisualStyleBackColor = true;
             // 
             // comboBoxProtocol
             // 
@@ -545,14 +497,10 @@
         private System.Windows.Forms.DataGridView dgvTargetGroup;
         private System.Windows.Forms.Button buttonDelete;
         private System.Windows.Forms.GroupBox groupBoxSqlServerConfigurationTemplate;
-        private System.Windows.Forms.Button buttonShowCheckedLBDetailInfo;
-        private System.Windows.Forms.Button buttonLoadBalancerNameCheck;
-        private System.Windows.Forms.Button buttonDbDelete;
         private System.Windows.Forms.Label labelZone;
         private System.Windows.Forms.ComboBox comboBoxRegion;
         private System.Windows.Forms.ComboBox comboBoxSubnet;
         private System.Windows.Forms.Label labelRegion;
-        private System.Windows.Forms.Button buttonDbSave;
         private System.Windows.Forms.ComboBox comboBoxProtocol;
         private System.Windows.Forms.Button buttonLoadTemplate;
         private System.Windows.Forms.TextBox textBoxServerPort;

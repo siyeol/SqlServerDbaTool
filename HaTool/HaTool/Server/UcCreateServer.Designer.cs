@@ -34,6 +34,7 @@
             this.buttonServerNameCheck = new System.Windows.Forms.Button();
             this.buttonCommandPreview = new System.Windows.Forms.Button();
             this.textBoxCreateServerCommnet = new System.Windows.Forms.TextBox();
+            this.textBoxServerName = new System.Windows.Forms.TextBox();
             this.buttonDbDelete = new System.Windows.Forms.Button();
             this.buttonCreateServer = new System.Windows.Forms.Button();
             this.buttonDbSave = new System.Windows.Forms.Button();
@@ -56,7 +57,10 @@
             this.labelRegion = new System.Windows.Forms.Label();
             this.comboBoxZone = new System.Windows.Forms.ComboBox();
             this.labelZone = new System.Windows.Forms.Label();
-            this.textBoxServerName = new System.Windows.Forms.TextBox();
+            this.comboBoxVPC = new System.Windows.Forms.ComboBox();
+            this.labelVPC = new System.Windows.Forms.Label();
+            this.comboBoxSubnet = new System.Windows.Forms.ComboBox();
+            this.labelSubnet = new System.Windows.Forms.Label();
             this.groupBoxCreateServer.SuspendLayout();
             this.groupBox4CreateServer.SuspendLayout();
             this.groupBoxAccessControlGroup.SuspendLayout();
@@ -105,7 +109,7 @@
             this.labelServerName.AutoSize = true;
             this.labelServerName.Location = new System.Drawing.Point(19, 33);
             this.labelServerName.Name = "labelServerName";
-            this.labelServerName.Size = new System.Drawing.Size(161, 15);
+            this.labelServerName.Size = new System.Drawing.Size(252, 23);
             this.labelServerName.TabIndex = 24;
             this.labelServerName.Text = "Server Name (hostname)";
             // 
@@ -141,6 +145,13 @@
             this.textBoxCreateServerCommnet.TabIndex = 44;
             this.textBoxCreateServerCommnet.Text = "It takes about 10 minutes to create the server. Ask them to create two servers to" +
     " be redundant and start the next step after a cup of coffee.";
+            // 
+            // textBoxServerName
+            // 
+            this.textBoxServerName.Location = new System.Drawing.Point(16, 56);
+            this.textBoxServerName.Name = "textBoxServerName";
+            this.textBoxServerName.Size = new System.Drawing.Size(259, 30);
+            this.textBoxServerName.TabIndex = 25;
             // 
             // buttonDbDelete
             // 
@@ -199,7 +210,7 @@
             this.comboBoxACG4.FormattingEnabled = true;
             this.comboBoxACG4.Location = new System.Drawing.Point(16, 78);
             this.comboBoxACG4.Name = "comboBoxACG4";
-            this.comboBoxACG4.Size = new System.Drawing.Size(259, 23);
+            this.comboBoxACG4.Size = new System.Drawing.Size(259, 31);
             this.comboBoxACG4.TabIndex = 41;
             // 
             // comboBoxACG1
@@ -209,7 +220,7 @@
             this.comboBoxACG1.FormattingEnabled = true;
             this.comboBoxACG1.Location = new System.Drawing.Point(16, 49);
             this.comboBoxACG1.Name = "comboBoxACG1";
-            this.comboBoxACG1.Size = new System.Drawing.Size(259, 23);
+            this.comboBoxACG1.Size = new System.Drawing.Size(259, 31);
             this.comboBoxACG1.TabIndex = 38;
             // 
             // comboBoxACG2
@@ -219,7 +230,7 @@
             this.comboBoxACG2.FormattingEnabled = true;
             this.comboBoxACG2.Location = new System.Drawing.Point(282, 49);
             this.comboBoxACG2.Name = "comboBoxACG2";
-            this.comboBoxACG2.Size = new System.Drawing.Size(259, 23);
+            this.comboBoxACG2.Size = new System.Drawing.Size(259, 31);
             this.comboBoxACG2.TabIndex = 39;
             // 
             // comboBoxACG3
@@ -229,7 +240,7 @@
             this.comboBoxACG3.FormattingEnabled = true;
             this.comboBoxACG3.Location = new System.Drawing.Point(546, 49);
             this.comboBoxACG3.Name = "comboBoxACG3";
-            this.comboBoxACG3.Size = new System.Drawing.Size(259, 23);
+            this.comboBoxACG3.Size = new System.Drawing.Size(259, 31);
             this.comboBoxACG3.TabIndex = 40;
             // 
             // comboBoxACG5
@@ -239,7 +250,7 @@
             this.comboBoxACG5.FormattingEnabled = true;
             this.comboBoxACG5.Location = new System.Drawing.Point(281, 78);
             this.comboBoxACG5.Name = "comboBoxACG5";
-            this.comboBoxACG5.Size = new System.Drawing.Size(259, 23);
+            this.comboBoxACG5.Size = new System.Drawing.Size(259, 31);
             this.comboBoxACG5.TabIndex = 42;
             // 
             // labelConfigurationNo
@@ -247,7 +258,7 @@
             this.labelConfigurationNo.AutoSize = true;
             this.labelConfigurationNo.Location = new System.Drawing.Point(19, 30);
             this.labelConfigurationNo.Name = "labelConfigurationNo";
-            this.labelConfigurationNo.Size = new System.Drawing.Size(175, 15);
+            this.labelConfigurationNo.Size = new System.Drawing.Size(274, 23);
             this.labelConfigurationNo.TabIndex = 31;
             this.labelConfigurationNo.Text = "Configuration No (1...5)";
             // 
@@ -296,7 +307,7 @@
             this.labelServerImage.AutoSize = true;
             this.labelServerImage.Location = new System.Drawing.Point(19, 28);
             this.labelServerImage.Name = "labelServerImage";
-            this.labelServerImage.Size = new System.Drawing.Size(91, 15);
+            this.labelServerImage.Size = new System.Drawing.Size(142, 23);
             this.labelServerImage.TabIndex = 2;
             this.labelServerImage.Text = "Server Image";
             // 
@@ -307,7 +318,7 @@
             this.comboBoxServerImage.FormattingEnabled = true;
             this.comboBoxServerImage.Location = new System.Drawing.Point(16, 46);
             this.comboBoxServerImage.Name = "comboBoxServerImage";
-            this.comboBoxServerImage.Size = new System.Drawing.Size(524, 23);
+            this.comboBoxServerImage.Size = new System.Drawing.Size(524, 31);
             this.comboBoxServerImage.TabIndex = 20;
             // 
             // labelServer
@@ -315,7 +326,7 @@
             this.labelServer.AutoSize = true;
             this.labelServer.Location = new System.Drawing.Point(19, 92);
             this.labelServer.Name = "labelServer";
-            this.labelServer.Size = new System.Drawing.Size(98, 15);
+            this.labelServer.Size = new System.Drawing.Size(153, 23);
             this.labelServer.TabIndex = 22;
             this.labelServer.Text = "Server (Spec)";
             // 
@@ -326,13 +337,17 @@
             this.comboBoxServer.FormattingEnabled = true;
             this.comboBoxServer.Location = new System.Drawing.Point(16, 110);
             this.comboBoxServer.Name = "comboBoxServer";
-            this.comboBoxServer.Size = new System.Drawing.Size(789, 23);
+            this.comboBoxServer.Size = new System.Drawing.Size(789, 31);
             this.comboBoxServer.TabIndex = 21;
             // 
             // groupBoxServerLocation
             // 
             this.groupBoxServerLocation.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
+            this.groupBoxServerLocation.Controls.Add(this.comboBoxSubnet);
+            this.groupBoxServerLocation.Controls.Add(this.labelSubnet);
+            this.groupBoxServerLocation.Controls.Add(this.comboBoxVPC);
+            this.groupBoxServerLocation.Controls.Add(this.labelVPC);
             this.groupBoxServerLocation.Controls.Add(this.comboBoxRegion);
             this.groupBoxServerLocation.Controls.Add(this.labelRegion);
             this.groupBoxServerLocation.Controls.Add(this.comboBoxZone);
@@ -351,7 +366,7 @@
             this.comboBoxRegion.FormattingEnabled = true;
             this.comboBoxRegion.Location = new System.Drawing.Point(16, 46);
             this.comboBoxRegion.Name = "comboBoxRegion";
-            this.comboBoxRegion.Size = new System.Drawing.Size(259, 23);
+            this.comboBoxRegion.Size = new System.Drawing.Size(150, 31);
             this.comboBoxRegion.TabIndex = 17;
             this.comboBoxRegion.SelectedIndexChanged += new System.EventHandler(this.ComboBoxRegionChanged);
             // 
@@ -360,7 +375,7 @@
             this.labelRegion.AutoSize = true;
             this.labelRegion.Location = new System.Drawing.Point(19, 28);
             this.labelRegion.Name = "labelRegion";
-            this.labelRegion.Size = new System.Drawing.Size(49, 15);
+            this.labelRegion.Size = new System.Drawing.Size(76, 23);
             this.labelRegion.TabIndex = 0;
             this.labelRegion.Text = "Region";
             // 
@@ -369,26 +384,57 @@
             this.comboBoxZone.AutoCompleteMode = System.Windows.Forms.AutoCompleteMode.SuggestAppend;
             this.comboBoxZone.AutoCompleteSource = System.Windows.Forms.AutoCompleteSource.ListItems;
             this.comboBoxZone.FormattingEnabled = true;
-            this.comboBoxZone.Location = new System.Drawing.Point(282, 46);
+            this.comboBoxZone.Location = new System.Drawing.Point(191, 45);
             this.comboBoxZone.Name = "comboBoxZone";
-            this.comboBoxZone.Size = new System.Drawing.Size(259, 23);
+            this.comboBoxZone.Size = new System.Drawing.Size(150, 31);
             this.comboBoxZone.TabIndex = 18;
             // 
             // labelZone
             // 
             this.labelZone.AutoSize = true;
-            this.labelZone.Location = new System.Drawing.Point(285, 28);
+            this.labelZone.Location = new System.Drawing.Point(194, 27);
             this.labelZone.Name = "labelZone";
-            this.labelZone.Size = new System.Drawing.Size(35, 15);
+            this.labelZone.Size = new System.Drawing.Size(54, 23);
             this.labelZone.TabIndex = 19;
             this.labelZone.Text = "Zone";
             // 
-            // textBoxServerName
+            // comboBoxVPC
             // 
-            this.textBoxServerName.Location = new System.Drawing.Point(16, 56);
-            this.textBoxServerName.Name = "textBoxServerName";
-            this.textBoxServerName.Size = new System.Drawing.Size(259, 23);
-            this.textBoxServerName.TabIndex = 25;
+            this.comboBoxVPC.AutoCompleteMode = System.Windows.Forms.AutoCompleteMode.SuggestAppend;
+            this.comboBoxVPC.AutoCompleteSource = System.Windows.Forms.AutoCompleteSource.ListItems;
+            this.comboBoxVPC.FormattingEnabled = true;
+            this.comboBoxVPC.Location = new System.Drawing.Point(372, 45);
+            this.comboBoxVPC.Name = "comboBoxVPC";
+            this.comboBoxVPC.Size = new System.Drawing.Size(150, 31);
+            this.comboBoxVPC.TabIndex = 20;
+            // 
+            // labelVPC
+            // 
+            this.labelVPC.AutoSize = true;
+            this.labelVPC.Location = new System.Drawing.Point(375, 27);
+            this.labelVPC.Name = "labelVPC";
+            this.labelVPC.Size = new System.Drawing.Size(43, 23);
+            this.labelVPC.TabIndex = 21;
+            this.labelVPC.Text = "VPC";
+            // 
+            // comboBoxSubnet
+            // 
+            this.comboBoxSubnet.AutoCompleteMode = System.Windows.Forms.AutoCompleteMode.SuggestAppend;
+            this.comboBoxSubnet.AutoCompleteSource = System.Windows.Forms.AutoCompleteSource.ListItems;
+            this.comboBoxSubnet.FormattingEnabled = true;
+            this.comboBoxSubnet.Location = new System.Drawing.Point(546, 45);
+            this.comboBoxSubnet.Name = "comboBoxSubnet";
+            this.comboBoxSubnet.Size = new System.Drawing.Size(150, 31);
+            this.comboBoxSubnet.TabIndex = 22;
+            // 
+            // labelSubnet
+            // 
+            this.labelSubnet.AutoSize = true;
+            this.labelSubnet.Location = new System.Drawing.Point(549, 27);
+            this.labelSubnet.Name = "labelSubnet";
+            this.labelSubnet.Size = new System.Drawing.Size(76, 23);
+            this.labelSubnet.TabIndex = 23;
+            this.labelSubnet.Text = "Subnet";
             // 
             // UcCreateServer
             // 
@@ -443,5 +489,9 @@
         private System.Windows.Forms.GroupBox groupBox4CreateServer;
         private System.Windows.Forms.GroupBox groupBoxAccessControlGroup;
         private System.Windows.Forms.GroupBox groupBoxServerImageAndSpec;
+        private System.Windows.Forms.ComboBox comboBoxSubnet;
+        private System.Windows.Forms.Label labelSubnet;
+        private System.Windows.Forms.ComboBox comboBoxVPC;
+        private System.Windows.Forms.Label labelVPC;
     }
 }

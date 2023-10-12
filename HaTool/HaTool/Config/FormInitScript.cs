@@ -13,6 +13,8 @@ using System.Threading;
 using CsLib;
 using System.IO;
 using System.Net;
+using Newtonsoft.Json;
+using HaTool.Model.NCloud;
 
 namespace HaTool.Config
 {
@@ -211,16 +213,23 @@ namespace HaTool.Config
 
         private void TemplateChange()
         {
+            // hardcoded - for initscript private linklocal endpoint embedding
+            string _scriptObjectEndPoint = objectEndPoint;
+            if (_scriptObjectEndPoint == "https://kr.object.ncloudstorage.com")
+            {
+                _scriptObjectEndPoint = "https://kr.object.private.ncloudstorage.com";
+            }
+
             string vbTemplate = string.Empty;
             vbTemplate = userDataTemplate.Replace("DP_BUCKET_DP", bucket);
             vbTemplate = vbTemplate.Replace("DP_PSFILENAME_DP", textBoxPowerShellScriptName.Text);
-            vbTemplate = vbTemplate.Replace("DP_OJBJECT_ENDPOINT_DP", objectEndPoint);
+            vbTemplate = vbTemplate.Replace("DP_OJBJECT_ENDPOINT_DP", _scriptObjectEndPoint);
             userDataTemplateChanged = vbTemplate;
             
             string psTemplate = string.Empty;
             psTemplate = psContentsTemplate.Replace("DP_AGENT_FOLDER_DP", textBoxAgentFolder.Text);
             psTemplate = psTemplate.Replace("DP_BUCKET_DP", bucket);
-            psTemplate = psTemplate.Replace("DP_OJBJECT_ENDPOINT_DP", objectEndPoint);
+            psTemplate = psTemplate.Replace("DP_OJBJECT_ENDPOINT_DP", _scriptObjectEndPoint);
             psContentsTemplateChanged = psTemplate;
         }
 
@@ -232,6 +241,62 @@ namespace HaTool.Config
         private void buttonClose_Click(object sender, EventArgs e)
         {
             Close();
+        }
+
+        private async void buttonCreate_Click(object sender, EventArgs e)
+        {
+            try
+            {
+                buttonCreate.Text = "Requested";
+                buttonCreate.Enabled = false;
+
+                string userData = dataManager.GetValue(DataManager.Category.InitScript, DataManager.Key.userDataFinal);
+                string endpoint = dataManager.GetValue(DataManager.Category.ApiGateway, DataManager.Key.Endpoint);
+                string action = @"/vserver/v2/createInitScript";
+
+                List<KeyValuePair<string, string>> parameters = new List<KeyValuePair<string, string>>();
+                parameters.Add(new KeyValuePair<string, string>("responseFormatType", "json"));
+                parameters.Add(new KeyValuePair<string, string>("initScriptName", textBoxInitScriptName.Text));
+                parameters.Add(new KeyValuePair<string, string>("initScriptContent", userData));
+                parameters.Add(new KeyValuePair<string, string>("osTypeCode", "WND"));
+
+                SoaCall soaCall = new SoaCall();
+                var task = soaCall.WebApiCall(endpoint, RequestType.POST, action, parameters, LogClient.Config.Instance.GetValue(Category.Api, Key.AccessKey), LogClient.Config.Instance.GetValue(Category.Api, Key.SecretKey));
+                string response = await task;
+
+                JsonSerializerSettings options = new JsonSerializerSettings
+                {
+                    NullValueHandling = NullValueHandling.Ignore,
+                    MissingMemberHandling = MissingMemberHandling.Ignore
+                };
+
+                if (response.Contains("responseError"))
+                {
+                    hasError hasError = JsonConvert.DeserializeObject<hasError>(response, options);
+                    throw new Exception(hasError.responseError.returnMessage);
+                }
+                else
+                {
+                    createInitScript createInitScript = JsonConvert.DeserializeObject<createInitScript>(response, options);
+                    if (createInitScript.createInitScriptResponse.returnCode.Equals("0"))
+                    {
+                        string _initScriptNo = createInitScript.createInitScriptResponse.initScriptList[0].initScriptNo;
+                        dataManager.SetValue(DataManager.Category.InitScript, DataManager.Key.initScriptNo, _initScriptNo);
+                        MessageBox.Show("initScript Number: "+dataManager.GetValue(DataManager.Category.InitScript,DataManager.Key.initScriptNo));
+                    }
+                }
+
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.Message);
+            }
+            finally
+            {
+                buttonCreate.Text = "Create";
+                buttonCreate.Enabled = true;
+            }
+
         }
     }
 }

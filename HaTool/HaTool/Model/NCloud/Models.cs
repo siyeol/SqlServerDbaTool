@@ -7,9 +7,9 @@ using System.Threading.Tasks;
 namespace HaTool.Model.NCloud
 {
 
-    public class changeLoadBalancedServerInstances
+    public class changeLoadBalancedServerInstanceConfiguration
     {
-        public changeLoadBalancedServerInstancesResponse changeLoadBalancedServerInstancesResponse { get; set; }
+        public changeLoadBalancedServerInstanceConfigurationResponse changeLoadBalancedServerInstanceConfigurationResponse { get; set; }
     }
 
 
@@ -39,7 +39,7 @@ namespace HaTool.Model.NCloud
 
 
 
-    public class changeLoadBalancedServerInstancesResponse
+    public class changeLoadBalancedServerInstanceConfigurationResponse
     {
         public string requestId { get; set; }
         public string returnCode { get; set; }
@@ -111,11 +111,11 @@ namespace HaTool.Model.NCloud
         public string virtualIp { get; set; }
         public string loadBalancerName { get; set; }
         public List<zone> zoneList { get; set; }
-        public region region { get; set; }
+        public string regionCode { get; set; }
         public codeCodeName loadBalancerAlgorithmType { get; set; }
         public string loadBalancerDescription { get; set; }
         public string createDate { get; set; }
-        public string domainName { get; set; }
+        public string loadBalancerDomain { get; set; }
         public codeCodeName internetLineType { get; set; }
         public string loadBalancerInstanceStatusName { get; set; }
         public codeCodeName loadBalancerInstanceStatus { get; set; }
@@ -165,8 +165,8 @@ namespace HaTool.Model.NCloud
         public codeCodeName blockStorageInstanceOperation { get; set; }
         public string blockStorageInstanceStatusName { get; set; }
         public string createDate { get; set; }
-        public string blockStorageInstanceDescription { get; set; }
-        public codeCodeName diskDetailType { get; set; }
+        public string blockStorageDescription { get; set; }
+        public codeCodeName blockStorageDiskDetailType { get; set; }
         public int maxIopsThroughput { get; set; }
         public zone zone { get; set; }
     }
@@ -353,13 +353,16 @@ namespace HaTool.Model.NCloud
     {
         public string publicIpInstanceNo { get; set; }
         public string publicIp { get; set; }
+        public string privateIp {  get; set; }
         public string publicIpDescription { get; set; }
         public codeCodeName internetLineType { get; set; }
         public string publicIpInstanceStatusName { get; set; }
         public codeCodeName publicIpInstanceStatus { get; set; }
         public codeCodeName publicIpInstanceOperation { get; set; }
         public codeCodeName publicIpKindType { get; set; }
-        public serverInstance serverInstanceAssociatedWithPublicIp { get; set; }
+        public serverInstance serverInstanceAssociatedWithPublicIp { get; set; } // deprecated
+        public string serverInstanceNo { get; set; }
+        public string serverName { get; set; }
         public zone zone { get; set; }
     }
 
@@ -385,8 +388,12 @@ namespace HaTool.Model.NCloud
         public string privateIp { get; set; }
         public codeCodeName serverInstanceStatus { get; set; }
         public codeCodeName serverInstanceOperation { get; set; }
-        public region region { get; set; }
-        public zone zone { get; set; }
+        //public region region { get; set; }
+        //public zone zone { get; set; }
+        public string vpcNo { get; set; }
+        public string subnetNo { get; set; }
+        public string zoneCode { get; set; }
+        public string regionCode { get; set; }
         public string serverImageProductCode { get; set; }
         public string serverProductCode { get; set; }
         public string feeSystemTypeCode { get; set; }
@@ -420,7 +427,7 @@ namespace HaTool.Model.NCloud
 
     public class accessControlGroup
     {
-        public string accessControlGroupConfigurationNo { get; set; }
+        public string accessControlGroupNo { get; set; }
         public string accessControlGroupName { get; set; }
         public string accessControlGroupDescription { get; set; }
         public bool isDefault { get; set; }
@@ -566,6 +573,143 @@ namespace HaTool.Model.NCloud
         public string returnCode { get; set; }
         public string returnMessage { get; set; }
         public string privateKey { get; set; }
+    }
+
+    public class initScript
+    {
+        public string initScriptNo { get; set; }
+        public string createDate { get; set; }
+    }
+    public class createInitScript
+    {
+        public createInitScriptResponse createInitScriptResponse { get; set; }
+    }
+
+    public class createInitScriptResponse
+    {
+        public string requestId { get; set; }
+        public string returnCode { get; set; }
+        public string returnMessage { get; set; }
+        public int totalRows { get; set; }
+        public List<initScript> initScriptList { get; set; }
+    }
+    public class getInitScriptList
+    {
+        public getInitScriptListResponse getInitScriptListResponse { get; set; }
+    }
+
+    public class getInitScriptListResponse
+    {
+        public string requestId { get; set; }
+        public string returnCode { get; set; }
+        public string returnMessage { get; set; }
+        public int totalRows { get; set; }
+        public List<initScript> initScriptList { get; set; }
+    }
+
+
+
+    public class vpcInstance
+    {
+        public string vpcNo { get; set; }
+    }
+
+    public class getVpcList
+    {
+        public getVpcListResponse getVpcListResponse { get; set; }
+    }
+
+    public class getVpcListResponse
+    {
+        public string requestId { get; set; }
+        public string returnCode { get; set; }
+        public string returnMessage { get; set; }
+        public List<vpcInstance> vpcList { get; set; }
+    }
+
+
+    public class subnetInstance
+    {
+        public string subnetNo { get; set; }
+    }
+
+    public class getSubnetList
+    {
+        public getSubnetListResponse getSubnetListResponse { get; set; }
+    }
+
+    public class getSubnetListResponse
+    {
+        public string requestId { get; set; }
+        public string returnCode { get; set; }
+        public string returnMessage { get; set; }
+        public List<subnetInstance> subnetList { get; set; }
+    }
+
+
+    public class raidInstance
+    {
+        public string raidTypeName { get; set; }
+    }
+
+    public class getRaidList
+    {
+        public getRaidListResponse getRaidListResponse { get; set; }
+    }
+
+    public class getRaidListResponse
+    {
+        public string requestId { get; set; }
+        public string returnCode { get; set; }
+        public string returnMessage { get; set; }
+        public List<raidInstance> raidList { get; set; }
+    }
+
+    public class createTargetGroup
+    {
+        public createTargetGroupResponse createTargetGroupResponse { get; set; }
+    }
+
+    public class createTargetGroupResponse
+    {
+        public string requestId { get; set; }
+        public string returnCode { get; set; }
+        public string returnMessage { get; set; }
+        public int totalRows { get; set; }
+        public List<targetGroupInstance> targetGroupInstanceList { get; set; }
+    }
+
+
+    public class targetGroupInstance
+    {
+        public string targetGroupNo { get; set; }
+        public string targetGroupName { get; set; }
+        public CommonCode targetType { get; set; }
+        public string vpcNo { get; set; }
+        public CommonCode targetGroupProtocolType { get; set; }
+        public int targetGroupPort { get; set; }
+        public string targetGroupDescription { get; set; }
+        public string loadBalancerInstanceNo { get; set; }
+    }
+
+    public class CommonCode
+    {
+        public string code { get; set; }
+        public string codeName { get; set; }
+    }
+
+
+    public class getTargetGroupList
+    {
+        public getTargetGroupListResponse getTargetGroupListResponse { get; set; }
+    }
+
+    public class getTargetGroupListResponse
+    {
+        public string requestId { get; set; }
+        public string returnCode { get; set; }
+        public string returnMessage { get; set; }
+        public List<targetGroupInstance> targetGroupList { get; set; }
     }
 
 

@@ -65,7 +65,7 @@ namespace HaTool.Server
             ColumnServerCheckBox.HeaderText = "CheckBox";
             ColumnServerSetupStatus.HeaderText = "SetupStatus";
             ColumnServerName.HeaderText = "Name";
-            ColumnServerZoneNo.HeaderText = "ZoneNo";
+            ColumnServerZoneNo.HeaderText = "Zone";
             ColumnServerInstanceNo.HeaderText = "InstanceNo";
             ColumnServerPublicIp.HeaderText = "PublicIp";
             ColumnServerPrivateIp.HeaderText = "PrivateIp";
@@ -159,7 +159,7 @@ namespace HaTool.Server
                                 s.Rows[n].Cells["CheckBox"].Value = false;
                                 s.Rows[n].Cells["SetupStatus"].Value = "NULL";
                                 s.Rows[n].Cells["Name"].Value = a.Key.serverName;
-                                s.Rows[n].Cells["ZoneNo"].Value = a.Value.zoneNo + "(" + serverInstance.zone.zoneCode + ")";
+                                s.Rows[n].Cells["ZoneNo"].Value = a.Value.zoneCode;
                                 s.Rows[n].Cells["InstanceNo"].Value = a.Value.serverInstanceNo;
                                 s.Rows[n].Cells["PublicIp"].Value = a.Value.serverPublicIp;
                                 s.Rows[n].Cells["PrivateIp"].Value = a.Value.serverPrivateIp;
@@ -930,7 +930,6 @@ if (Test-Path $FileName) {
                             p.Add(new KeyValuePair<string, string>("serverName", item.Cells["Name"].Value.ToString()));
                             p.Add(new KeyValuePair<string, string>("serverInstanceNo", item.Cells["InstanceNo"].Value.ToString()));
                             p.Add(new KeyValuePair<string, string>("serverPublicIp", item.Cells["PublicIp"].Value.ToString()));
-                            p.Add(new KeyValuePair<string, string>("serverPrivateIp", item.Cells["PrivateIp"].Value.ToString()));
                             p.Add(new KeyValuePair<string, string>("serverPort", textBoxPort.Text.Trim()));
                             p.Add(new KeyValuePair<string, string>("serverUserId", textBoxId.Text.Trim()));
                             p.Add(new KeyValuePair<string, string>("serverPassword", TranString.EncodeRijndael(

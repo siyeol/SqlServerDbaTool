@@ -82,7 +82,7 @@ namespace HaTool.Server
             
             ColumnServerCheckBox.HeaderText   = "CheckBox";
             ColumnServerName.HeaderText       = "Name";
-            ColumnServerZoneNo.HeaderText     = "ZoneNo";
+            ColumnServerZoneNo.HeaderText     = "Zone";
             ColumnServerInstanceNo.HeaderText = "InstanceNo";
             ColumnServerPublicIp.HeaderText   = "PublicIp";
             ColumnServerPrivateIp.HeaderText  = "PrivateIp";
@@ -187,7 +187,7 @@ namespace HaTool.Server
                     throw new Exception("select one server");
 
                 string endpoint = dataManager.GetValue(DataManager.Category.ApiGateway, DataManager.Key.Endpoint);
-                string action = @"/server/v2/getBlockStorageInstanceList";
+                string action = @"/vserver/v2/getBlockStorageInstanceList";
                 List<KeyValuePair<string, string>> parameters = new List<KeyValuePair<string, string>>();
                 parameters.Add(new KeyValuePair<string, string>("responseFormatType", "json"));
                 parameters.Add(new KeyValuePair<string, string>("serverInstanceNo", storageInstanceNo));
@@ -223,8 +223,8 @@ namespace HaTool.Server
                                 s.Rows[n].Cells["ServerName"].Value = a.serverName;
                                 s.Rows[n].Cells["Name"].Value = a.blockStorageName;
                                 s.Rows[n].Cells["Size"].Value = a.blockStorageSize;
-                                s.Rows[n].Cells["Type"].Value = a.diskDetailType.code;
-                                s.Rows[n].Cells["Desc"].Value = a.blockStorageInstanceDescription;
+                                s.Rows[n].Cells["Type"].Value = a.blockStorageDiskDetailType.code;
+                                s.Rows[n].Cells["Desc"].Value = a.blockStorageDescription;
                                 s.Rows[n].Cells["Status"].Value = a.blockStorageInstanceStatus.code;
                                 s.Rows[n].Cells["Operation"].Value = a.blockStorageInstanceOperation.code;
                             }
@@ -279,7 +279,7 @@ namespace HaTool.Server
                                 int n = s.Rows.Add();
                                 s.Rows[n].Cells["CheckBox"].Value = false;
                                 s.Rows[n].Cells["Name"].Value = a.Key.serverName;
-                                s.Rows[n].Cells["ZoneNo"].Value = a.Value.zoneNo + "(" + serverInstance.zone.zoneCode + ")";
+                                s.Rows[n].Cells["ZoneNo"].Value = a.Value.zoneCode;
                                 s.Rows[n].Cells["InstanceNo"].Value = a.Value.serverInstanceNo;
                                 s.Rows[n].Cells["PublicIp"].Value = a.Value.serverPublicIp;
                                 s.Rows[n].Cells["PrivateIp"].Value = a.Value.serverPrivateIp;
@@ -320,7 +320,7 @@ namespace HaTool.Server
             try
             {
                 string endpoint = dataManager.GetValue(DataManager.Category.ApiGateway, DataManager.Key.Endpoint);
-                string action = @"/server/v2/getServerInstanceList";
+                string action = @"/vserver/v2/getServerInstanceList";
                 List<KeyValuePair<string, string>> parameters = new List<KeyValuePair<string, string>>();
                 parameters.Add(new KeyValuePair<string, string>("responseFormatType", "json"));
 
@@ -568,7 +568,7 @@ namespace HaTool.Server
             try
             {
                 string endpoint = dataManager.GetValue(DataManager.Category.ApiGateway, DataManager.Key.Endpoint);
-                string action = @"/server/v2/deleteBlockStorageInstances";
+                string action = @"/vserver/v2/deleteBlockStorageInstances";
                 List<KeyValuePair<string, string>> parameters = new List<KeyValuePair<string, string>>();
                 parameters.Add(new KeyValuePair<string, string>("responseFormatType", "json"));
                 parameters.Add(new KeyValuePair<string, string>("blockStorageInstanceNoList.1", storageInstanceNo));
@@ -638,7 +638,7 @@ namespace HaTool.Server
                 await GetBlockStorageInfoLoad();
 
                 string endpoint = dataManager.GetValue(DataManager.Category.ApiGateway, DataManager.Key.Endpoint);
-                string action = @"/server/v2/createBlockStorageInstance";
+                string action = @"/vserver/v2/createBlockStorageInstance";
                 List<KeyValuePair<string, string>> parameters = new List<KeyValuePair<string, string>>();
                 parameters.Add(new KeyValuePair<string, string>("responseFormatType", "json"));
                 parameters.Add(new KeyValuePair<string, string>("blockStorageName", textBoxStorageName.Text));

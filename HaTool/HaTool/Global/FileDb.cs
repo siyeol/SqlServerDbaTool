@@ -68,8 +68,8 @@ namespace HaTool.Global
                                 serverUserId = a.Value.serverUserId,
                                 serverPassword = a.Value.serverPassword,
                                 serverAliasName = a.Value.serverAliasName,
-                                regionNo = a.Value.regionNo,
-                                zoneNo = a.Value.zoneNo,
+                                regionCode = a.Value.regionCode,
+                                zoneCode = a.Value.zoneCode,
                                 serverImageProductCode = a.Value.serverImageProductCode,
                                 serverProductCode = a.Value.serverProductCode,
                                 feeSystemTypeCode = a.Value.feeSystemTypeCode,
@@ -78,7 +78,9 @@ namespace HaTool.Global
                                 accessControlGroupConfigurationNoList_2 = a.Value.accessControlGroupConfigurationNoList_2,
                                 accessControlGroupConfigurationNoList_3 = a.Value.accessControlGroupConfigurationNoList_3,
                                 accessControlGroupConfigurationNoList_4 = a.Value.accessControlGroupConfigurationNoList_4,
-                                accessControlGroupConfigurationNoList_5 = a.Value.accessControlGroupConfigurationNoList_5
+                                accessControlGroupConfigurationNoList_5 = a.Value.accessControlGroupConfigurationNoList_5,
+                                vpcNo = a.Value.vpcNo,
+                                subnetNo = a.Value.subnetNo
                             });
                     }
                     break;
@@ -166,8 +168,8 @@ namespace HaTool.Global
             string serverUserId = "NULL";
             string serverPassword = "NULL";
             string serverAliasName = "NULL";
-            string regionNo = "NULL";
-            string zoneNo = "NULL";
+            string regionCode = "NULL";
+            string zoneCode = "NULL";
             string serverImageProductCode = "NULL";
             string serverProductCode = "NULL";
             string feeSystemTypeCode = "NULL";
@@ -178,6 +180,8 @@ namespace HaTool.Global
             string accessControlGroupConfigurationNoList_4 = "NULL";
             string accessControlGroupConfigurationNoList_5 = "NULL";
             string serverRole = "NULL";
+            string vpcNo = "NULL";
+            string subnetNo = "NULL";
 
             string json = string.Empty;
 
@@ -222,10 +226,10 @@ namespace HaTool.Global
                             serverPassword = a.Value;
                         if (a.Key.Equals("serverAliasName", StringComparison.OrdinalIgnoreCase))
                             serverAliasName = a.Value;
-                        if (a.Key.Equals("regionNo", StringComparison.OrdinalIgnoreCase))
-                            regionNo = a.Value;
-                        if (a.Key.Equals("zoneNo", StringComparison.OrdinalIgnoreCase))
-                            zoneNo = a.Value;
+                        if (a.Key.Equals("regionCode", StringComparison.OrdinalIgnoreCase))
+                            regionCode = a.Value;
+                        if (a.Key.Equals("zoneCode", StringComparison.OrdinalIgnoreCase))
+                            zoneCode = a.Value;
                         if (a.Key.Equals("serverImageProductCode", StringComparison.OrdinalIgnoreCase))
                             serverImageProductCode = a.Value;
                         if (a.Key.Equals("serverProductCode", StringComparison.OrdinalIgnoreCase))
@@ -244,6 +248,11 @@ namespace HaTool.Global
                             accessControlGroupConfigurationNoList_4 = a.Value;
                         if (a.Key.Equals("accessControlGroupConfigurationNoList_5", StringComparison.OrdinalIgnoreCase))
                             accessControlGroupConfigurationNoList_5 = a.Value;
+                        if (a.Key.Equals("vpcNo", StringComparison.OrdinalIgnoreCase))
+                            vpcNo = a.Value;
+                        if (a.Key.Equals("subnetNo", StringComparison.OrdinalIgnoreCase))
+                            subnetNo = a.Value;
+
                     }
 
 
@@ -258,8 +267,8 @@ namespace HaTool.Global
                             serverUserId = serverUserId,
                             serverPassword = serverPassword,
                             serverAliasName = serverAliasName,
-                            regionNo = regionNo,
-                            zoneNo = zoneNo,
+                            regionCode = regionCode,
+                            zoneCode = zoneCode,
                             serverImageProductCode = serverImageProductCode,
                             serverProductCode = serverProductCode,
                             feeSystemTypeCode = feeSystemTypeCode,
@@ -268,7 +277,9 @@ namespace HaTool.Global
                             accessControlGroupConfigurationNoList_2 = accessControlGroupConfigurationNoList_2,
                             accessControlGroupConfigurationNoList_3 = accessControlGroupConfigurationNoList_3,
                             accessControlGroupConfigurationNoList_4 = accessControlGroupConfigurationNoList_4,
-                            accessControlGroupConfigurationNoList_5 = accessControlGroupConfigurationNoList_5
+                            accessControlGroupConfigurationNoList_5 = accessControlGroupConfigurationNoList_5,
+                            vpcNo = vpcNo,
+                            subnetNo = subnetNo
                         });
 
                     json = TBL_SERVER.GetJson();

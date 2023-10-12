@@ -48,12 +48,56 @@ namespace HaTool.Server
                 List<Task> tasks = new List<Task>();
                 tasks.Add(GetRegionList());
                 tasks.Add(GetZoneList("1"));
-                //tasks.Add(GetServerImageProductList("SPSW0WINNTEN0043A", "1"));
-                //tasks.Add(GetServerProductList("SPSW0WINNTEN0043A", "1", "2"));
-                tasks.Add(GetServerImageProductList("SPSW0WINNTEN0050A", "1"));
-                tasks.Add(GetServerProductList("SPSW0WINNTEN0050A", "1", "2"));
+                tasks.Add(GetServerImageProductList("SW.VSVR.DBMS.WND64.WND.SVR2016STDEN.MSSQL.2019.B100", "2")); //Windows Server 2019 (64-bit) English Edition
+                tasks.Add(GetServerProductList("SW.VSVR.DBMS.WND64.WND.SVR2016STDEN.MSSQL.2019.B100", "2", "2"));
                 tasks.Add(GetAccessControlGroupList());
+                tasks.Add(GetInitScriptNo());
+                tasks.Add(GetRaidList("WINNT"));
+                tasks.Add(GetVpcList());
+                tasks.Add(GetSubnetList());
                 await Task.WhenAll(tasks);
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.Message);
+            }
+        }
+
+        private async Task GetInitScriptNo()
+        {
+            try
+            {
+                string endpoint = dataManager.GetValue(DataManager.Category.ApiGateway, DataManager.Key.Endpoint);
+                string action = @"/vserver/v2/getInitScriptList";
+                List<KeyValuePair<string, string>> parameters = new List<KeyValuePair<string, string>>();
+                parameters.Add(new KeyValuePair<string, string>("responseFormatType", "json"));
+                parameters.Add(new KeyValuePair<string, string>("osTypeCode", "WND"));
+
+                SoaCall soaCall = new SoaCall();
+                var task = soaCall.WebApiCall(endpoint, RequestType.POST, action, parameters, LogClient.Config.Instance.GetValue(Category.Api, Key.AccessKey), LogClient.Config.Instance.GetValue(Category.Api, Key.SecretKey));
+                string response = await task;
+
+                JsonSerializerSettings options = new JsonSerializerSettings
+                {
+                    NullValueHandling = NullValueHandling.Ignore,
+                    MissingMemberHandling = MissingMemberHandling.Ignore
+                };
+
+                if (response.Contains("responseError"))
+                {
+                    hasError hasError = JsonConvert.DeserializeObject<hasError>(response, options);
+                    throw new Exception(hasError.responseError.returnMessage);
+                }
+                else
+                {
+                    getInitScriptList getInitScriptList = JsonConvert.DeserializeObject<getInitScriptList>(response, options);
+                    if (getInitScriptList.getInitScriptListResponse.returnCode.Equals("0"))
+                    {
+                        string _initScriptNo = getInitScriptList.getInitScriptListResponse.initScriptList[0].initScriptNo;
+                        dataManager.SetValue(DataManager.Category.InitScript, DataManager.Key.initScriptNo, _initScriptNo);
+                        //MessageBox.Show("initScriptNo fetched: " + dataManager.GetValue(DataManager.Category.InitScript, DataManager.Key.initScriptNo));
+                    }
+                }
             }
             catch (Exception ex)
             {
@@ -66,7 +110,7 @@ namespace HaTool.Server
             try
             {
                 string endpoint = dataManager.GetValue(DataManager.Category.ApiGateway, DataManager.Key.Endpoint);
-                string action = @"/server/v2/getAccessControlGroupList";
+                string action = @"/vserver/v2/getAccessControlGroupList";
                 List<KeyValuePair<string, string>> parameters = new List<KeyValuePair<string, string>>();
                 parameters.Add(new KeyValuePair<string, string>("responseFormatType", "json"));
                 SoaCall soaCall = new SoaCall();
@@ -99,7 +143,7 @@ namespace HaTool.Server
                         {
                             var item = new accessControlGroup
                             {
-                                accessControlGroupConfigurationNo = a.accessControlGroupConfigurationNo,
+                                accessControlGroupNo = a.accessControlGroupNo,
                                 accessControlGroupName = a.accessControlGroupName,
                                 accessControlGroupDescription = a.accessControlGroupDescription,
                                 isDefault = a.isDefault,
@@ -135,7 +179,7 @@ namespace HaTool.Server
             try
             {
                 string endpoint = dataManager.GetValue(DataManager.Category.ApiGateway, DataManager.Key.Endpoint);
-                string action = @"/server/v2/getServerProductList";
+                string action = @"/vserver/v2/getServerProductList";
                 List<KeyValuePair<string, string>> parameters = new List<KeyValuePair<string, string>>();
                 parameters.Add(new KeyValuePair<string, string>("responseFormatType", "json"));
                 parameters.Add(new KeyValuePair<string, string>("serverImageProductCode", serverImageProductCode));
@@ -220,12 +264,12 @@ namespace HaTool.Server
             try
             {
                 string endpoint = dataManager.GetValue(DataManager.Category.ApiGateway, DataManager.Key.Endpoint);
-                string action = @"/server/v2/getServerImageProductList";
+                string action = @"/vserver/v2/getServerImageProductList";
                 List<KeyValuePair<string, string>> parameters = new List<KeyValuePair<string, string>>();
                 parameters.Add(new KeyValuePair<string, string>("responseFormatType", "json"));
                 parameters.Add(new KeyValuePair<string, string>("blockStorageSize", "100"));
                 //parameters.Add(new KeyValuePair<string, string>("productCode", "SPSW0WINNTEN0043A")); // SPSW0WINNTEN0050A
-                parameters.Add(new KeyValuePair<string, string>("productCode", "SPSW0WINNTEN0050A")); // 
+                parameters.Add(new KeyValuePair<string, string>("productCode", "SW.VSVR.DBMS.WND64.WND.SVR2016STDEN.MSSQL.2019.B100")); // 이거로 변경 SW.VSVR.OS.WND64.WND.SVR2019EN.B100
                 parameters.Add(new KeyValuePair<string, string>("regionNo", regionNo));
                 SoaCall soaCall = new SoaCall();
                 var task = soaCall.WebApiCall(endpoint, RequestType.POST, action, parameters, LogClient.Config.Instance.GetValue(Category.Api, Key.AccessKey), LogClient.Config.Instance.GetValue(Category.Api, Key.SecretKey));
@@ -303,7 +347,7 @@ namespace HaTool.Server
             try
             {
                 string endpoint = dataManager.GetValue(DataManager.Category.ApiGateway, DataManager.Key.Endpoint);
-                string action = @"/server/v2/getZoneList";
+                string action = @"/vserver/v2/getZoneList";
                 List<KeyValuePair<string, string>> parameters = new List<KeyValuePair<string, string>>();
                 parameters.Add(new KeyValuePair<string, string>("responseFormatType", "json"));
                 parameters.Add(new KeyValuePair<string, string>("regionNo", regionNo));
@@ -363,7 +407,7 @@ namespace HaTool.Server
             try
             {
                 string endpoint = dataManager.GetValue(DataManager.Category.ApiGateway, DataManager.Key.Endpoint);
-                string action = @"/server/v2/getRegionList";
+                string action = @"/vserver/v2/getRegionList";
                 List<KeyValuePair<string, string>> parameters = new List<KeyValuePair<string, string>>();
                 parameters.Add(new KeyValuePair<string, string>("responseFormatType", "json"));
                 SoaCall soaCall = new SoaCall();
@@ -411,6 +455,145 @@ namespace HaTool.Server
         }
 
 
+        private async Task GetVpcList()
+        {
+            try
+            {
+                string endpoint = dataManager.GetValue(DataManager.Category.ApiGateway, DataManager.Key.Endpoint);
+                string action = @"/vpc/v2/getVpcList";
+                List<KeyValuePair<string, string>> parameters = new List<KeyValuePair<string, string>>();
+                parameters.Add(new KeyValuePair<string, string>("responseFormatType", "json"));
+                SoaCall soaCall = new SoaCall();
+                var task = soaCall.WebApiCall(endpoint, RequestType.POST, action, parameters, LogClient.Config.Instance.GetValue(Category.Api, Key.AccessKey), LogClient.Config.Instance.GetValue(Category.Api, Key.SecretKey));
+                string response = await task;
+
+                JsonSerializerSettings options = new JsonSerializerSettings
+                {
+                    NullValueHandling = NullValueHandling.Ignore,
+                    MissingMemberHandling = MissingMemberHandling.Ignore
+                };
+
+                if (response.Contains("responseError"))
+                {
+                    hasError errorResponse = JsonConvert.DeserializeObject<hasError>(response, options);
+                    throw new Exception(errorResponse.responseError.returnMessage);
+                }
+                else
+                {
+                    getVpcList getVpcList = JsonConvert.DeserializeObject<getVpcList>(response, options);
+                    if (getVpcList.getVpcListResponse.returnCode.Equals("0"))
+                    {
+                        foreach (var vpc in getVpcList.getVpcListResponse.vpcList)
+                        {
+                            comboBoxVPC.Items.Add(vpc.vpcNo.ToString());
+                        }
+
+                        //string _vpcNo = getVpcList.getVpcListResponse.vpcList[0].vpcNo.ToString(); // FRAGILE: Replace with TODO
+                        //dataManager.SetValue(DataManager.Category.VpcInfo, DataManager.Key.vpcNo, _vpcNo);
+                    }
+                }
+            }
+            catch (Exception)
+            {
+                throw;
+            }
+            comboBoxVPC.SelectedIndex = 0;
+        }
+
+        private async Task GetSubnetList()
+        {
+            try
+            {
+                string endpoint = dataManager.GetValue(DataManager.Category.ApiGateway, DataManager.Key.Endpoint);
+                string action = @"/vpc/v2/getSubnetList";
+                List<KeyValuePair<string, string>> parameters = new List<KeyValuePair<string, string>>();
+                parameters.Add(new KeyValuePair<string, string>("responseFormatType", "json"));
+                //parameters.Add(new KeyValuePair<string, string>("vpcNo", vpcNo));
+                SoaCall soaCall = new SoaCall();
+                var task = soaCall.WebApiCall(endpoint, RequestType.POST, action, parameters, LogClient.Config.Instance.GetValue(Category.Api, Key.AccessKey), LogClient.Config.Instance.GetValue(Category.Api, Key.SecretKey));
+                string response = await task;
+
+                JsonSerializerSettings options = new JsonSerializerSettings
+                {
+                    NullValueHandling = NullValueHandling.Ignore,
+                    MissingMemberHandling = MissingMemberHandling.Ignore
+                };
+
+                if (response.Contains("responseError"))
+                {
+                    hasError errorResponse = JsonConvert.DeserializeObject<hasError>(response, options);
+                    throw new Exception(errorResponse.responseError.returnMessage);
+                }
+                else
+                {
+                    getSubnetList getSubnetList = JsonConvert.DeserializeObject<getSubnetList>(response, options);
+                    if (getSubnetList.getSubnetListResponse.returnCode.Equals("0"))
+                    {
+                        //string _subnetNo = getSubnetList.getSubnetListResponse.subnetList[0].subnetNo.ToString(); // FRAGILE: Replace with TODO
+                        //dataManager.SetValue(DataManager.Category.VpcInfo, DataManager.Key.subnetNo, _subnetNo);
+
+                        comboBoxSubnet.Items.Clear();
+                        foreach (var subnet in getSubnetList.getSubnetListResponse.subnetList)
+                        {
+                            comboBoxSubnet.Items.Add(subnet.subnetNo.ToString());
+                        }
+                    }
+                }
+            }
+            catch (Exception)
+            {
+                throw;
+            }
+            comboBoxSubnet.SelectedIndex = 0;
+        }
+
+        private async Task GetRaidList(string productTypeCode)
+        {
+            try
+            {
+                string endpoint = dataManager.GetValue(DataManager.Category.ApiGateway, DataManager.Key.Endpoint);
+                string action = @"/vserver/v2/getRaidList";
+                List<KeyValuePair<string, string>> parameters = new List<KeyValuePair<string, string>>();
+                parameters.Add(new KeyValuePair<string, string>("responseFormatType", "json"));
+                parameters.Add(new KeyValuePair<string, string>("productTypeCode", productTypeCode));
+                SoaCall soaCall = new SoaCall();
+                var task = soaCall.WebApiCall(endpoint, RequestType.POST, action, parameters, LogClient.Config.Instance.GetValue(Category.Api, Key.AccessKey), LogClient.Config.Instance.GetValue(Category.Api, Key.SecretKey));
+                string response = await task;
+
+                JsonSerializerSettings options = new JsonSerializerSettings
+                {
+                    NullValueHandling = NullValueHandling.Ignore,
+                    MissingMemberHandling = MissingMemberHandling.Ignore
+                };
+
+                if (response.Contains("responseError"))
+                {
+                    hasError errorResponse = JsonConvert.DeserializeObject<hasError>(response, options);
+                    throw new Exception(errorResponse.responseError.returnMessage);
+                }
+                else
+                {
+                    getRaidList getRaidList = JsonConvert.DeserializeObject<getRaidList>(response, options);
+                    if (getRaidList.getRaidListResponse.returnCode.Equals("0"))
+                    {
+                        string _raidName = getRaidList.getRaidListResponse.raidList[0].raidTypeName.ToString(); // FRAGILE: Replace with TODO
+                        dataManager.SetValue(DataManager.Category.VpcInfo, DataManager.Key.raidTypeName, _raidName);
+
+                        /* TODO: Add FE dropdown element and add components with for loop */
+                        //foreach (var subnets in getSubnetList.getSubnetListResponse.subnetList)
+                        //{
+                        //    <DROPDOWNBAR>.Items.Add(subnets)
+                        //}
+                    }
+                }
+            }
+            catch (Exception)
+            {
+                throw;
+            }
+        }
+
+
         private bool PreconditionCheck()
         {
             string userDataFinal = dataManager.GetValue(DataManager.Category.InitScript, DataManager.Key.userDataFinal);
@@ -435,7 +618,7 @@ namespace HaTool.Server
                 MessageBox.Show("server create started please wait 10 min.");
                 
                 string command = GetCreateServerInstancesJsonCommand();
-                formNcpRestPreview.Action = @"/server/v2/createServerInstances";
+                formNcpRestPreview.Action = @"/vserver/v2/createServerInstances";
                 formNcpRestPreview.Command = command;
                 formNcpRestPreview.Callback = true;
                 await formNcpRestPreview.RestCall();
@@ -481,25 +664,14 @@ namespace HaTool.Server
                                 serverName = a.serverName,
                                 serverInstanceNo = a.serverInstanceNo,
                                 publicIp = a.publicIp,
-                                privateIp = a.privateIp,
-                                region = new region
-                                {
-                                    regionNo = a.region.regionNo,
-                                    regionCode = a.region.regionCode,
-                                    regionName = a.region.regionName
-                                },
-                                zone = new zone
-                                {
-                                    zoneNo = a.zone.zoneNo,
-                                    zoneName = a.zone.zoneName,
-                                    zoneCode = a.zone.zoneCode,
-                                    zoneDescription = a.zone.zoneDescription,
-                                    regionNo = a.zone.regionNo
-                                },
+                                regionCode = a.regionCode,
+                                zoneCode = a.zoneCode,
                                 serverImageProductCode = a.serverImageProductCode,
                                 serverProductCode = a.serverProductCode,
                                 feeSystemTypeCode = "FXSUM",
                                 loginKeyName = a.loginKeyName,
+                                vpcNo = a.vpcNo,
+                                subnetNo = a.subnetNo
                                 // where is acg list ?
 
                             };
@@ -518,38 +690,39 @@ namespace HaTool.Server
                                 p.Add(new KeyValuePair<string, string>("serverName", a.serverName));
                                 p.Add(new KeyValuePair<string, string>("serverInstanceNo", a.serverInstanceNo));
                                 p.Add(new KeyValuePair<string, string>("serverPublicIp", a.publicIp));
-                                p.Add(new KeyValuePair<string, string>("serverPrivateIp", a.privateIp));
-                                p.Add(new KeyValuePair<string, string>("regionNo", a.region.regionNo));
-                                p.Add(new KeyValuePair<string, string>("zoneNo", a.zone.zoneNo));
+                                p.Add(new KeyValuePair<string, string>("regionCode", a.regionCode));
+                                p.Add(new KeyValuePair<string, string>("zoneCode", a.zoneCode));
                                 p.Add(new KeyValuePair<string, string>("serverImageProductCode", a.serverImageProductCode));
                                 p.Add(new KeyValuePair<string, string>("serverProductCode", a.serverProductCode));
                                 p.Add(new KeyValuePair<string, string>("feeSystemTypeCode", a.feeSystemTypeCode));
                                 p.Add(new KeyValuePair<string, string>("loginKeyName", a.loginKeyName));
+                                p.Add(new KeyValuePair<string, string>("vpcNo", a.vpcNo));
+                                p.Add(new KeyValuePair<string, string>("subnetNo", a.subnetNo));
 
                                 if (comboBoxACG1.Text.Equals(""))
                                     p.Add(new KeyValuePair<string, string>("accessControlGroupConfigurationNoList_1", "NULL"));
                                 else
-                                    p.Add(new KeyValuePair<string, string>("accessControlGroupConfigurationNoList_1", (comboBoxACG1.SelectedItem as accessControlGroup).accessControlGroupConfigurationNo));
+                                    p.Add(new KeyValuePair<string, string>("accessControlGroupConfigurationNoList_1", (comboBoxACG1.SelectedItem as accessControlGroup).accessControlGroupNo));
 
                                 if (comboBoxACG2.Text.Equals(""))
                                     p.Add(new KeyValuePair<string, string>("accessControlGroupConfigurationNoList_2", "NULL"));
                                 else
-                                    p.Add(new KeyValuePair<string, string>("accessControlGroupConfigurationNoList_2", (comboBoxACG2.SelectedItem as accessControlGroup).accessControlGroupConfigurationNo));
+                                    p.Add(new KeyValuePair<string, string>("accessControlGroupConfigurationNoList_2", (comboBoxACG2.SelectedItem as accessControlGroup).accessControlGroupNo));
 
                                 if (comboBoxACG3.Text.Equals(""))
                                     p.Add(new KeyValuePair<string, string>("accessControlGroupConfigurationNoList_3", "NULL"));
                                 else
-                                    p.Add(new KeyValuePair<string, string>("accessControlGroupConfigurationNoList_3", (comboBoxACG3.SelectedItem as accessControlGroup).accessControlGroupConfigurationNo));
+                                    p.Add(new KeyValuePair<string, string>("accessControlGroupConfigurationNoList_3", (comboBoxACG3.SelectedItem as accessControlGroup).accessControlGroupNo));
 
                                 if (comboBoxACG4.Text.Equals(""))
                                     p.Add(new KeyValuePair<string, string>("accessControlGroupConfigurationNoList_4", "NULL"));
                                 else
-                                    p.Add(new KeyValuePair<string, string>("accessControlGroupConfigurationNoList_4", (comboBoxACG4.SelectedItem as accessControlGroup).accessControlGroupConfigurationNo));
+                                    p.Add(new KeyValuePair<string, string>("accessControlGroupConfigurationNoList_4", (comboBoxACG4.SelectedItem as accessControlGroup).accessControlGroupNo));
 
                                 if (comboBoxACG5.Text.Equals(""))
                                     p.Add(new KeyValuePair<string, string>("accessControlGroupConfigurationNoList_5", "NULL"));
                                 else
-                                    p.Add(new KeyValuePair<string, string>("accessControlGroupConfigurationNoList_5", (comboBoxACG5.SelectedItem as accessControlGroup).accessControlGroupConfigurationNo));
+                                    p.Add(new KeyValuePair<string, string>("accessControlGroupConfigurationNoList_5", (comboBoxACG5.SelectedItem as accessControlGroup).accessControlGroupNo));
 
                                 await fileDb.UpSertTable(FileDb.TableName.TBL_SERVER, p);
                             }
@@ -575,7 +748,7 @@ namespace HaTool.Server
                 InputCheck(false);
                 string command = GetCreateServerInstancesJsonCommand();
 
-                formNcpRestPreview.Action = @"/server/v2/createServerInstances";
+                formNcpRestPreview.Action = @"/vserver/v2/createServerInstances";
                 formNcpRestPreview.Command = command;
                 formNcpRestPreview.Callback = true;
                 formNcpRestPreview.StartPosition = FormStartPosition.CenterScreen;
@@ -629,7 +802,7 @@ namespace HaTool.Server
                 List<serverInstance> serverInstances = new List<serverInstance>();
 
                 string endpoint = dataManager.GetValue(DataManager.Category.ApiGateway, DataManager.Key.Endpoint);
-                string action = @"/server/v2/getServerInstanceList";
+                string action = @"/vserver/v2/getServerInstanceList";
                 List<KeyValuePair<string, string>> parameters = new List<KeyValuePair<string, string>>();
                 parameters.Add(new KeyValuePair<string, string>("responseFormatType", "json"));
                 parameters.Add(new KeyValuePair<string, string>("searchFilterName", "serverName"));
@@ -662,7 +835,6 @@ namespace HaTool.Server
                                 serverInstanceNo = a.serverInstanceNo,
                                 serverName = a.serverName,
                                 publicIp = a.publicIp,
-                                privateIp = a.privateIp,
                                 serverInstanceStatus = new codeCodeName
                                 {
                                     code = a.serverInstanceStatus.code,
@@ -714,7 +886,10 @@ namespace HaTool.Server
             {
                 List<KeyValuePair<string, string>> listKeyValueParameters = GetParameters();
                 listKeyValueParameters.Add(new KeyValuePair<string, string>("responseFormatType", "json"));
-                listKeyValueParameters.Add(new KeyValuePair<string, string>("userData", TranString.EncodeBase64(dataManager.GetValue(DataManager.Category.InitScript, DataManager.Key.userDataFinal))));
+                listKeyValueParameters.Add(new KeyValuePair<string, string>("networkInterfaceList.1.networkInterfaceOrder", "0")); //hardcoded - vserver/v2/getNetworkInterfaceList
+                //listKeyValueParameters.Add(new KeyValuePair<string, string>("raidTypeName", dataManager.GetValue(DataManager.Category.VpcInfo, DataManager.Key.raidTypeName))); /* vserver/v2/getRaidList */
+                listKeyValueParameters.Add(new KeyValuePair<string, string>("initScriptNo", dataManager.GetValue(DataManager.Category.InitScript, DataManager.Key.initScriptNo)));
+
                 Dictionary<string, string> dicParameters = new Dictionary<string, string>();
 
                 foreach (var a in listKeyValueParameters)
@@ -772,38 +947,28 @@ namespace HaTool.Server
             p.Add(new KeyValuePair<string, string>("serverName", textBoxServerName.Text));
             p.Add(new KeyValuePair<string, string>("serverInstanceNo", CheckedServer.serverInstanceNo));
             p.Add(new KeyValuePair<string, string>("serverPublicIp", CheckedServer.publicIp));
-            p.Add(new KeyValuePair<string, string>("serverPrivateIp", CheckedServer.privateIp));
-            p.Add(new KeyValuePair<string, string>("regionNo", (comboBoxRegion.SelectedItem as region).regionNo));
-            p.Add(new KeyValuePair<string, string>("zoneNo", (comboBoxZone.SelectedItem as zone).zoneNo));
+            p.Add(new KeyValuePair<string, string>("regionCode", (comboBoxRegion.SelectedItem as region).regionCode)); // CHANGE HERE
+            p.Add(new KeyValuePair<string, string>("zoneCode", (comboBoxZone.SelectedItem as zone).zoneCode)); // CHANGE HERE
             p.Add(new KeyValuePair<string, string>("serverImageProductCode", (comboBoxServerImage.SelectedItem as imgProduct).productCode));
             p.Add(new KeyValuePair<string, string>("serverProductCode", (comboBoxServer.SelectedItem as srvProduct).productCode));
             p.Add(new KeyValuePair<string, string>("feeSystemTypeCode", "FXSUM"));
             p.Add(new KeyValuePair<string, string>("loginKeyName", dataManager.GetValue(DataManager.Category.LoginKey, DataManager.Key.Name)));
+            p.Add(new KeyValuePair<string, string>("vpcNo", comboBoxVPC.SelectedItem.ToString()));
+            p.Add(new KeyValuePair<string, string>("subnetNo", comboBoxSubnet.SelectedItem.ToString()));
 
-            if (comboBoxACG1.Text.Equals(""))
-                p.Add(new KeyValuePair<string, string>("accessControlGroupConfigurationNoList_1", "NULL"));
-            else
-                p.Add(new KeyValuePair<string, string>("accessControlGroupConfigurationNoList_1", (comboBoxACG1.SelectedItem as accessControlGroup).accessControlGroupConfigurationNo));
-
-            if (comboBoxACG2.Text.Equals(""))
-                p.Add(new KeyValuePair<string, string>("accessControlGroupConfigurationNoList_2", "NULL"));
-            else
-                p.Add(new KeyValuePair<string, string>("accessControlGroupConfigurationNoList_2", (comboBoxACG2.SelectedItem as accessControlGroup).accessControlGroupConfigurationNo));
-
-            if (comboBoxACG3.Text.Equals(""))
-                p.Add(new KeyValuePair<string, string>("accessControlGroupConfigurationNoList_3", "NULL"));
-            else
-                p.Add(new KeyValuePair<string, string>("accessControlGroupConfigurationNoList_3", (comboBoxACG3.SelectedItem as accessControlGroup).accessControlGroupConfigurationNo));
-
-            if (comboBoxACG4.Text.Equals(""))
-                p.Add(new KeyValuePair<string, string>("accessControlGroupConfigurationNoList_4", "NULL"));
-            else
-                p.Add(new KeyValuePair<string, string>("accessControlGroupConfigurationNoList_4", (comboBoxACG4.SelectedItem as accessControlGroup).accessControlGroupConfigurationNo));
-
-            if (comboBoxACG5.Text.Equals(""))
-                p.Add(new KeyValuePair<string, string>("accessControlGroupConfigurationNoList_5", "NULL"));
-            else
-                p.Add(new KeyValuePair<string, string>("accessControlGroupConfigurationNoList_5", (comboBoxACG5.SelectedItem as accessControlGroup).accessControlGroupConfigurationNo));
+            ComboBox[] comboBoxACGs = new ComboBox[] { comboBoxACG1, comboBoxACG2, comboBoxACG3, comboBoxACG4, comboBoxACG5 };
+            for (int i = 0; i < comboBoxACGs.Length; i++)
+            {
+                if (string.IsNullOrEmpty(comboBoxACGs[i].Text))
+                {
+                    p.Add(new KeyValuePair<string, string>($"networkInterfaceList.1.accessControlGroupNoList.{i + 1}", "NULL"));
+                }
+                else
+                {
+                    string acgConfigurationNo = (comboBoxACGs[i].SelectedItem as accessControlGroup).accessControlGroupNo;
+                    p.Add(new KeyValuePair<string, string>($"networkInterfaceList.1.accessControlGroupNoList.{i + 1}", acgConfigurationNo));
+                }
+            }
 
             return p; 
         }

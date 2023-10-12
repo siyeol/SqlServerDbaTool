@@ -43,7 +43,7 @@ namespace HaTool.Config
             LoadBalancer,
             HighAvailability,
 
-
+            VpcInfo,
             Server, GeneralInfo, ServerInfo,
             ServerSetting,
             createServerInstances,
@@ -72,15 +72,15 @@ namespace HaTool.Config
             Endpoint, Bucket,
             Name,
             AgentFolder, PsFileName,
-            userData, PsContents, userDataFinal,
+            userData, PsContents, userDataFinal, initScriptNo,
             Id, Password, Port, Collation, TraceFlags, Sp_configure, PsTemplate,
             Size, Type, PsPartitionFormat, /*PsGetDisk,*/
-            Protocol, LoadBalancerPort,
+            Protocol, LoadBalancerPort, targetGroupNo,
             BackupRestorePath,
             AccessKey, SecretKey,
             zoneNo, regionNo, serverProductCode, serverImageProductCode, serverName, loginKeyName, feeSystemTypeCode,
             accessControlGroupConfigurationNoList_1, accessControlGroupConfigurationNoList_2, accessControlGroupConfigurationNoList_3, accessControlGroupConfigurationNoList_4, accessControlGroupConfigurationNoList_5,
-
+            vpcNo, subnetNo, raidTypeName, // TODO: erase this and do only with TBL_SERVER
 
             AclGroupNo, LoginKeyName, RegionNo, ServerProductCode, ServerImageProductCode,
             FeeSystemTypeCode,

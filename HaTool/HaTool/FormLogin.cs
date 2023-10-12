@@ -66,7 +66,7 @@ namespace HaTool
 
                 parameters.Add(new KeyValuePair<string, string>("responseFormatType", "json"));
                 SoaCall soaCall = new SoaCall();
-                var task = soaCall.WebApiCall(textBoxApiGatewayEndpoint.Text, RequestType.POST, @"/server/v2/getRegionList", parameters, textBoxAccessKey.Text, textBoxSecretKey.Text);
+                var task = soaCall.WebApiCall(textBoxApiGatewayEndpoint.Text, RequestType.POST, @"/vserver/v2/getRegionList", parameters, textBoxAccessKey.Text, textBoxSecretKey.Text);
                 string response = await task;
 
                 JsonSerializerSettings options = new JsonSerializerSettings

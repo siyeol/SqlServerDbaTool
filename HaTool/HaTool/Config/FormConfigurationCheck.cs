@@ -181,7 +181,7 @@ namespace HaTool.Config
                 string loginKey = dataManager.GetValue(DataManager.Category.LoginKey, DataManager.Key.Name);
                 bool isExistsLoginKey = false; 
                 
-                string action = @"/server/v2/getLoginKeyList";
+                string action = @"/vserver/v2/getLoginKeyList";
                 List<KeyValuePair<string, string>> parameters = new List<KeyValuePair<string, string>>();
                 parameters.Add(new KeyValuePair<string, string>("responseFormatType", "json"));
                 SoaCall soaCall = new SoaCall();

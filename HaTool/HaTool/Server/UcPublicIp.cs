@@ -15,6 +15,7 @@ using Newtonsoft.Json;
 using HaTool.Model.NCloud;
 using LogClient;
 using Newtonsoft.Json.Linq;
+using System.Net;
 
 namespace HaTool.Server
 {
@@ -73,7 +74,7 @@ namespace HaTool.Server
 
             ColumnServerCheckBox.HeaderText = "CheckBox";
             ColumnServerName.HeaderText = "Name";
-            ColumnServerZoneNo.HeaderText = "ZoneNo";
+            ColumnServerZoneNo.HeaderText = "Zone";
             ColumnServerInstanceNo.HeaderText = "InstanceNo";
             ColumnServerPublicIp.HeaderText = "PublicIp";
             ColumnServerPrivateIp.HeaderText = "PrivateIp";
@@ -100,7 +101,7 @@ namespace HaTool.Server
             ColumnIpCheckBox.Name = "CheckBox";
             ColumnIpInstanceNo.Name = "IpInstanceNo";
             ColumnIpPublicIp.Name = "IpPublicIp";
-            ColumnIpServerInstanceNo.Name = "ServerInstnaceNao";
+            ColumnIpServerInstanceNo.Name = "ServerInstanceNo";
             ColumnIpServerName.Name = "ServerName";
             ColumnIpStatus.Name = "IpStatus";
             ColumnIpOperation.Name = "IpOperation";
@@ -203,7 +204,7 @@ namespace HaTool.Server
                                 int n = s.Rows.Add();
                                 s.Rows[n].Cells["CheckBox"].Value = false;
                                 s.Rows[n].Cells["Name"].Value = a.Key.serverName;
-                                s.Rows[n].Cells["ZoneNo"].Value = a.Value.zoneNo + "("+serverInstance.zone.zoneCode+")";
+                                s.Rows[n].Cells["ZoneNo"].Value = a.Value.zoneCode;
                                 s.Rows[n].Cells["InstanceNo"].Value = a.Value.serverInstanceNo;
                                 s.Rows[n].Cells["PublicIp"].Value = a.Value.serverPublicIp;
                                 s.Rows[n].Cells["PrivateIp"].Value = a.Value.serverPrivateIp;
@@ -248,7 +249,7 @@ namespace HaTool.Server
                 ControlHelpers.ButtonStatusChange(buttonPublicIpListReload, "Requested");
 
                 string endpoint = dataManager.GetValue(DataManager.Category.ApiGateway, DataManager.Key.Endpoint);
-                string action = @"/server/v2/getPublicIpInstanceList";
+                string action = @"/vserver/v2/getPublicIpInstanceList";
                 List<KeyValuePair<string, string>> parameters = new List<KeyValuePair<string, string>>();
                 parameters.Add(new KeyValuePair<string, string>("responseFormatType", "json"));
                 parameters.Add(new KeyValuePair<string, string>("regionNo", regionNo));
@@ -282,8 +283,8 @@ namespace HaTool.Server
                             s.Rows[n].Cells["CheckBox"].Value = false;
                             s.Rows[n].Cells["IpInstanceNo"].Value = a.publicIpInstanceNo;
                             s.Rows[n].Cells["IpPublicIp"].Value = a.publicIp;
-                            s.Rows[n].Cells["ServerInstnaceNao"].Value = a.serverInstanceAssociatedWithPublicIp.serverInstanceNo;
-                            s.Rows[n].Cells["ServerName"].Value = a.serverInstanceAssociatedWithPublicIp.serverName;
+                            s.Rows[n].Cells["ServerInstanceNo"].Value = a.serverInstanceNo;
+                            s.Rows[n].Cells["ServerName"].Value = a.serverName;
                             s.Rows[n].Cells["IpStatus"].Value = a.publicIpInstanceStatus.code;
                             s.Rows[n].Cells["IpOperation"].Value = a.publicIpInstanceOperation.code;
                         }
@@ -310,7 +311,7 @@ namespace HaTool.Server
             try
             {
                 string endpoint = dataManager.GetValue(DataManager.Category.ApiGateway, DataManager.Key.Endpoint);
-                string action = @"/server/v2/deletePublicIpInstances";
+                string action = @"/vserver/v2/deletePublicIpInstances";
                 List<KeyValuePair<string, string>> parameters = new List<KeyValuePair<string, string>>();
                 parameters.Add(new KeyValuePair<string, string>("responseFormatType", "json"));
 
@@ -359,7 +360,7 @@ namespace HaTool.Server
             try
             {
                 string endpoint = dataManager.GetValue(DataManager.Category.ApiGateway, DataManager.Key.Endpoint);
-                string action = @"/server/v2/disassociatePublicIpFromServerInstance";
+                string action = @"/vserver/v2/disassociatePublicIpFromServerInstance";
                 List<KeyValuePair<string, string>> parameters = new List<KeyValuePair<string, string>>();
                 parameters.Add(new KeyValuePair<string, string>("responseFormatType", "json"));
                 parameters.Add(new KeyValuePair<string, string>("publicIpInstanceNo", instanceNo));
@@ -400,7 +401,7 @@ namespace HaTool.Server
             try
             {
                 string endpoint = dataManager.GetValue(DataManager.Category.ApiGateway, DataManager.Key.Endpoint);
-                string action = @"/server/v2/stopServerInstances";
+                string action = @"/vserver/v2/stopServerInstances";
                 List<KeyValuePair<string, string>> parameters = new List<KeyValuePair<string, string>>();
                 parameters.Add(new KeyValuePair<string, string>("responseFormatType", "json"));
 
@@ -463,7 +464,7 @@ namespace HaTool.Server
             try
             {
                 string endpoint = dataManager.GetValue(DataManager.Category.ApiGateway, DataManager.Key.Endpoint);
-                string action = @"/server/v2/terminateServerInstances";
+                string action = @"/vserver/v2/terminateServerInstances";
                 List<KeyValuePair<string, string>> parameters = new List<KeyValuePair<string, string>>();
                 parameters.Add(new KeyValuePair<string, string>("responseFormatType", "json"));
 
@@ -526,7 +527,7 @@ namespace HaTool.Server
             try
             {
                 string endpoint = dataManager.GetValue(DataManager.Category.ApiGateway, DataManager.Key.Endpoint);
-                string action = @"/server/v2/startServerInstances";
+                string action = @"/vserver/v2/startServerInstances";
                 List<KeyValuePair<string, string>> parameters = new List<KeyValuePair<string, string>>();
                 parameters.Add(new KeyValuePair<string, string>("responseFormatType", "json"));
 
@@ -611,7 +612,7 @@ namespace HaTool.Server
             try
             {
                 string endpoint = dataManager.GetValue(DataManager.Category.ApiGateway, DataManager.Key.Endpoint);
-                string action = @"/server/v2/getRegionList";
+                string action = @"/vserver/v2/getRegionList";
                 List<KeyValuePair<string, string>> parameters = new List<KeyValuePair<string, string>>();
                 parameters.Add(new KeyValuePair<string, string>("responseFormatType", "json"));
                 SoaCall soaCall = new SoaCall();
@@ -661,7 +662,7 @@ namespace HaTool.Server
             try
             {
                 string endpoint = dataManager.GetValue(DataManager.Category.ApiGateway, DataManager.Key.Endpoint);
-                string action = @"/server/v2/getZoneList";
+                string action = @"/vserver/v2/getZoneList";
                 List<KeyValuePair<string, string>> parameters = new List<KeyValuePair<string, string>>();
                 parameters.Add(new KeyValuePair<string, string>("responseFormatType", "json"));
                 parameters.Add(new KeyValuePair<string, string>("regionNo", regionNo));
@@ -786,12 +787,13 @@ namespace HaTool.Server
                 {
                     if (bool.Parse(item.Cells["CheckBox"].Value.ToString()))
                     {
-                        string publicIp = await CreatePublicIpInstance(item.Cells["InstanceNo"].Value.ToString());
-                        if (publicIp != null && publicIp.Length > 0)
+                        var ipTuple = await CreatePublicIpInstance(item.Cells["InstanceNo"].Value.ToString());
+                        if (!string.IsNullOrEmpty(ipTuple.publicIp))
                         {
                             var p = new List<KeyValuePair<string, string>>();
                             p.Add(new KeyValuePair<string, string>("serverName", item.Cells["Name"].Value.ToString()));
-                            p.Add(new KeyValuePair<string, string>("serverPublicIp", publicIp));
+                            p.Add(new KeyValuePair<string, string>("serverPublicIp", ipTuple.publicIp));
+                            p.Add(new KeyValuePair<string, string>("serverPrivateIp", ipTuple.privateIp));
                             await fileDb.UpSertTable(FileDb.TableName.TBL_SERVER, p);
                         }
                     }
@@ -808,13 +810,14 @@ namespace HaTool.Server
             }
         }
 
-        private async Task<string> CreatePublicIpInstance(string serverInstanceNo)
+        private async Task<(string publicIp, string privateIp)> CreatePublicIpInstance(string serverInstanceNo)
         {
-            string publicIp = string.Empty;
+            string _publicIp = string.Empty;
+            string _privateIp = string.Empty;
             try
             {
                 string endpoint = dataManager.GetValue(DataManager.Category.ApiGateway, DataManager.Key.Endpoint);
-                string action = @"server/v2/createPublicIpInstance";
+                string action = @"vserver/v2/createPublicIpInstance";
                 List<KeyValuePair<string, string>> parameters = new List<KeyValuePair<string, string>>();
                 parameters.Add(new KeyValuePair<string, string>("responseFormatType", "json"));
                 parameters.Add(new KeyValuePair<string, string>("serverInstanceNo", serverInstanceNo));
@@ -839,7 +842,10 @@ namespace HaTool.Server
                 if (createPublicIpInstance.createPublicIpInstanceResponse.returnCode.Equals("0"))
                 {
                     foreach (var a in createPublicIpInstance.createPublicIpInstanceResponse.publicIpInstanceList)
-                        publicIp = a.publicIp;
+                    {
+                        _publicIp = a.publicIp;
+                        _privateIp = a.privateIp;
+                    }
 
                     if (createPublicIpInstance.createPublicIpInstanceResponse.totalRows == 0)
                         throw new Exception("createPublicIpInstance error");
@@ -850,7 +856,7 @@ namespace HaTool.Server
             {
                 throw;
             }
-            return publicIp;
+            return (_publicIp, _privateIp);
         }
 
         private async void buttonServerListReload_Click(object sender, EventArgs e)
@@ -1149,7 +1155,7 @@ namespace HaTool.Server
 
                 FormNcpRestPreview formNcpRestPreview = FormNcpRestPreview.Instance;
                 formNcpRestPreview.TitleText = "Get Password";
-                formNcpRestPreview.Action = @"/server/v2/getRootPassword";
+                formNcpRestPreview.Action = @"/vserver/v2/getRootPassword";
                 formNcpRestPreview.Command = command;
                 formNcpRestPreview.Callback = false;
                 formNcpRestPreview.Result = "";
@@ -1189,7 +1195,7 @@ namespace HaTool.Server
                 string command = jt.ToString(Newtonsoft.Json.Formatting.Indented);
 
                 FormNcpRestPreview formNcpRestPreview = FormNcpRestPreview.Instance;
-                formNcpRestPreview.Action = @"/server/v2/getServerInstanceList";
+                formNcpRestPreview.Action = @"/vserver/v2/getServerInstanceList";
                 formNcpRestPreview.Command = command.Replace("_1", ".1");
                 formNcpRestPreview.Callback = false;
                 formNcpRestPreview.Result = "";
@@ -1251,7 +1257,7 @@ namespace HaTool.Server
                 string command = jt.ToString(Newtonsoft.Json.Formatting.Indented);
 
                 FormNcpRestPreview formNcpRestPreview = FormNcpRestPreview.Instance;
-                formNcpRestPreview.Action = @"/server/v2/associatePublicIpWithServerInstance";
+                formNcpRestPreview.Action = @"/vserver/v2/associatePublicIpWithServerInstance";
                 formNcpRestPreview.Callback = false;
                 formNcpRestPreview.Command = command;
                 formNcpRestPreview.Result = "";
@@ -1281,7 +1287,7 @@ namespace HaTool.Server
                     foreach (var a in associatePublicIpWithServerInstance.associatePublicIpWithServerInstanceResponse.publicIpInstanceList)
                     {
                         publicIp = a.publicIp;
-                        serverName = a.serverInstanceAssociatedWithPublicIp.serverName;
+                        serverName = a.serverName;
                     }
 
                     if (associatePublicIpWithServerInstance.associatePublicIpWithServerInstanceResponse.totalRows == 0)

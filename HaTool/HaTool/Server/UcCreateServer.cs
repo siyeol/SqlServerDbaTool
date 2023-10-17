@@ -485,11 +485,13 @@ namespace HaTool.Server
                     {
                         foreach (var vpc in getVpcList.getVpcListResponse.vpcList)
                         {
-                            comboBoxVPC.Items.Add(vpc.vpcNo.ToString());
+                            var item = new vpcInstance
+                            {
+                                vpcNo = vpc.vpcNo,
+                                vpcName = vpc.vpcName,
+                            };
+                            comboBoxVPC.Items.Add(item);
                         }
-
-                        //string _vpcNo = getVpcList.getVpcListResponse.vpcList[0].vpcNo.ToString(); // FRAGILE: Replace with TODO
-                        //dataManager.SetValue(DataManager.Category.VpcInfo, DataManager.Key.vpcNo, _vpcNo);
                     }
                 }
             }
@@ -529,13 +531,15 @@ namespace HaTool.Server
                     getSubnetList getSubnetList = JsonConvert.DeserializeObject<getSubnetList>(response, options);
                     if (getSubnetList.getSubnetListResponse.returnCode.Equals("0"))
                     {
-                        //string _subnetNo = getSubnetList.getSubnetListResponse.subnetList[0].subnetNo.ToString(); // FRAGILE: Replace with TODO
-                        //dataManager.SetValue(DataManager.Category.VpcInfo, DataManager.Key.subnetNo, _subnetNo);
-
                         comboBoxSubnet.Items.Clear();
                         foreach (var subnet in getSubnetList.getSubnetListResponse.subnetList)
                         {
-                            comboBoxSubnet.Items.Add(subnet.subnetNo.ToString());
+                            var item = new subnetInstance
+                            {
+                                subnetNo = subnet.subnetNo,
+                                subnetName = subnet.subnetName
+                            };
+                            comboBoxSubnet.Items.Add(item);
                         }
                     }
                 }
@@ -953,8 +957,8 @@ namespace HaTool.Server
             p.Add(new KeyValuePair<string, string>("serverProductCode", (comboBoxServer.SelectedItem as srvProduct).productCode));
             p.Add(new KeyValuePair<string, string>("feeSystemTypeCode", "FXSUM"));
             p.Add(new KeyValuePair<string, string>("loginKeyName", dataManager.GetValue(DataManager.Category.LoginKey, DataManager.Key.Name)));
-            p.Add(new KeyValuePair<string, string>("vpcNo", comboBoxVPC.SelectedItem.ToString()));
-            p.Add(new KeyValuePair<string, string>("subnetNo", comboBoxSubnet.SelectedItem.ToString()));
+            p.Add(new KeyValuePair<string, string>("vpcNo", (comboBoxVPC.SelectedItem as vpcInstance).vpcNo));
+            p.Add(new KeyValuePair<string, string>("subnetNo", (comboBoxSubnet.SelectedItem as subnetInstance).subnetNo));
 
             ComboBox[] comboBoxACGs = new ComboBox[] { comboBoxACG1, comboBoxACG2, comboBoxACG3, comboBoxACG4, comboBoxACG5 };
             for (int i = 0; i < comboBoxACGs.Length; i++)

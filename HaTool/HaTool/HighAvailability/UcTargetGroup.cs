@@ -331,7 +331,12 @@ namespace HaTool.HighAvailability
                         comboBoxSubnet.Items.Clear();
                         foreach (var subnet in getSubnetList.getSubnetListResponse.subnetList)
                         {
-                            comboBoxSubnet.Items.Add(subnet.subnetNo.ToString());
+                            var item = new subnetInstance
+                            {
+                                subnetNo = subnet.subnetNo,
+                                subnetName = subnet.subnetName
+                            };
+                            comboBoxSubnet.Items.Add(item);
                         }
                     }
                 }
@@ -459,7 +464,12 @@ namespace HaTool.HighAvailability
                     {
                         foreach (var vpc in getVpcList.getVpcListResponse.vpcList)
                         {
-                            comboBoxVPC.Items.Add(vpc.vpcNo.ToString());
+                            var item = new vpcInstance
+                            {
+                                vpcNo = vpc.vpcNo,
+                                vpcName = vpc.vpcName,
+                            };
+                            comboBoxVPC.Items.Add(item);
                         }
                     }
                 }
@@ -507,7 +517,7 @@ namespace HaTool.HighAvailability
                 parameters.Add(new KeyValuePair<string, string>("responseFormatType", "json"));
                 parameters.Add(new KeyValuePair<string, string>("targetGroupProtocolTypeCode", comboBoxTargetGroupProtocol.SelectedItem.ToString()));
                 parameters.Add(new KeyValuePair<string, string>("healthCheckProtocolTypeCode", comboBoxHealthCheckProtocol.SelectedItem.ToString()));
-                parameters.Add(new KeyValuePair<string, string>("vpcNo", comboBoxVPC.SelectedItem.ToString()));
+                parameters.Add(new KeyValuePair<string, string>("vpcNo", (comboBoxVPC.SelectedItem as vpcInstance).vpcNo));
                 parameters.Add(new KeyValuePair<string, string>("targetGroupName", textBoxTargetGroupName.Text));
                 parameters.Add(new KeyValuePair<string, string>("targetGroupPort", textBoxTGPort.Text));
                 parameters.Add(new KeyValuePair<string, string>("healthCheckPort", textBoxTGPort.Text));
@@ -715,10 +725,10 @@ namespace HaTool.HighAvailability
                 parameters.Add(new KeyValuePair<string, string>("loadBalancerName", textBoxLoadBalancerName.Text.Trim()));
                 parameters.Add(new KeyValuePair<string, string>("loadBalancerListenerList.1.protocolTypeCode", comboBoxProtocol.Text.Trim()));
                 parameters.Add(new KeyValuePair<string, string>("loadBalancerListenerList.1.port", textBoxServerPort.Text));
-                parameters.Add(new KeyValuePair<string, string>("subnetNoList.1", comboBoxSubnet.SelectedItem.ToString()));
+                parameters.Add(new KeyValuePair<string, string>("subnetNoList.1", (comboBoxSubnet.SelectedItem as subnetInstance).subnetNo));
                 //parameters.Add(new KeyValuePair<string, string>("loadBalancerRuleList.1.serverPort", textBoxServerPort.Text.Trim()));
                 parameters.Add(new KeyValuePair<string, string>("regionCode", (comboBoxRegion.SelectedItem as region).regionCode));
-                parameters.Add(new KeyValuePair<string, string>("vpcNo", comboBoxVPC.SelectedItem.ToString()));
+                parameters.Add(new KeyValuePair<string, string>("vpcNo", (comboBoxVPC.SelectedItem as vpcInstance).vpcNo));
                 parameters.Add(new KeyValuePair<string, string>("loadBalancerListenerList.1.targetGroupNo", GetSelectedTargetGroupNo()));
                 SoaCall soaCall = new SoaCall();
                 var task = soaCall.WebApiCall(endpoint, RequestType.POST, action, parameters, LogClient.Config.Instance.GetValue(Category.Api, Key.AccessKey), LogClient.Config.Instance.GetValue(Category.Api, Key.SecretKey));

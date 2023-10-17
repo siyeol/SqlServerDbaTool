@@ -612,6 +612,11 @@ namespace HaTool.Model.NCloud
     public class vpcInstance
     {
         public string vpcNo { get; set; }
+        public string vpcName { get; set; }
+        public override string ToString()
+        {
+            return vpcName;
+        }
     }
 
     public class getVpcList
@@ -631,6 +636,11 @@ namespace HaTool.Model.NCloud
     public class subnetInstance
     {
         public string subnetNo { get; set; }
+        public string subnetName { get; set; }
+        public override string ToString()
+        {
+            return subnetName;
+        }
     }
 
     public class getSubnetList

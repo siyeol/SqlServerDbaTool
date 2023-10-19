@@ -38,8 +38,6 @@
             this.comboBoxSubnet = new System.Windows.Forms.ComboBox();
             this.labelRegion = new System.Windows.Forms.Label();
             this.comboBoxProtocol = new System.Windows.Forms.ComboBox();
-            this.buttonLoadTemplate = new System.Windows.Forms.Button();
-            this.buttonSaveTemplate = new System.Windows.Forms.Button();
             this.label4 = new System.Windows.Forms.Label();
             this.textBoxLoadBalancerName = new System.Windows.Forms.TextBox();
             this.label5 = new System.Windows.Forms.Label();
@@ -115,8 +113,6 @@
             this.groupBoxSqlServerConfigurationTemplate.Controls.Add(this.comboBoxSubnet);
             this.groupBoxSqlServerConfigurationTemplate.Controls.Add(this.labelRegion);
             this.groupBoxSqlServerConfigurationTemplate.Controls.Add(this.comboBoxProtocol);
-            this.groupBoxSqlServerConfigurationTemplate.Controls.Add(this.buttonLoadTemplate);
-            this.groupBoxSqlServerConfigurationTemplate.Controls.Add(this.buttonSaveTemplate);
             this.groupBoxSqlServerConfigurationTemplate.Controls.Add(this.label4);
             this.groupBoxSqlServerConfigurationTemplate.Controls.Add(this.textBoxLoadBalancerName);
             this.groupBoxSqlServerConfigurationTemplate.Controls.Add(this.label5);
@@ -130,7 +126,7 @@
             // buttonCreateLoadBalancer
             // 
             this.buttonCreateLoadBalancer.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
-            this.buttonCreateLoadBalancer.Location = new System.Drawing.Point(265, 74);
+            this.buttonCreateLoadBalancer.Location = new System.Drawing.Point(20, 80);
             this.buttonCreateLoadBalancer.Name = "buttonCreateLoadBalancer";
             this.buttonCreateLoadBalancer.Size = new System.Drawing.Size(118, 23);
             this.buttonCreateLoadBalancer.TabIndex = 69;
@@ -143,7 +139,7 @@
             this.labelZone.AutoSize = true;
             this.labelZone.Location = new System.Drawing.Point(287, 27);
             this.labelZone.Name = "labelZone";
-            this.labelZone.Size = new System.Drawing.Size(49, 15);
+            this.labelZone.Size = new System.Drawing.Size(76, 23);
             this.labelZone.TabIndex = 56;
             this.labelZone.Text = "Subnet";
             // 
@@ -152,7 +148,7 @@
             this.comboBoxRegion.FormattingEnabled = true;
             this.comboBoxRegion.Location = new System.Drawing.Point(152, 45);
             this.comboBoxRegion.Name = "comboBoxRegion";
-            this.comboBoxRegion.Size = new System.Drawing.Size(123, 23);
+            this.comboBoxRegion.Size = new System.Drawing.Size(123, 31);
             this.comboBoxRegion.TabIndex = 66;
             // 
             // comboBoxSubnet
@@ -160,7 +156,7 @@
             this.comboBoxSubnet.FormattingEnabled = true;
             this.comboBoxSubnet.Location = new System.Drawing.Point(283, 45);
             this.comboBoxSubnet.Name = "comboBoxSubnet";
-            this.comboBoxSubnet.Size = new System.Drawing.Size(123, 23);
+            this.comboBoxSubnet.Size = new System.Drawing.Size(123, 31);
             this.comboBoxSubnet.TabIndex = 55;
             // 
             // labelRegion
@@ -168,7 +164,7 @@
             this.labelRegion.AutoSize = true;
             this.labelRegion.Location = new System.Drawing.Point(157, 27);
             this.labelRegion.Name = "labelRegion";
-            this.labelRegion.Size = new System.Drawing.Size(49, 15);
+            this.labelRegion.Size = new System.Drawing.Size(76, 23);
             this.labelRegion.TabIndex = 65;
             this.labelRegion.Text = "Region";
             // 
@@ -180,33 +176,15 @@
             "UDP"});
             this.comboBoxProtocol.Location = new System.Drawing.Point(413, 45);
             this.comboBoxProtocol.Name = "comboBoxProtocol";
-            this.comboBoxProtocol.Size = new System.Drawing.Size(123, 23);
+            this.comboBoxProtocol.Size = new System.Drawing.Size(123, 31);
             this.comboBoxProtocol.TabIndex = 60;
-            // 
-            // buttonLoadTemplate
-            // 
-            this.buttonLoadTemplate.Location = new System.Drawing.Point(141, 74);
-            this.buttonLoadTemplate.Name = "buttonLoadTemplate";
-            this.buttonLoadTemplate.Size = new System.Drawing.Size(118, 23);
-            this.buttonLoadTemplate.TabIndex = 54;
-            this.buttonLoadTemplate.Text = "Load Template";
-            this.buttonLoadTemplate.UseVisualStyleBackColor = true;
-            // 
-            // buttonSaveTemplate
-            // 
-            this.buttonSaveTemplate.Location = new System.Drawing.Point(22, 74);
-            this.buttonSaveTemplate.Name = "buttonSaveTemplate";
-            this.buttonSaveTemplate.Size = new System.Drawing.Size(118, 23);
-            this.buttonSaveTemplate.TabIndex = 53;
-            this.buttonSaveTemplate.Text = "Save Template";
-            this.buttonSaveTemplate.UseVisualStyleBackColor = true;
             // 
             // label4
             // 
             this.label4.AutoSize = true;
             this.label4.Location = new System.Drawing.Point(416, 27);
             this.label4.Name = "label4";
-            this.label4.Size = new System.Drawing.Size(63, 15);
+            this.label4.Size = new System.Drawing.Size(98, 23);
             this.label4.TabIndex = 54;
             this.label4.Text = "Protocol";
             // 
@@ -215,7 +193,7 @@
             this.textBoxLoadBalancerName.ForeColor = System.Drawing.SystemColors.WindowText;
             this.textBoxLoadBalancerName.Location = new System.Drawing.Point(23, 45);
             this.textBoxLoadBalancerName.Name = "textBoxLoadBalancerName";
-            this.textBoxLoadBalancerName.Size = new System.Drawing.Size(123, 23);
+            this.textBoxLoadBalancerName.Size = new System.Drawing.Size(123, 30);
             this.textBoxLoadBalancerName.TabIndex = 40;
             // 
             // label5
@@ -223,7 +201,7 @@
             this.label5.AutoSize = true;
             this.label5.Location = new System.Drawing.Point(26, 25);
             this.label5.Name = "label5";
-            this.label5.Size = new System.Drawing.Size(35, 15);
+            this.label5.Size = new System.Drawing.Size(54, 23);
             this.label5.TabIndex = 42;
             this.label5.Text = "Name";
             // 
@@ -296,34 +274,34 @@
             // textBoxPort
             // 
             this.textBoxPort.ForeColor = System.Drawing.SystemColors.WindowText;
-            this.textBoxPort.Location = new System.Drawing.Point(393, 38);
+            this.textBoxPort.Location = new System.Drawing.Point(407, 39);
             this.textBoxPort.Name = "textBoxPort";
-            this.textBoxPort.Size = new System.Drawing.Size(123, 23);
+            this.textBoxPort.Size = new System.Drawing.Size(123, 30);
             this.textBoxPort.TabIndex = 169;
             // 
             // label6
             // 
             this.label6.AutoSize = true;
-            this.label6.Location = new System.Drawing.Point(393, 20);
+            this.label6.Location = new System.Drawing.Point(407, 21);
             this.label6.Name = "label6";
-            this.label6.Size = new System.Drawing.Size(35, 15);
+            this.label6.Size = new System.Drawing.Size(54, 23);
             this.label6.TabIndex = 170;
             this.label6.Text = "Port";
             // 
             // textBoxTargetGroupName
             // 
             this.textBoxTargetGroupName.ForeColor = System.Drawing.SystemColors.WindowText;
-            this.textBoxTargetGroupName.Location = new System.Drawing.Point(6, 38);
+            this.textBoxTargetGroupName.Location = new System.Drawing.Point(20, 39);
             this.textBoxTargetGroupName.Name = "textBoxTargetGroupName";
-            this.textBoxTargetGroupName.Size = new System.Drawing.Size(123, 23);
+            this.textBoxTargetGroupName.Size = new System.Drawing.Size(123, 30);
             this.textBoxTargetGroupName.TabIndex = 167;
             // 
             // labelCurrentAccessKey
             // 
             this.labelCurrentAccessKey.AutoSize = true;
-            this.labelCurrentAccessKey.Location = new System.Drawing.Point(9, 18);
+            this.labelCurrentAccessKey.Location = new System.Drawing.Point(23, 19);
             this.labelCurrentAccessKey.Name = "labelCurrentAccessKey";
-            this.labelCurrentAccessKey.Size = new System.Drawing.Size(35, 15);
+            this.labelCurrentAccessKey.Size = new System.Drawing.Size(54, 23);
             this.labelCurrentAccessKey.TabIndex = 168;
             this.labelCurrentAccessKey.Text = "Name";
             // 
@@ -333,24 +311,24 @@
             this.comboBoxTargetGroupProtocol.Items.AddRange(new object[] {
             "TCP",
             "UDP"});
-            this.comboBoxTargetGroupProtocol.Location = new System.Drawing.Point(264, 38);
+            this.comboBoxTargetGroupProtocol.Location = new System.Drawing.Point(278, 39);
             this.comboBoxTargetGroupProtocol.Name = "comboBoxTargetGroupProtocol";
-            this.comboBoxTargetGroupProtocol.Size = new System.Drawing.Size(123, 23);
+            this.comboBoxTargetGroupProtocol.Size = new System.Drawing.Size(123, 31);
             this.comboBoxTargetGroupProtocol.TabIndex = 164;
             // 
             // labelProtocol
             // 
             this.labelProtocol.AutoSize = true;
-            this.labelProtocol.Location = new System.Drawing.Point(267, 20);
+            this.labelProtocol.Location = new System.Drawing.Point(281, 21);
             this.labelProtocol.Name = "labelProtocol";
-            this.labelProtocol.Size = new System.Drawing.Size(63, 15);
+            this.labelProtocol.Size = new System.Drawing.Size(98, 23);
             this.labelProtocol.TabIndex = 163;
             this.labelProtocol.Text = "Protocol";
             // 
             // buttonCreateTargetGroup
             // 
             this.buttonCreateTargetGroup.Anchor = System.Windows.Forms.AnchorStyles.Left;
-            this.buttonCreateTargetGroup.Location = new System.Drawing.Point(6, 64);
+            this.buttonCreateTargetGroup.Location = new System.Drawing.Point(20, 65);
             this.buttonCreateTargetGroup.Name = "buttonCreateTargetGroup";
             this.buttonCreateTargetGroup.Size = new System.Drawing.Size(118, 23);
             this.buttonCreateTargetGroup.TabIndex = 162;
@@ -361,17 +339,17 @@
             // comboBoxVPC
             // 
             this.comboBoxVPC.FormattingEnabled = true;
-            this.comboBoxVPC.Location = new System.Drawing.Point(135, 38);
+            this.comboBoxVPC.Location = new System.Drawing.Point(149, 39);
             this.comboBoxVPC.Name = "comboBoxVPC";
-            this.comboBoxVPC.Size = new System.Drawing.Size(123, 23);
+            this.comboBoxVPC.Size = new System.Drawing.Size(123, 31);
             this.comboBoxVPC.TabIndex = 160;
             // 
             // label1
             // 
             this.label1.AutoSize = true;
-            this.label1.Location = new System.Drawing.Point(131, 20);
+            this.label1.Location = new System.Drawing.Point(145, 21);
             this.label1.Name = "label1";
-            this.label1.Size = new System.Drawing.Size(28, 15);
+            this.label1.Size = new System.Drawing.Size(43, 23);
             this.label1.TabIndex = 161;
             this.label1.Text = "VPC";
             // 
@@ -434,8 +412,6 @@
         private System.Windows.Forms.ComboBox comboBoxSubnet;
         private System.Windows.Forms.Label labelRegion;
         private System.Windows.Forms.ComboBox comboBoxProtocol;
-        private System.Windows.Forms.Button buttonLoadTemplate;
-        private System.Windows.Forms.Button buttonSaveTemplate;
         private System.Windows.Forms.Label label4;
         private System.Windows.Forms.TextBox textBoxLoadBalancerName;
         private System.Windows.Forms.Label label5;

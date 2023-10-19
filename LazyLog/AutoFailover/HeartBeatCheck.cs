@@ -52,7 +52,7 @@ namespace lazylog.AutoFailover
                     log.Warn("HeartBeatCheck Started");
                     log.Info($"thisServerName : {GetServerName()}");
                     var data = GetSqlServerLicenseData(GetServerName());
-                    await pushLicenseData(data);
+                    //await pushLicenseData(data);
 
                     string partnerServerName = await GetPartnerInfo(GetServerName());
                     log.Info($"partnerServerName : {partnerServerName}");
@@ -300,7 +300,7 @@ select
         }
 
 
-        private async Task pushLicenseData(SqlServerLicenseData sld)
+        private async Task pushLicenseData(SqlServerLicenseData sld) // DEPRECATED as of VPC Migration
         {
             try
             {
@@ -502,7 +502,7 @@ select
             {
                 log.Warn($"ChangeLoadBalancedServerInstances() loadBalancerInstanceNo : {loadBalancerInstanceNo}, masterServerInstanceNo : {masterServerInstanceNo}");
                 string endpoint = config.GetValue(Category.ApiGateway, Key.Endpoint);
-                string action = @"/loadbalancer/v2/changeLoadBalancedServerInstances";
+                string action = @"/loadbalancer/v2/changeLoadBalancedServerInstances"; //TODO : Change this to Add Target
                 List<KeyValuePair<string, string>> parameters = new List<KeyValuePair<string, string>>();
                 parameters.Add(new KeyValuePair<string, string>("responseFormatType", "json"));
                 parameters.Add(new KeyValuePair<string, string>("loadBalancerInstanceNo", loadBalancerInstanceNo));

@@ -164,9 +164,9 @@ namespace HaTool.HighAvailability
             ControlHelpers.dgvDesign(dgvTargetGroup);
             dgvTargetGroup.CellContentClick += new DataGridViewCellEventHandler(ControlHelpers.dgvLineColorChange);
 
-
-            SetDefaultOptionsForTargetGroupProtocol();
-            comboBoxTargetGroupProtocol.SelectedIndexChanged += comboBoxTargetGroupProtocol_SelectedIndexChanged;
+            comboBoxTargetGroupProtocol.Items.Clear();
+            comboBoxTargetGroupProtocol.Items.Add("TCP");
+            comboBoxTargetGroupProtocol.SelectedItem = "TCP";
         }
         private async void LoadData(object sender, EventArgs e)
         {
@@ -195,57 +195,13 @@ namespace HaTool.HighAvailability
             {
                 comboBoxProtocol.Text = dataManager.GetValue(DataManager.Category.LoadBalancer, DataManager.Key.Protocol).Trim();
                 textBoxLoadBalancerName.Text = dataManager.GetValue(DataManager.Category.LoadBalancer, DataManager.Key.Name).Trim();
-                textBoxLoadBalancerPort.Text = dataManager.GetValue(DataManager.Category.LoadBalancer, DataManager.Key.LoadBalancerPort).Trim();
-                textBoxServerPort.Text = dataManager.GetValue(DataManager.Category.SetSql, DataManager.Key.Port).Trim();
+                textBoxPort.Text = dataManager.GetValue(DataManager.Category.SetSql, DataManager.Key.Port).Trim();
             }
             catch (Exception)
             {
                 throw;
             }
 
-        }
-
-        private void SetDefaultOptionsForTargetGroupProtocol()
-        {
-            comboBoxTargetGroupProtocol.Items.Clear();
-            comboBoxTargetGroupProtocol.Items.Add("TCP");
-            comboBoxTargetGroupProtocol.Items.Add("UDP");
-            comboBoxTargetGroupProtocol.Items.Add("PROXY_TCP");
-            comboBoxTargetGroupProtocol.Items.Add("HTTP");
-            comboBoxTargetGroupProtocol.Items.Add("HTTPS");
-
-            comboBoxTargetGroupProtocol.SelectedItem = "TCP";
-        }
-
-        private void SetDefaultOptionsForHealthCheckProtocol(string targetGroupProtocol)
-        {
-            comboBoxHealthCheckProtocol.Items.Clear();
-            switch (targetGroupProtocol)
-            {
-                case "TCP":
-                case "PROXY_TCP":
-                    comboBoxHealthCheckProtocol.Items.Add("TCP");
-                    break;
-                case "HTTP":
-                case "HTTPS":
-                    comboBoxHealthCheckProtocol.Items.Add("HTTP");
-                    comboBoxHealthCheckProtocol.Items.Add("HTTPS");
-                    break;
-            }
-
-            if (targetGroupProtocol == "TCP" || targetGroupProtocol == "PROXY_TCP")
-            {
-                comboBoxHealthCheckProtocol.SelectedItem = "TCP";
-            }
-            else
-            {
-                comboBoxHealthCheckProtocol.SelectedItem = "HTTP"; // Default to HTTP for Application Load Balancer
-            }
-        }
-
-        private void comboBoxTargetGroupProtocol_SelectedIndexChanged(object sender, EventArgs e)
-        {
-            SetDefaultOptionsForHealthCheckProtocol(comboBoxTargetGroupProtocol.SelectedItem.ToString());
         }
 
         private async Task GetRegionList()
@@ -331,7 +287,12 @@ namespace HaTool.HighAvailability
                         comboBoxSubnet.Items.Clear();
                         foreach (var subnet in getSubnetList.getSubnetListResponse.subnetList)
                         {
-                            comboBoxSubnet.Items.Add(subnet.subnetNo.ToString());
+                            var item = new subnetInstance
+                            {
+                                subnetNo = subnet.subnetNo,
+                                subnetName = subnet.subnetName
+                            };
+                            comboBoxSubnet.Items.Add(item);
                         }
                     }
                 }
@@ -459,7 +420,12 @@ namespace HaTool.HighAvailability
                     {
                         foreach (var vpc in getVpcList.getVpcListResponse.vpcList)
                         {
-                            comboBoxVPC.Items.Add(vpc.vpcNo.ToString());
+                            var item = new vpcInstance
+                            {
+                                vpcNo = vpc.vpcNo,
+                                vpcName = vpc.vpcName,
+                            };
+                            comboBoxVPC.Items.Add(item);
                         }
                     }
                 }
@@ -506,11 +472,11 @@ namespace HaTool.HighAvailability
                 List<KeyValuePair<string, string>> parameters = new List<KeyValuePair<string, string>>();
                 parameters.Add(new KeyValuePair<string, string>("responseFormatType", "json"));
                 parameters.Add(new KeyValuePair<string, string>("targetGroupProtocolTypeCode", comboBoxTargetGroupProtocol.SelectedItem.ToString()));
-                parameters.Add(new KeyValuePair<string, string>("healthCheckProtocolTypeCode", comboBoxHealthCheckProtocol.SelectedItem.ToString()));
-                parameters.Add(new KeyValuePair<string, string>("vpcNo", comboBoxVPC.SelectedItem.ToString()));
+                parameters.Add(new KeyValuePair<string, string>("healthCheckProtocolTypeCode", comboBoxTargetGroupProtocol.SelectedItem.ToString()));
+                parameters.Add(new KeyValuePair<string, string>("vpcNo", (comboBoxVPC.SelectedItem as vpcInstance).vpcNo));
                 parameters.Add(new KeyValuePair<string, string>("targetGroupName", textBoxTargetGroupName.Text));
-                parameters.Add(new KeyValuePair<string, string>("targetGroupPort", textBoxTGPort.Text));
-                parameters.Add(new KeyValuePair<string, string>("healthCheckPort", textBoxTGPort.Text));
+                parameters.Add(new KeyValuePair<string, string>("targetGroupPort", textBoxPort.Text));
+                parameters.Add(new KeyValuePair<string, string>("healthCheckPort", textBoxPort.Text));
 
                 for (int i = 0; i < selectedServers.Count; i++)
                 {
@@ -546,6 +512,7 @@ namespace HaTool.HighAvailability
                         }
                     }
                 }
+                await GetTargetGroup();
             }
             catch (Exception ex)
             {
@@ -714,11 +681,11 @@ namespace HaTool.HighAvailability
                 parameters.Add(new KeyValuePair<string, string>("loadBalancerTypeCode", "NETWORK")); //Restricting to L4 LB
                 parameters.Add(new KeyValuePair<string, string>("loadBalancerName", textBoxLoadBalancerName.Text.Trim()));
                 parameters.Add(new KeyValuePair<string, string>("loadBalancerListenerList.1.protocolTypeCode", comboBoxProtocol.Text.Trim()));
-                parameters.Add(new KeyValuePair<string, string>("loadBalancerListenerList.1.port", textBoxServerPort.Text));
-                parameters.Add(new KeyValuePair<string, string>("subnetNoList.1", comboBoxSubnet.SelectedItem.ToString()));
+                parameters.Add(new KeyValuePair<string, string>("loadBalancerListenerList.1.port", textBoxPort.Text));
+                parameters.Add(new KeyValuePair<string, string>("subnetNoList.1", (comboBoxSubnet.SelectedItem as subnetInstance).subnetNo));
                 //parameters.Add(new KeyValuePair<string, string>("loadBalancerRuleList.1.serverPort", textBoxServerPort.Text.Trim()));
                 parameters.Add(new KeyValuePair<string, string>("regionCode", (comboBoxRegion.SelectedItem as region).regionCode));
-                parameters.Add(new KeyValuePair<string, string>("vpcNo", comboBoxVPC.SelectedItem.ToString()));
+                parameters.Add(new KeyValuePair<string, string>("vpcNo", (comboBoxVPC.SelectedItem as vpcInstance).vpcNo));
                 parameters.Add(new KeyValuePair<string, string>("loadBalancerListenerList.1.targetGroupNo", GetSelectedTargetGroupNo()));
                 SoaCall soaCall = new SoaCall();
                 var task = soaCall.WebApiCall(endpoint, RequestType.POST, action, parameters, LogClient.Config.Instance.GetValue(Category.Api, Key.AccessKey), LogClient.Config.Instance.GetValue(Category.Api, Key.SecretKey));
@@ -747,7 +714,7 @@ namespace HaTool.HighAvailability
                     p.Add(new KeyValuePair<string, string>("clusterName", textBoxLoadBalancerName.Text.Trim()));
                     p.Add(new KeyValuePair<string, string>("clusterNo", loadBalancerInstanceNo)); 
                     p.Add(new KeyValuePair<string, string>("domainName", loadBalancerDomain)); 
-                    p.Add(new KeyValuePair<string, string>("clusterPort", textBoxLoadBalancerPort.Text.Trim()));
+                    p.Add(new KeyValuePair<string, string>("clusterPort", textBoxPort.Text.Trim()));
 
                     await fileDb.UpSertTable(FileDb.TableName.TBL_CLUSTER, p);
 

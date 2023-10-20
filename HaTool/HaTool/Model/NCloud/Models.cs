@@ -722,6 +722,18 @@ namespace HaTool.Model.NCloud
         public List<targetGroupInstance> targetGroupList { get; set; }
     }
 
+    public class deleteTargetGroups
+    {
+        public deleteTargetGroupsResponse deleteTargetGroupsResponse { get; set; }
+    }
+
+    public class deleteTargetGroupsResponse
+    {
+        public string requestId { get; set; }
+        public string returnCode { get; set; }
+        public string returnMessage { get; set; }
+        public List<targetGroupInstance> targetGroupList { get; set; }
+    }
 
     public class hasError
     {

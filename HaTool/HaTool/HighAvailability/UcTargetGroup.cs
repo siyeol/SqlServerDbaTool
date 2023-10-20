@@ -576,6 +576,53 @@ namespace HaTool.HighAvailability
             }
         }
 
+        private async Task<string> getLoadBalancerNameFromNo(string instanceNo)
+        {
+            string loadBalancerName = string.Empty;
+
+            try
+            {
+                string endpoint = dataManager.GetValue(DataManager.Category.ApiGateway, DataManager.Key.Endpoint);
+                string action = @"/vloadbalancer/v2/getLoadBalancerInstanceDetail";
+                List<KeyValuePair<string, string>> parameters = new List<KeyValuePair<string, string>>();
+                parameters.Add(new KeyValuePair<string, string>("responseFormatType", "json"));
+                parameters.Add(new KeyValuePair<string, string>("loadBalancerInstanceNo", instanceNo));
+
+                SoaCall soaCall = new SoaCall();
+                var task = soaCall.WebApiCall(endpoint, RequestType.POST, action, parameters, LogClient.Config.Instance.GetValue(Category.Api, Key.AccessKey), LogClient.Config.Instance.GetValue(Category.Api, Key.SecretKey));
+                string response = await task;
+
+                JsonSerializerSettings options = new JsonSerializerSettings
+                {
+                    NullValueHandling = NullValueHandling.Ignore,
+                    MissingMemberHandling = MissingMemberHandling.Ignore
+                };
+
+                if (response.Contains("responseError"))
+                {
+                    hasError hasError = JsonConvert.DeserializeObject<hasError>(response, options);
+                    throw new Exception(hasError.responseError.returnMessage);
+                }
+                else
+                {
+                    getLoadBalancerInstanceList getLoadBalancerInstanceList = JsonConvert.DeserializeObject<getLoadBalancerInstanceList>(response, options);
+                    if (getLoadBalancerInstanceList.getLoadBalancerInstanceListResponse.returnCode.Equals("0"))
+                    {
+                        foreach (var lbi in getLoadBalancerInstanceList.getLoadBalancerInstanceListResponse.loadBalancerInstanceList)
+                        {
+                            loadBalancerName = lbi.loadBalancerName;
+                        }
+                    }
+                }
+            }
+            catch (Exception)
+            {
+                throw;
+            }
+            return loadBalancerName;
+        }
+
+
         private async Task SaveClusterServerInfo(string loadBalancerName)
         {
             try
@@ -733,6 +780,200 @@ namespace HaTool.HighAvailability
                 ControlHelpers.ButtonStatusChange(buttonCreateLoadBalancer, "Create");
             }
 
+        }
+
+
+        private async void buttonDeleteTargetGroup_Click(object sender, EventArgs e)
+        {
+            try
+            {
+                DialogResult result = MessageBox.Show("Do you really want to run?", "Confirm", MessageBoxButtons.YesNo, MessageBoxIcon.Warning);
+                if (result != DialogResult.Yes)
+                    return;
+
+                ControlHelpers.ButtonStatusChange(buttonDeleteTargetGroup, "Requested");
+                string checkedTargetGroupNo = string.Empty;
+
+                int checkBoxCount = 0;
+                foreach (DataGridViewRow item in dgvTargetGroup.Rows)
+                {
+                    if (bool.Parse(item.Cells["CheckBox"].Value.ToString()))
+                    {
+                        checkBoxCount++;
+                        checkedTargetGroupNo = item.Cells["TargetGroupNo"].Value.ToString().Trim();
+                        if (item.Cells["LoadBalancer"].Value != null && !string.IsNullOrWhiteSpace(item.Cells["LoadBalancer"].Value.ToString()))
+                        {
+                            throw new Exception("Disconnect connected LoadBalancer first");
+                        }
+                    }
+                }
+                if (checkBoxCount != 1)
+                    throw new Exception("check one target group");
+
+
+                string endpoint = dataManager.GetValue(DataManager.Category.ApiGateway, DataManager.Key.Endpoint);
+                string action = @"/vloadbalancer/v2/deleteTargetGroups";
+                List<KeyValuePair<string, string>> parameters = new List<KeyValuePair<string, string>>();
+                parameters.Add(new KeyValuePair<string, string>("responseFormatType", "json"));
+                parameters.Add(new KeyValuePair<string, string>("targetGroupNoList.1", checkedTargetGroupNo));
+
+                SoaCall soaCall = new SoaCall();
+                var task = soaCall.WebApiCall(endpoint, RequestType.POST, action, parameters, LogClient.Config.Instance.GetValue(Category.Api, Key.AccessKey), LogClient.Config.Instance.GetValue(Category.Api, Key.SecretKey));
+                string response = await task;
+
+                JsonSerializerSettings options = new JsonSerializerSettings
+                {
+                    NullValueHandling = NullValueHandling.Ignore,
+                    MissingMemberHandling = MissingMemberHandling.Ignore
+                };
+
+                if (response.Contains("responseError"))
+                {
+                    hasError hasError = JsonConvert.DeserializeObject<hasError>(response, options);
+                    throw new Exception(hasError.responseError.returnMessage);
+                }
+                else
+                {
+                    deleteTargetGroups deleteTargetGroups = JsonConvert.DeserializeObject<deleteTargetGroups>(response, options);
+                    if (deleteTargetGroups.deleteTargetGroupsResponse.returnCode.Equals("0"))
+                    {
+                    }
+                    else
+                    {
+                        throw new Exception("delete Target Group error");
+                    }
+
+                }
+                await GetTargetGroup();
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.Message);
+            }
+            finally
+            {
+                ControlHelpers.ButtonStatusChange(buttonDeleteTargetGroup, "Delete");
+            }
+        }
+
+        private async void buttonDeleteLoadBalancer_Click(object sender, EventArgs e)
+        {
+            try
+            {
+
+                DialogResult result = MessageBox.Show("Do you really want to run?", "Confirm", MessageBoxButtons.YesNo, MessageBoxIcon.Warning);
+                if (result != DialogResult.Yes)
+                    return;
+
+                ControlHelpers.ButtonStatusChange(buttonDeleteLoadBalancer, "Requested");
+                string checkedLoadBalancerInstanceNo = string.Empty;
+                string checkedLoadBalancerName = string.Empty;
+
+                int checkBoxCount = 0;
+                foreach (DataGridViewRow item in dgvTargetGroup.Rows)
+                {
+                    if (bool.Parse(item.Cells["CheckBox"].Value.ToString()))
+                    {
+                        checkBoxCount++;
+                        checkedLoadBalancerInstanceNo = item.Cells["LoadBalancer"].Value.ToString().Trim();
+                    }
+                }
+                if (checkBoxCount != 1)
+                    throw new Exception("check one load balancer");
+
+
+                string endpoint = dataManager.GetValue(DataManager.Category.ApiGateway, DataManager.Key.Endpoint);
+                string action = @"/vloadbalancer/v2/deleteLoadBalancerInstances";
+                List<KeyValuePair<string, string>> parameters = new List<KeyValuePair<string, string>>();
+                parameters.Add(new KeyValuePair<string, string>("responseFormatType", "json"));
+                parameters.Add(new KeyValuePair<string, string>("loadBalancerInstanceNoList.1", checkedLoadBalancerInstanceNo));
+
+                SoaCall soaCall = new SoaCall();
+                var task = soaCall.WebApiCall(endpoint, RequestType.POST, action, parameters, LogClient.Config.Instance.GetValue(Category.Api, Key.AccessKey), LogClient.Config.Instance.GetValue(Category.Api, Key.SecretKey));
+                string response = await task;
+
+                JsonSerializerSettings options = new JsonSerializerSettings
+                {
+                    NullValueHandling = NullValueHandling.Ignore,
+                    MissingMemberHandling = MissingMemberHandling.Ignore
+                };
+
+                if (response.Contains("responseError"))
+                {
+                    hasError hasError = JsonConvert.DeserializeObject<hasError>(response, options);
+                    throw new Exception(hasError.responseError.returnMessage);
+                }
+                else
+                {
+                    deleteLoadBalancerInstances deleteLoadBalancerInstances = JsonConvert.DeserializeObject<deleteLoadBalancerInstances>(response, options);
+                    if (deleteLoadBalancerInstances.deleteLoadBalancerInstancesResponse.returnCode.Equals("0"))
+                    {
+                    }
+                    else
+                    {
+                        throw new Exception("delete loadbalancer error");
+                    }
+
+                }
+                checkedLoadBalancerName = await getLoadBalancerNameFromNo(checkedLoadBalancerInstanceNo);
+                await DbDelete(checkedLoadBalancerName);
+                await GetTargetGroup();
+
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.Message);
+            }
+            finally
+            {
+                ControlHelpers.ButtonStatusChange(buttonDeleteLoadBalancer, "Disconnect");
+            }
+        }
+
+
+        private async Task DbDelete(string loadBalancerName)
+        {
+            try
+            {
+                await fileDb.ReadTable(FileDb.TableName.TBL_CLUSTER_SERVER);
+                await fileDb.ReadTable(FileDb.TableName.TBL_CLUSTER);
+
+                List<string> tempClusters = new List<string>();
+
+                foreach (var a in fileDb.TBL_CLUSTER.Data)
+                    tempClusters.Add(a.Key.clusterName);
+
+                foreach (var a in tempClusters)
+                {
+                    if (a.Equals(loadBalancerName, StringComparison.OrdinalIgnoreCase))
+                    {
+                        var p = new List<KeyValuePair<string, string>>();
+                        p.Add(new KeyValuePair<string, string>("clusterName", a));
+                        await fileDb.DeleteTable(FileDb.TableName.TBL_CLUSTER, p);
+                    }
+                }
+
+                List<Tuple<string, string>> tempClusterServers = new List<Tuple<string, string>>();
+                foreach (var a in fileDb.TBL_CLUSTER_SERVER.Data)
+                {
+                    tempClusterServers.Add(new Tuple<string, string>(a.Key.clusterName, a.Key.serverName));
+                }
+
+                foreach (var a in tempClusterServers)
+                {
+                    if (a.Item1.Equals(loadBalancerName, StringComparison.OrdinalIgnoreCase))
+                    {
+                        var p = new List<KeyValuePair<string, string>>();
+                        p.Add(new KeyValuePair<string, string>("clusterName", a.Item1));
+                        p.Add(new KeyValuePair<string, string>("serverName", a.Item2));
+                        await fileDb.DeleteTable(FileDb.TableName.TBL_CLUSTER_SERVER, p);
+                    }
+                }
+            }
+            catch (Exception)
+            {
+                throw;
+            }
         }
     }
 }

@@ -41,7 +41,8 @@ namespace HaTool.HighAvailability
         DataGridViewTextBoxColumn  ColumnLbName;
         DataGridViewTextBoxColumn  ColumnLbZoneNo;
         DataGridViewTextBoxColumn  ColumnLbInstanceNo;
-        DataGridViewTextBoxColumn  ColumnLbProtocol;
+        DataGridViewTextBoxColumn ColumnLbTargetGroupNo;
+        DataGridViewTextBoxColumn ColumnLbProtocol;
         DataGridViewTextBoxColumn  ColumnLbDomainName;
         DataGridViewTextBoxColumn  ColumnLbStatus;
         DataGridViewTextBoxColumn  ColumnLbOperation;
@@ -61,7 +62,8 @@ namespace HaTool.HighAvailability
             ColumnLbName          = new DataGridViewTextBoxColumn();
             ColumnLbZoneNo        = new DataGridViewTextBoxColumn();
             ColumnLbInstanceNo    = new DataGridViewTextBoxColumn();
-            ColumnLbProtocol      = new DataGridViewTextBoxColumn();
+            ColumnLbTargetGroupNo = new DataGridViewTextBoxColumn();
+            ColumnLbProtocol = new DataGridViewTextBoxColumn();
             ColumnLbDomainName     = new DataGridViewTextBoxColumn();
             ColumnLbStatus        = new DataGridViewTextBoxColumn();
             ColumnLbOperation     = new DataGridViewTextBoxColumn();
@@ -70,6 +72,7 @@ namespace HaTool.HighAvailability
             ColumnLbName.HeaderText       = "Name";
             ColumnLbZoneNo.HeaderText     = "ZoneNo";
             ColumnLbInstanceNo.HeaderText = "InstanceNo";
+            ColumnLbTargetGroupNo.HeaderText = "TargetGroupNo";
             ColumnLbProtocol.HeaderText   = "Protocol";
             ColumnLbDomainName.HeaderText  = "DomainName";
             ColumnLbStatus.HeaderText     = "Status";
@@ -79,6 +82,7 @@ namespace HaTool.HighAvailability
             ColumnLbName.Name         = "Name";
             ColumnLbZoneNo.Name       = "ZoneNo";
             ColumnLbInstanceNo.Name   = "InstanceNo";
+            ColumnLbTargetGroupNo.Name = "TargetGroupNo";
             ColumnLbProtocol.Name     = "Protocol";
             ColumnLbDomainName.Name    = "DomainName";
             ColumnLbStatus.Name       = "Status";
@@ -91,6 +95,7 @@ namespace HaTool.HighAvailability
                 ColumnLbName,
                 ColumnLbZoneNo,
                 ColumnLbInstanceNo,
+                ColumnLbTargetGroupNo,
                 ColumnLbProtocol,
                 ColumnLbDomainName,
                 ColumnLbStatus,
@@ -181,6 +186,7 @@ namespace HaTool.HighAvailability
                                 s.Rows[n].Cells["Name"].Value = a.Key.clusterName;
                                 s.Rows[n].Cells["ZoneNo"].Value = lbInstance.regionCode;
                                 s.Rows[n].Cells["InstanceNo"].Value = lbInstance.loadBalancerInstanceNo;
+                                s.Rows[n].Cells["TargetGroupNo"].Value = a.Value.targetGroupNo;
                                 s.Rows[n].Cells["Protocol"].Value = "TCP"; // force L4 LB only - TCP inline
                                 s.Rows[n].Cells["DomainName"].Value = lbInstance.loadBalancerDomain;
                                 s.Rows[n].Cells["Status"].Value = lbInstance.loadBalancerInstanceStatus.code;
@@ -680,9 +686,9 @@ namespace HaTool.HighAvailability
             return loadBalancerName;
         }
 
-        private string IsOneCheckedLoadBalancerListReturnLBInstanceNo()
+        private string IsOneCheckedLoadBalancerListReturnTargetGroupNo()
         {
-            string loadBalancerInstanceNo = string.Empty;
+            string targetGroupNo = string.Empty;
             try
             {
                 int checkBoxCount = 0;
@@ -691,7 +697,7 @@ namespace HaTool.HighAvailability
                     if (bool.Parse(item.Cells["CheckBox"].Value.ToString()))
                     {
                         checkBoxCount++;
-                        loadBalancerInstanceNo = item.Cells["InstanceNo"].Value.ToString().Trim();
+                        targetGroupNo = item.Cells["TargetGroupNo"].Value.ToString().Trim();
                     }
                 }
                 if (checkBoxCount != 1)
@@ -701,7 +707,7 @@ namespace HaTool.HighAvailability
             {
                 throw;
             }
-            return loadBalancerInstanceNo;
+            return targetGroupNo;
         }
 
         private async Task DeleteClusterServerInfo(string loadBalancerName)
@@ -906,7 +912,70 @@ namespace HaTool.HighAvailability
         }
 
 
+        private async void buttonSetHA_Click(object sender, EventArgs e)
+        {
+            try
+            {
+                ControlHelpers.ButtonStatusChange(buttonSetHA, "Requested");
+                if (comboBoxMasterServer.Text.Equals(comboBoxSlaveServer.Text))
+                    throw new Exception("The master and slave servers can not be the same.");
+                string selectedLoadBalancerName = CheckedLoadBalancerName();
+                string selectedTargetGroupNo = IsOneCheckedLoadBalancerListReturnTargetGroupNo();
+                await ChangeTargetGroup(selectedTargetGroupNo, (comboBoxMasterServer.SelectedItem as serverInstance).serverInstanceNo);
+                await SaveClusterServerInfo(selectedLoadBalancerName);
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.Message);
+            }
+            finally
+            {
+                ControlHelpers.ButtonStatusChange(buttonSetHA, "Set HA");
+            }
 
+        }
 
+        private async Task ChangeTargetGroup(string targetGroupNo, string masterServerInstanceNo = "")
+        {
+            // join load balancer master only
+            try
+            {
+
+                string endpoint = dataManager.GetValue(DataManager.Category.ApiGateway, DataManager.Key.Endpoint);
+                string action = @"/vloadbalancer/v2/setTarget";
+                List<KeyValuePair<string, string>> parameters = new List<KeyValuePair<string, string>>();
+                parameters.Add(new KeyValuePair<string, string>("responseFormatType", "json"));
+                parameters.Add(new KeyValuePair<string, string>("targetGroupNo", targetGroupNo));
+                if (masterServerInstanceNo.Length != 0)
+                    parameters.Add(new KeyValuePair<string, string>("targetNoList.1", masterServerInstanceNo));
+
+                SoaCall soaCall = new SoaCall();
+                var task = soaCall.WebApiCall(endpoint, RequestType.POST, action, parameters, LogClient.Config.Instance.GetValue(Category.Api, Key.AccessKey), LogClient.Config.Instance.GetValue(Category.Api, Key.SecretKey));
+                string response = await task;
+
+                JsonSerializerSettings options = new JsonSerializerSettings
+                {
+                    NullValueHandling = NullValueHandling.Ignore,
+                    MissingMemberHandling = MissingMemberHandling.Ignore
+                };
+
+                if (response.Contains("responseError"))
+                {
+                    hasError hasError = JsonConvert.DeserializeObject<hasError>(response, options);
+                    throw new Exception(hasError.responseError.returnMessage);
+                }
+
+                setTarget setTarget = JsonConvert.DeserializeObject<setTarget>(response, options);
+                if (setTarget.setTargetResponse.returnCode.Equals("0"))
+                {
+                    MessageBox.Show("set target group requested");
+                }
+            }
+            catch (Exception)
+            {
+                throw;
+            }
+
+        }
     }
 }

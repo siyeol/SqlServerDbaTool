@@ -762,6 +762,7 @@ namespace HaTool.HighAvailability
                     p.Add(new KeyValuePair<string, string>("clusterNo", loadBalancerInstanceNo)); 
                     p.Add(new KeyValuePair<string, string>("domainName", loadBalancerDomain)); 
                     p.Add(new KeyValuePair<string, string>("clusterPort", textBoxPort.Text.Trim()));
+                    p.Add(new KeyValuePair<string, string>("targetGroupNo", GetSelectedTargetGroupNo()));
 
                     await fileDb.UpSertTable(FileDb.TableName.TBL_CLUSTER, p);
 

@@ -424,9 +424,9 @@ select
             log.Warn("loadbalancer setting change start");
             try
             {
-                GetClusterInfo(GetServerName(), out string loadBalancerInstanceNo, out string masterServerInstacneNo, out string clusterName, out string publicIp, out string privateIp, out string serverRole);
+                GetClusterInfo(GetServerName(), out string targetGroupNo, out string masterServerInstacneNo, out string clusterName, out string publicIp, out string privateIp, out string serverRole);
 
-                AsyncHelpers.RunSync(() => ChangeLoadBalancedServerInstances(loadBalancerInstanceNo, masterServerInstacneNo));
+                AsyncHelpers.RunSync(() => SetTargetGroup(targetGroupNo, masterServerInstacneNo));
                 AsyncHelpers.RunSync(() => SaveClusterServerInfo(clusterName, GetServerName()));
                 log.Warn("loadbalancer changed");
             }
@@ -436,11 +436,11 @@ select
             }
         }
 
-        private void GetClusterInfo(string serverName, out string loadBalancerInstanceNo, out string masterServerInstanceNo, out string clusterName, out string publicIp, out string privateIp, out string serverRole)
+        private void GetClusterInfo(string serverName, out string targetGroupNo, out string masterServerInstanceNo, out string clusterName, out string publicIp, out string privateIp, out string serverRole)
         {
             clusterName = "";
             masterServerInstanceNo = "";
-            loadBalancerInstanceNo = "";
+            targetGroupNo = "";
             publicIp = "";
             privateIp = "";
             serverRole = "";
@@ -479,13 +479,13 @@ select
                 foreach (var a in fileDb.TBL_CLUSTER.Data)
                 {
                     if (a.Key.clusterName.Equals(clusterName, StringComparison.OrdinalIgnoreCase))
-                        loadBalancerInstanceNo = a.Value.clusterNo;
+                        targetGroupNo = a.Value.targetGroupNo;
                 }
 
-                if (loadBalancerInstanceNo.Length == 0)
-                    log.Error($"GetClusterInfo() Error serverName {serverName}, loadBalancerInstanceNo : {loadBalancerInstanceNo}");
+                if (targetGroupNo.Length == 0)
+                    log.Error($"GetClusterInfo() Error serverName {serverName}, targetGroupNo : {targetGroupNo}");
 
-                log.Info($"GetClusterInfo completed input variable serverName : {serverName}, output loadBalancerInstanceNo : {loadBalancerInstanceNo}, ouput masterServerInstanceNo : {masterServerInstanceNo}, clusterName : {clusterName}");
+                log.Info($"GetClusterInfo completed input variable serverName : {serverName}, output targetGroupNo : {targetGroupNo}, ouput masterServerInstanceNo : {masterServerInstanceNo}, clusterName : {clusterName}");
             }
             catch (Exception ex)
             {
@@ -496,17 +496,17 @@ select
 
 
 
-        private async Task ChangeLoadBalancedServerInstances(string loadBalancerInstanceNo, string masterServerInstanceNo)
+        private async Task SetTargetGroup(string targetGroupNo, string masterServerInstanceNo)
         {
             try
             {
-                log.Warn($"ChangeLoadBalancedServerInstances() loadBalancerInstanceNo : {loadBalancerInstanceNo}, masterServerInstanceNo : {masterServerInstanceNo}");
+                log.Warn($"SetTargetGroup() targetGroupNo : {targetGroupNo}, masterServerInstanceNo : {masterServerInstanceNo}");
                 string endpoint = config.GetValue(Category.ApiGateway, Key.Endpoint);
-                string action = @"/loadbalancer/v2/changeLoadBalancedServerInstances"; //TODO : Change this to Add Target
+                string action = @"/vloadbalancer/v2/setTarget";
                 List<KeyValuePair<string, string>> parameters = new List<KeyValuePair<string, string>>();
                 parameters.Add(new KeyValuePair<string, string>("responseFormatType", "json"));
-                parameters.Add(new KeyValuePair<string, string>("loadBalancerInstanceNo", loadBalancerInstanceNo));
-                parameters.Add(new KeyValuePair<string, string>("serverInstanceNoList.1", masterServerInstanceNo));
+                parameters.Add(new KeyValuePair<string, string>("targetGroupNo", targetGroupNo));
+                parameters.Add(new KeyValuePair<string, string>("targetNoList.1", masterServerInstanceNo));
 
                 SoaCall soaCall = new SoaCall();
                 var task = soaCall.WebApiCall(endpoint
@@ -533,10 +533,10 @@ select
                     throw new Exception(hasError.responseError.returnMessage);
                 }
 
-                changeLoadBalancedServerInstances changeLoadBalancedServerInstances = JsonConvert.DeserializeObject<changeLoadBalancedServerInstances>(response, options);
-                if (changeLoadBalancedServerInstances.changeLoadBalancedServerInstancesResponse.returnCode.Equals("0"))
+                setTarget setTarget = JsonConvert.DeserializeObject<setTarget>(response, options);
+                if (setTarget.setTargetResponse.returnCode.Equals("0"))
                 {
-                    log.Warn("change load balancer requested");
+                    log.Warn("set target requested");
                 }
             }
             catch (Exception)

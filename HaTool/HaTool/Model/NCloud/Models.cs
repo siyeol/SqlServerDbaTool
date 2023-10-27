@@ -438,6 +438,26 @@ namespace HaTool.Model.NCloud
         }
     }
 
+    public class getAccessControlGroupRuleList
+    {
+        public getAccessControlGroupRuleListResponse getAccessControlGroupRuleListResponse { get; set; }
+    }
+
+    public class getAccessControlGroupRuleListResponse
+    {
+        public string requestId { get; set; }
+        public string returnCode { get; set; }
+        public string returnMessage { get; set; }
+        public int totalRows { get; set; }
+        public List<accessControlGroupRule> accessControlGroupRuleList { get; set; }
+    }
+
+    public class accessControlGroupRule
+    {
+        public string ipBlock { get; set; }
+        public string portRange { get; set; }
+    }
+
     public class getZoneList
     {
         public getZoneListResponse getZoneListResponse { get; set; }

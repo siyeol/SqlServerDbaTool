@@ -21,6 +21,7 @@ using System.Data.SqlClient;
 using System.IO;
 using System.Diagnostics;
 using HaTool.Server;
+using System.Net.Sockets;
 
 namespace HaTool.HighAvailability
 {
@@ -784,6 +785,78 @@ FOR JSON PATH
                 throw;
             }
         }
+
+        async Task<bool> precheckMirroring()
+        {
+            try
+            {
+                bool isPort5022Open = false;
+                bool isPort9090Open = false;
+
+                string _masterAcgNo = fileDb.TBL_SERVER.Data[new TBL_SERVER_KEY { serverName = textBoxMasterServerName.Text }].accessControlGroupConfigurationNoList_1;
+                string _slaveAcgNo = fileDb.TBL_SERVER.Data[new TBL_SERVER_KEY { serverName = textBoxSlaveServerName.Text }].accessControlGroupConfigurationNoList_1;
+
+                string endpoint = dataManager.GetValue(DataManager.Category.ApiGateway, DataManager.Key.Endpoint);
+                string action = @"/vserver/v2/getAccessControlGroupRuleList";
+
+
+                List<KeyValuePair<string, string>> parameters = new List<KeyValuePair<string, string>>();
+                parameters.Add(new KeyValuePair<string, string>("responseFormatType", "json"));
+                parameters.Add(new KeyValuePair<string, string>("accessControlGroupNo", _masterAcgNo));
+                parameters.Add(new KeyValuePair<string, string>("accessControlGroupRuleTypeCode", "INBND"));
+
+                SoaCall soaCall = new SoaCall();
+                var task = soaCall.WebApiCall(endpoint, RequestType.POST, action, parameters, LogClient.Config.Instance.GetValue(Category.Api, Key.AccessKey), LogClient.Config.Instance.GetValue(Category.Api, Key.SecretKey));
+                string response = await task;
+
+                JsonSerializerSettings options = new JsonSerializerSettings
+                {
+                    NullValueHandling = NullValueHandling.Ignore,
+                    MissingMemberHandling = MissingMemberHandling.Ignore
+                };
+
+                if (response.Contains("responseError"))
+                {
+                    hasError hasError = JsonConvert.DeserializeObject<hasError>(response, options);
+                    throw new Exception(hasError.responseError.returnMessage);
+                }
+                else
+                {
+                    getAccessControlGroupRuleList getAccessControlGroupRuleList = JsonConvert.DeserializeObject<getAccessControlGroupRuleList>(response, options);
+                    if (getAccessControlGroupRuleList.getAccessControlGroupRuleListResponse.returnCode.Equals("0"))
+                    {
+                        foreach (var rule in getAccessControlGroupRuleList.getAccessControlGroupRuleListResponse.accessControlGroupRuleList)
+                        {
+                            if (rule.portRange.Equals("5022"))
+                            {
+                                isPort5022Open = true;
+                            }
+                            else if (rule.portRange.Equals("9090"))
+                            {
+                                isPort9090Open = true;
+                            }
+
+                        }
+                    }
+                }
+
+                if (isPort5022Open && isPort9090Open)
+                {
+                    return true;
+                }
+                else
+                {
+                    return false;
+                }
+            }
+            catch (Exception)
+            {
+                throw;
+            }
+
+        }
+
+
         private async void buttonStartAutomaticMirroring_Click(object sender, EventArgs e)
         {
             try
@@ -1544,6 +1617,22 @@ go
         {
             sbResultAll.Clear();
             MessageBox.Show("log cleared!");
+        }
+
+        private async void buttonCheck_ClickAsync(object sender, EventArgs e)
+        {
+            try
+            {
+                if (!await precheckMirroring())
+                    MessageBox.Show("Required Port is not open");
+                else
+                    MessageBox.Show("All conditions are met!");
+            }
+            catch (Exception)
+            {
+                throw;
+            }
+
         }
 
         private void buttonShowDetailLog_Click(object sender, EventArgs e)

@@ -57,6 +57,7 @@
             this.buttonLoadBalancerReload = new System.Windows.Forms.Button();
             this.textBoxSlaveServerName = new System.Windows.Forms.TextBox();
             this.textBoxMasterServerName = new System.Windows.Forms.TextBox();
+            this.buttonCheck = new System.Windows.Forms.Button();
             this.groupBoxMirroring.SuspendLayout();
             this.groupBoxStatus.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBoxProgressBar)).BeginInit();
@@ -157,6 +158,7 @@
             this.groupBoxMasterServerDatabaseList.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
             | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
+            this.groupBoxMasterServerDatabaseList.Controls.Add(this.buttonCheck);
             this.groupBoxMasterServerDatabaseList.Controls.Add(this.buttonDropDatabase);
             this.groupBoxMasterServerDatabaseList.Controls.Add(this.buttonRemoveMirror);
             this.groupBoxMasterServerDatabaseList.Controls.Add(this.buttonStartAutomaticMirroring);
@@ -169,24 +171,24 @@
             this.groupBoxMasterServerDatabaseList.TabStop = false;
             this.groupBoxMasterServerDatabaseList.Text = "Master Server Database List";
             // 
-            // button2
+            // buttonDropDatabase
             // 
             this.buttonDropDatabase.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
             this.buttonDropDatabase.Font = new System.Drawing.Font("Consolas", 9.75F);
-            this.buttonDropDatabase.Location = new System.Drawing.Point(553, 328);
-            this.buttonDropDatabase.Name = "button2";
+            this.buttonDropDatabase.Location = new System.Drawing.Point(687, 328);
+            this.buttonDropDatabase.Name = "buttonDropDatabase";
             this.buttonDropDatabase.Size = new System.Drawing.Size(128, 25);
             this.buttonDropDatabase.TabIndex = 165;
             this.buttonDropDatabase.Text = "Drop Database";
             this.buttonDropDatabase.UseVisualStyleBackColor = true;
             this.buttonDropDatabase.Click += new System.EventHandler(this.buttonDropDatabase_Click);
             // 
-            // button1
+            // buttonRemoveMirror
             // 
             this.buttonRemoveMirror.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
             this.buttonRemoveMirror.Font = new System.Drawing.Font("Consolas", 9.75F);
-            this.buttonRemoveMirror.Location = new System.Drawing.Point(421, 328);
-            this.buttonRemoveMirror.Name = "button1";
+            this.buttonRemoveMirror.Location = new System.Drawing.Point(555, 328);
+            this.buttonRemoveMirror.Name = "buttonRemoveMirror";
             this.buttonRemoveMirror.Size = new System.Drawing.Size(128, 25);
             this.buttonRemoveMirror.TabIndex = 164;
             this.buttonRemoveMirror.Text = "Remove Mirror";
@@ -197,7 +199,7 @@
             // 
             this.buttonStartAutomaticMirroring.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
             this.buttonStartAutomaticMirroring.Font = new System.Drawing.Font("Consolas", 9.75F);
-            this.buttonStartAutomaticMirroring.Location = new System.Drawing.Point(149, 328);
+            this.buttonStartAutomaticMirroring.Location = new System.Drawing.Point(283, 328);
             this.buttonStartAutomaticMirroring.Name = "buttonStartAutomaticMirroring";
             this.buttonStartAutomaticMirroring.Size = new System.Drawing.Size(266, 25);
             this.buttonStartAutomaticMirroring.TabIndex = 163;
@@ -225,6 +227,7 @@
             this.dgvMirrorStatus.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
             this.dgvMirrorStatus.Location = new System.Drawing.Point(16, 22);
             this.dgvMirrorStatus.Name = "dgvMirrorStatus";
+            this.dgvMirrorStatus.RowHeadersWidth = 62;
             this.dgvMirrorStatus.Size = new System.Drawing.Size(707, 300);
             this.dgvMirrorStatus.TabIndex = 14;
             // 
@@ -251,7 +254,7 @@
             this.textBoxBackupRestorePath.Font = new System.Drawing.Font("Consolas", 9.75F);
             this.textBoxBackupRestorePath.Location = new System.Drawing.Point(16, 30);
             this.textBoxBackupRestorePath.Name = "textBoxBackupRestorePath";
-            this.textBoxBackupRestorePath.Size = new System.Drawing.Size(264, 23);
+            this.textBoxBackupRestorePath.Size = new System.Drawing.Size(264, 30);
             this.textBoxBackupRestorePath.TabIndex = 164;
             // 
             // labelSlaveServerCheckStatusValue
@@ -259,7 +262,7 @@
             this.labelSlaveServerCheckStatusValue.AutoSize = true;
             this.labelSlaveServerCheckStatusValue.Location = new System.Drawing.Point(570, 35);
             this.labelSlaveServerCheckStatusValue.Name = "labelSlaveServerCheckStatusValue";
-            this.labelSlaveServerCheckStatusValue.Size = new System.Drawing.Size(56, 15);
+            this.labelSlaveServerCheckStatusValue.Size = new System.Drawing.Size(87, 23);
             this.labelSlaveServerCheckStatusValue.TabIndex = 163;
             this.labelSlaveServerCheckStatusValue.Text = "unknown";
             // 
@@ -268,7 +271,7 @@
             this.labelMasterServerCheckStatusValue.AutoSize = true;
             this.labelMasterServerCheckStatusValue.Location = new System.Drawing.Point(428, 35);
             this.labelMasterServerCheckStatusValue.Name = "labelMasterServerCheckStatusValue";
-            this.labelMasterServerCheckStatusValue.Size = new System.Drawing.Size(56, 15);
+            this.labelMasterServerCheckStatusValue.Size = new System.Drawing.Size(87, 23);
             this.labelMasterServerCheckStatusValue.TabIndex = 162;
             this.labelMasterServerCheckStatusValue.Text = "unknown";
             // 
@@ -289,7 +292,7 @@
             this.labelMasterServerCheckStatus.Font = new System.Drawing.Font("Consolas", 9.75F);
             this.labelMasterServerCheckStatus.Location = new System.Drawing.Point(428, 17);
             this.labelMasterServerCheckStatus.Name = "labelMasterServerCheckStatus";
-            this.labelMasterServerCheckStatus.Size = new System.Drawing.Size(98, 15);
+            this.labelMasterServerCheckStatus.Size = new System.Drawing.Size(153, 23);
             this.labelMasterServerCheckStatus.TabIndex = 157;
             this.labelMasterServerCheckStatus.Text = "Master Server";
             // 
@@ -299,7 +302,7 @@
             this.labelSlaveServerCheckStatus.Font = new System.Drawing.Font("Consolas", 9.75F);
             this.labelSlaveServerCheckStatus.Location = new System.Drawing.Point(566, 17);
             this.labelSlaveServerCheckStatus.Name = "labelSlaveServerCheckStatus";
-            this.labelSlaveServerCheckStatus.Size = new System.Drawing.Size(91, 15);
+            this.labelSlaveServerCheckStatus.Size = new System.Drawing.Size(142, 23);
             this.labelSlaveServerCheckStatus.TabIndex = 158;
             this.labelSlaveServerCheckStatus.Text = "Slave Server";
             // 
@@ -343,13 +346,13 @@
             this.textBoxDomain.TabIndex = 161;
             this.textBoxDomain.Text = "domain : ";
             // 
-            // label7
+            // label7MasterServer
             // 
             this.label7MasterServer.AutoSize = true;
             this.label7MasterServer.Font = new System.Drawing.Font("Consolas", 9.75F);
             this.label7MasterServer.Location = new System.Drawing.Point(428, 12);
-            this.label7MasterServer.Name = "label7";
-            this.label7MasterServer.Size = new System.Drawing.Size(98, 15);
+            this.label7MasterServer.Name = "label7MasterServer";
+            this.label7MasterServer.Size = new System.Drawing.Size(153, 23);
             this.label7MasterServer.TabIndex = 157;
             this.label7MasterServer.Text = "Master Server";
             // 
@@ -358,17 +361,17 @@
             this.comboBoxloadBalancerName.FormattingEnabled = true;
             this.comboBoxloadBalancerName.Location = new System.Drawing.Point(16, 30);
             this.comboBoxloadBalancerName.Name = "comboBoxloadBalancerName";
-            this.comboBoxloadBalancerName.Size = new System.Drawing.Size(264, 23);
+            this.comboBoxloadBalancerName.Size = new System.Drawing.Size(264, 31);
             this.comboBoxloadBalancerName.TabIndex = 45;
             this.comboBoxloadBalancerName.SelectedIndexChanged += new System.EventHandler(this.HaGroup_Changed);
             // 
-            // label8
+            // label8SlaveServer
             // 
             this.label8SlaveServer.AutoSize = true;
             this.label8SlaveServer.Font = new System.Drawing.Font("Consolas", 9.75F);
             this.label8SlaveServer.Location = new System.Drawing.Point(566, 12);
-            this.label8SlaveServer.Name = "label8";
-            this.label8SlaveServer.Size = new System.Drawing.Size(91, 15);
+            this.label8SlaveServer.Name = "label8SlaveServer";
+            this.label8SlaveServer.Size = new System.Drawing.Size(142, 23);
             this.label8SlaveServer.TabIndex = 158;
             this.label8SlaveServer.Text = "Slave Server";
             // 
@@ -388,7 +391,7 @@
             this.textBoxSlaveServerName.Font = new System.Drawing.Font("Consolas", 9.75F);
             this.textBoxSlaveServerName.Location = new System.Drawing.Point(562, 30);
             this.textBoxSlaveServerName.Name = "textBoxSlaveServerName";
-            this.textBoxSlaveServerName.Size = new System.Drawing.Size(128, 23);
+            this.textBoxSlaveServerName.Size = new System.Drawing.Size(128, 30);
             this.textBoxSlaveServerName.TabIndex = 160;
             // 
             // textBoxMasterServerName
@@ -396,8 +399,20 @@
             this.textBoxMasterServerName.Font = new System.Drawing.Font("Consolas", 9.75F);
             this.textBoxMasterServerName.Location = new System.Drawing.Point(422, 30);
             this.textBoxMasterServerName.Name = "textBoxMasterServerName";
-            this.textBoxMasterServerName.Size = new System.Drawing.Size(132, 23);
+            this.textBoxMasterServerName.Size = new System.Drawing.Size(132, 30);
             this.textBoxMasterServerName.TabIndex = 159;
+            // 
+            // buttonCheck
+            // 
+            this.buttonCheck.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
+            this.buttonCheck.Font = new System.Drawing.Font("Consolas", 9.75F);
+            this.buttonCheck.Location = new System.Drawing.Point(149, 328);
+            this.buttonCheck.Name = "buttonCheck";
+            this.buttonCheck.Size = new System.Drawing.Size(128, 25);
+            this.buttonCheck.TabIndex = 166;
+            this.buttonCheck.Text = "Check";
+            this.buttonCheck.UseVisualStyleBackColor = true;
+            this.buttonCheck.Click += new System.EventHandler(this.buttonCheck_ClickAsync);
             // 
             // UcMirroring
             // 
@@ -452,5 +467,6 @@
         private System.Windows.Forms.Button buttonRemoveMirror;
         private System.Windows.Forms.Button buttonDropDatabase;
         private System.Windows.Forms.Button buttonClearLog;
+        private System.Windows.Forms.Button buttonCheck;
     }
 }

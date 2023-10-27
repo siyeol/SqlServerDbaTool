@@ -438,6 +438,26 @@ namespace HaTool.Model.NCloud
         }
     }
 
+    public class getAccessControlGroupRuleList
+    {
+        public getAccessControlGroupRuleListResponse getAccessControlGroupRuleListResponse { get; set; }
+    }
+
+    public class getAccessControlGroupRuleListResponse
+    {
+        public string requestId { get; set; }
+        public string returnCode { get; set; }
+        public string returnMessage { get; set; }
+        public int totalRows { get; set; }
+        public List<accessControlGroupRule> accessControlGroupRuleList { get; set; }
+    }
+
+    public class accessControlGroupRule
+    {
+        public string ipBlock { get; set; }
+        public string portRange { get; set; }
+    }
+
     public class getZoneList
     {
         public getZoneListResponse getZoneListResponse { get; set; }
@@ -722,7 +742,38 @@ namespace HaTool.Model.NCloud
         public List<targetGroupInstance> targetGroupList { get; set; }
     }
 
+    public class deleteTargetGroups
+    {
+        public deleteTargetGroupsResponse deleteTargetGroupsResponse { get; set; }
+    }
 
+    public class deleteTargetGroupsResponse
+    {
+        public string requestId { get; set; }
+        public string returnCode { get; set; }
+        public string returnMessage { get; set; }
+        public List<targetGroupInstance> targetGroupList { get; set; }
+    }
+    
+    public class target
+    {
+        public string targetNo { get; set; }
+        public string targetName { get; set; }
+        public string targetIp { get; set; }
+
+    }
+    public class setTarget
+    {
+        public setTargetResponse setTargetResponse { get; set; }
+    }
+
+    public class setTargetResponse
+    {
+        public string requestId { get; set; }
+        public string returnCode { get; set; }
+        public string returnMessage { get; set; }
+        public List<target> targetList { get; set; }
+    }
     public class hasError
     {
         public responseError responseError { get;set;}

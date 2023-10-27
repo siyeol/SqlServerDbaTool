@@ -571,4 +571,22 @@ namespace lazylog.Model
         public string physicalMemoryKb { get; set; }
     }
 
+    public class target
+    {
+        public string targetNo { get; set; }
+        public string targetName { get; set; }
+        public string targetIp { get; set; }
+    }
+    public class setTarget
+    {
+        public setTargetResponse setTargetResponse { get; set; }
+    }
+
+    public class setTargetResponse
+    {
+        public string requestId { get; set; }
+        public string returnCode { get; set; }
+        public string returnMessage { get; set; }
+        public List<target> targetList { get; set; }
+    }
 }

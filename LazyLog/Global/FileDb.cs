@@ -417,7 +417,8 @@ namespace lazylog
                             {
                                 clusterNo = a.Value.clusterNo,
                                 domainName = a.Value.domainName,
-                                clusterPort = a.Value.clusterPort
+                                clusterPort = a.Value.clusterPort,
+                                targetGroupNo = a.Value.targetGroupNo
                             });
                     }
                     break;
@@ -568,6 +569,7 @@ namespace lazylog
             string clusterNo = "NULL";
             string domainName = "NULL";
             string clusterPort = "NULL";
+            string targetGroupNo = "NULL";
             string serverInstanceNo = "NULL";
             string serverPublicIp = "NULL";
             string serverPrivateIp = "NULL";
@@ -615,10 +617,12 @@ namespace lazylog
                             domainName = a.Value;
                         if (a.Key.Equals("clusterPort", StringComparison.OrdinalIgnoreCase))
                             clusterPort = a.Value;
+                        if (a.Key.Equals("targetGroupNo", StringComparison.OrdinalIgnoreCase))
+                            targetGroupNo = a.Value;
                     }
                     TBL_CLUSTER.Insert(
                         new TBL_CLUSTER_KEY { clusterName = clusterName }
-                        , new TBL_CLUSTER_VALUE { clusterNo = clusterNo, domainName = domainName, clusterPort = clusterPort });
+                        , new TBL_CLUSTER_VALUE { clusterNo = clusterNo, domainName = domainName, clusterPort = clusterPort, targetGroupNo = targetGroupNo });
 
                     json = TBL_CLUSTER.GetJson();
                     File.WriteAllText(Path.Combine(AppDomain.CurrentDomain.BaseDirectory + key + ".txt"), json);

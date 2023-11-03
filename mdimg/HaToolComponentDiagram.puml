@@ -1,0 +1,106 @@
+@startuml
+!theme plain
+ 
+folder "HaTool Solution" {
+ 
+  package "FormMain" {
+ 
+      package "Config" {
+          [FormConfigurationCheck.cs]
+          [FormEncryptionKey.cs]
+          [FormInitScript.cs]
+          [FormInitScriptVerify.cs]
+          [FormLoginKey.cs]
+          [FormObjectStorage.cs]
+      }
+   
+      package "HighAvailability" {
+          [UcBackupPolicy.cs]
+          [UcFailoverPolicy.cs]
+          [UcLoadBalancer.cs]
+          [UcMirroring.cs]
+          [UcTargetGroup.cs]
+      }
+   
+      package "Monitoring" {
+          [UcPerfmonPolicy.cs]
+          [UcSqlmonPolicy.cs]
+      }
+   
+      package "Server" {
+          [FormNcpRestPreview.cs]
+          [FormPreview.cs]
+          [ServerOperation.cs]
+          [UcCreateServer.cs]
+          [UcPublicIp.cs]
+          [UcSetAgentKey.cs]
+          [UcSetServerDisk.cs]
+          [UcSetSqlServer.cs]
+      }
+   
+      package "Tools" {
+          [FormServerGroupModify.cs]
+          [MainWorker.cs]
+          [MultiServerKey.cs]
+          [MultiServerValue.cs]
+          [PoolWorker.cs]
+          [TemplateManager.cs]
+          [UcEncoderDecoder.cs]
+          [UcExecuterAgent.cs]
+          [UcExecuterMultiSql.cs]
+          [UcExecuterNcpApi.cs]
+          [UcExecuterSql.cs]
+      }
+ 
+  }
+   
+  package "Shared Components" {
+ 
+      package "DataManager"{
+          [DataManager.cs]
+          [DataManagerContentsInit.txt]
+      }
+   
+      package "Global" {
+          [ContolHelpers.cs]
+          [FileDb.cs]
+      }
+   
+      package "Model" {
+          [Models.cs]
+          [ScriptArgs.cs]
+          [TBL_CLUSTER_KEY.cs]
+          [TBL_CLUSTER_SERVER_KEY.cs]
+          [TBL_CLUSTER_SERVER_VALUE.cs]
+          [TBL_CLUSTER_VALUE.cs]
+          [TBL_SERVER_KEY.cs]
+          [TBL_SERVER_VALUE.cs]
+      }
+ 
+      [Config] -d-> [DataManager]
+      [HighAvailability] -d-> [DataManager]
+      [Monitoring] -d-> [DataManager]
+      [Server] -d-> [DataManager]
+      [Tools] -d-> [DataManager]
+ 
+      [Config] -d-> [Global]
+      [HighAvailability] -d-> [Global]
+      [Monitoring] -d-> [Global]
+      [Server] -d-> [Global]
+      [Tools] -d-> [Global]
+   
+      [Config] -d-> [Model]
+      [HighAvailability] -d-> [Model]
+      [Monitoring] -d-> [Model]
+      [Server] -d-> [Model]
+      [Tools] -d-> [Model]
+ 
+      ' Hidden connections to influence layout
+      [FormMain] -[hidden]-> [DataManager]
+      [FormMain] -[hidden]-> [Global]
+      [FormMain] -[hidden]-> [Model]
+  }
+ 
+}
+ 
+@enduml

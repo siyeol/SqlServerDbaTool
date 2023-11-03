@@ -1,0 +1,95 @@
+@startuml
+!theme plain
+ 
+folder "Lazylog Solution" {
+ 
+    package "Logger" {
+ 
+        package "AutoFailover" {
+            [HeartBeat.cs]
+            [HeartBeatCheck.cs]
+        }
+ 
+        package "Backup" {
+            [FullBackup.cs]
+            [LogBackup.cs]
+        }
+ 
+        package "Properties" {
+            [AssemblyInfo.cs]
+        }
+ 
+        package "Sqlmon" {
+            [BaseSqlmon.cs]
+            [dm_exec_query_stats.cs]
+            [dm_os_workers.cs]
+            [sp_lock2.cs]
+            [sp_readagentlog.cs]
+            [sp_readerrorlog.cs]
+        }
+ 
+        package "WcfServer" {
+            [BasicAuthentication.cs]
+            [Certification.cs]
+            [ExecuterPs.cs]
+            [ExecuterRest.cs]
+            [ExecuterSql.cs]
+            [WcfRestServer.cs]
+        }
+ 
+    }
+ 
+    package "Shared Components" {
+ 
+        [HaManager.cs]
+        [BackupManager.cs]
+ 
+        package "Global" {
+            [Config.cs]
+            [FileDb.cs]
+            [IManager.cs]
+        }
+ 
+        package "Model" {
+            [Models.cs]
+            [TBL_CLUSTER_KEY.cs]
+            [TBL_CLUSTER_SERVER_KEY.cs]
+            [TBL_CLUSTER_SERVER_VALUE.cs]
+            [TBL_CLUSTER_VALUE.cs]
+            [TBL_HEALTH_INFO_KEY.cs]
+            [TBL_HEALTH_INFO_VALUE.cs]
+            [TBL_SERVER_KEY.cs]
+            [TBL_SERVER_VALUE.cs]
+        }
+ 
+        package "PerfmonWebApi" {
+            [PerfmonSender.cs]
+            [PerfmonSenderTypeA.cs]
+            [PerfmonSenderTypeB.cs]
+        }
+ 
+        package "SqlmonWebApi" {
+            [BaseSender.cs]
+            [dm_exec_query_statsTypeA.cs]
+            [dm_exec_query_statsTypeB.cs]
+            [dm_os_workersTypeA.cs]
+            [dm_os_workersTypeB.cs]
+            [sp_lock2TypeA.cs]
+            [sp_lock2TypeB.cs]
+            [sp_readagentlogTypeA.cs]
+            [sp_readagentlogTypeB.cs]
+            [sp_readerrorlogTypeA.cs]
+            [sp_readerrorlogTypeB.cs]
+        }
+    }
+     
+     
+    "AutoFailover" -d-> "Shared Components"
+    "Backup" -d-> "Shared Components"
+    "Properties" -d-> "Shared Components"
+    "Sqlmon" -d-> "Shared Components"
+    "WcfServer" -d-> "Shared Components"
+ 
+ 
+}
+@enduml

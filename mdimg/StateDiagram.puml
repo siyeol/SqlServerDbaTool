@@ -1,0 +1,57 @@
+@startuml
+ 
+title State Diagram in HaTool
+ 
+[*] --> FormLogin: Start
+FormLogin --> FormMain: Login Success
+ 
+state FormMain {
+  [*] --> Config: Enter Config
+  state Config {
+    [*] --> Key : Set Encryption Key
+    Key --> ObjectStorage : Configure Object Storage
+    ObjectStorage --> InitScript : Set Initialization Script
+    InitScript --> ConfigCheck : Configuration Check
+    ConfigCheck --> ConfigComplete : Configurations Set
+  }
+ 
+  Config --> Server: Next
+  state Server {
+    [*] --> CreateServer : Create VM Instance
+    CreateServer --> PublicIP : Assign Public IP
+    PublicIP --> AgentKey : Set Agent Key
+    AgentKey --> SQLServer : Configure SQL Server
+    SQLServer --> ServerDisk : Set Server Disk
+    ServerDisk --> ServerComplete : Server Configured
+  }
+ 
+  Server --> HighAvailability: Next
+  state HighAvailability {
+    [*] --> TargetGroup : Setup Target Group
+    TargetGroup --> LoadBalancer : Configure LB
+    LoadBalancer --> DatabaseMirroring : Setup Mirroring
+    DatabaseMirroring --> FailoverPolicy : Define Failover
+    FailoverPolicy --> BackupPolicy : Setup Backups
+    BackupPolicy --> HAComplete : HA Configured
+  }
+ 
+  HighAvailability --> Monitoring: Next
+  state Monitoring {
+    [*] --> PerfmonPolicy : Configure Perfmon
+    PerfmonPolicy --> SqlmonPolicy : Configure Sqlmon
+    SqlmonPolicy --> MonitoringComplete : Monitoring Configured
+  }
+ 
+  Monitoring --> Tool: Next
+  state Tool {
+    [*] --> EncoderDecoder : Encode/Decode Tool
+    EncoderDecoder --> ExecuterAgent : Execute Agent Scripts
+    ExecuterAgent --> ExecuterNcpApi : Execute NCP API Scripts
+    ExecuterNcpApi --> ExecuterMultiSql : Execute Multiple SQL Scripts
+    ExecuterMultiSql --> ToolComplete : Tools Configured
+  }
+ 
+  Tool --> [*]: Finish
+}
+ 
+@enduml

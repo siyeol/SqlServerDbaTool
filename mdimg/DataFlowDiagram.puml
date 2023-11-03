@@ -1,0 +1,24 @@
+@startuml
+skinparam style strict
+ 
+' Define External Entities
+actor "User"
+ 
+' Define Data Stores
+database "Local" as DS1
+database "NCloud Object Storage" as DS2
+ 
+' Define Data Flows
+User --> DS1: SetValue & SaveUserData
+DS1 --> DS2: Upload txt file
+DS1 --> User: LoadUserData & GetValue
+DS2 --> DS1: Download txt file
+ 
+note bottom of DS1
+    - DataManagerContentsUser.txt
+    - LogClientConfigUser.txt
+    - TBL_####.txt
+    - ...
+end note
+ 
+@enduml

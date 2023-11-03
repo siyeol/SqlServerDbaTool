@@ -1,0 +1,40 @@
+@startuml
+' Interaction Diagram
+ 
+' Define the alias for the components
+participant "HaTool" as HaTool
+participant "Object Storage" as ObjectStorage
+participant "API Gateway" as ApiGateway
+participant "LazyLog Agent Server" as LazyLog
+ 
+' Group HaTool
+box "Local"
+    participant HaTool
+end box
+ 
+' Group Object Storage and API Gateway
+box "NCP Console"
+    participant ObjectStorage
+    participant ApiGateway
+end box
+ 
+' Group VM Instance
+box "VM Instances"
+    participant LazyLog
+end box
+ 
+' Define relationships
+ObjectStorage -> HaTool : Download Config
+HaTool -> ObjectStorage : Upsert Config
+ 
+ObjectStorage -> ApiGateway : Fetch Scripts
+ApiGateway -> LazyLog : Execute Scripts
+ 
+HaTool -> LazyLog : Execute Queries
+ 
+HaTool -> ApiGateway : <<Request>> Server Operations
+HaTool -> ApiGateway : <<Request>> Configure High Availability
+ApiGateway -> HaTool : <<Response>>
+HaTool -> ObjectStorage : Save <<Response>>
+ 
+@enduml

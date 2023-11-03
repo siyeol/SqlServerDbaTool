@@ -214,6 +214,54 @@ NCP API Gateway를 통해 서비스되는 API를 테스트해볼 수 있습니�
 ![](mdimg/img21.PNG)
 
 
+## Repository 구성
+<p align="center">
+  <img src="mdimg/InteractionDiagram.png" alt="Interaction Diagram">
+  <br>
+  [Diagram1] Interaction Diagram
+</p>
+
+본 프로젝트는 크게 HaTool, LazyLog, 공통 라이브러리 등으로 나뉠 수 있습니다.
+- HaTool: UI 부분으로, winform으로 작성되어있으며 사용자가 DBA의 역할을 local Windows OS 환경에서 수행할 수 있는 응용프로그램입니다.
+- LazyLog: 생성한 VM Instance위에 올라가는 Server로써, LogClient를 통해 로깅을 수행하며 9090포트로 REST request 를 받게 됩니다.
+- 공통 라이브러리: CsLib & fastColoredTextBox - CsLib 폴더는 라이브러리들을 직접 구현한 부분들입니다. Encryption/Decryption, API Call, Helper Function등 common function 들이 관리되는 solution입니다. - fastColoredTextBox는 일반텍스트가 아닌 강조와 포매팅 등이 필요한 텍스트 팝업들을 rich하게 만들어주는 오픈소스 라이브러리입니다.
+
+### 코드 유지보수
+<p align="center">
+  <img src="mdimg/LazyLogComponentDiagram.png" alt="LazyLog Component Diagram">
+  <br>
+  [Diagram2] LazyLog Component Diagram
+</p>
+<p align="center">
+  <img src="mdimg/HaToolComponentDiagram.png" alt="HaTool Component Diagram">
+  <br>
+  [Diagram3] HaTool Component Diagram
+</p>
+
+- 변경사항 적용 후 HaTool.sln을 빌드하게 되면 변경사항을 Local에서 확인 할 수 있습니다. 일부 관련 패키지들을 NuGet을 통해서 다운로드 받아주어야 합니다.
+- LazyLog와 LogClient 수정이 필요한 경우 반영을 위해선 LazyLog.sln 을 빌드 한 결과물을 HaTool Config/Upload에 Lazylog64.zip 형태로 업데이트 해주어야 합니다. 이는 initscript를 통해서 object storage에 올라가, instance 생성시 unzip과 내부 .exe 실행이 진행 될 것 입니다.
+
+### 데이터 관리
+<p align="center">
+  <img src="mdimg/DataflowDiagram.png" alt="Dataflow Diagram">
+  <br>
+  [Diagram4] Dataflow Diagram
+</p>
+
+1. Browser Cache, Cookie, Session등이 존재하지 않기 때문에 로컬에 encrypted된 text형태로 configuration들이 저장되게 됩니다.
+2. HaTool의 bin folder내에 .txt형태로 데이터가 저장되게 되며, 이는 다시 초기 설정된 ncloud Object Storage의 위치로 .txt형태로 업로드 되게 됩니다.
+3. DataManagerContentsUser.txt, LogClientConfigUser.txt를 통해서 nCloud 계정 정보 및 로컬 응용 프로그램에서 설정한 기본 정보들이 저장되고 관리되게 됩니다. 이는 DataManagerContentsInit.txt와 LogClientConfigInit.txt로 부터 읽어온 기본 정보를 수정해서 Cryptionkey에 기반해서 암호화 해 로컬에 저장되어 생성된 파일들입니다.
+4. TBL_SERVER.txt, TBL_CLUSTER.txt, TBL_CLUSTER_SERVER.txt 등은 로컬 응용 프로그램내에서 생성되고 관리된 Instance들과 Target Group등이 관리되는 .txt 파일입니다. json형태의 자료구조를 갖지만 .txt 형태로 관리되고 있습니다. 이는 runtime에서 parsing되어 dictionary로 관리되게 됩니다.
+
+
+### 실행 과정
+FormLogin으로 Login을 한 뒤 -> FormMain에서 각 기능들이 존재하는 UserControl로 화면 및 기능 전환 -> Config에서 Key, ObjectStorage등 기본 Configuration 설정 -> 상단 바 왼쪽에서 오른쪽순서로 진행하며 Server 생성, HA 구성, 요청 생성 등 진행 가능
+<p align="center">
+  <img src="mdimg/StateDiagram.png" alt="State Diagram">
+  <br>
+  [Diagram5] State Diagram
+</p>
+
 
 ## Packages
 
